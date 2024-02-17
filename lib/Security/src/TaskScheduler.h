@@ -45,7 +45,7 @@ protected:
     }
 
 public:
-    TaskScheduler(Logger *l);
+    explicit TaskScheduler(Logger *l);
 
     void schedule();
 

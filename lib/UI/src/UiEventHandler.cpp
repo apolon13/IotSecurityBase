@@ -1,12 +1,7 @@
 #include "UiEventHandler.h"
 
-string defaultMqttIp = "ip empty";
-string defaultMqttPort = "port empty";
-string defaultMqttUsername = "username empty";
-string defaultMqttEntityId = "id empty";
-string emptyValue;
-
 IoTRadioSignal *globalIot;
+QueueTask *globalQueue;
 
 void showSuccessNetworkIcon() {
     lv_obj_add_flag(ui_connectionStatusOff, LV_OBJ_FLAG_HIDDEN);
@@ -26,7 +21,6 @@ void failedMqttConnection() {
     lv_obj_set_style_arc_color(ui_Spinner1, lv_color_hex(0xFF406A), LV_PART_INDICATOR | LV_STATE_DEFAULT);
 }
 
-bool scanIsRunning;
 struct ReceivedSignal{
     String value;
     void clear() {
@@ -34,29 +28,38 @@ struct ReceivedSignal{
     }
 };
 
-ReceivedSignal receivedSignal;
-void addSensor(void *) {
-    while (true) {
-        string signalValue = receivedSignal.value.c_str();
-        if (!signalValue.empty() && !globalIot->exist(signalValue) && UiMutex::take()) {
-            lv_obj_t *component = ui_SensorItem_create(ui_Sensors);
-            lv_obj_t *label = ui_comp_get_child(component, UI_COMP_SENSORITEM_SENSORITEMPANEL_SENSORID);
-            lv_label_set_text(label, signalValue.c_str());
-            lv_obj_clear_flag(ui_comp_get_child(component, UI_COMP_SENSORITEM_SENSORITEMPANEL_LABEL15),LV_OBJ_FLAG_HIDDEN);
-            Sensor newSensor = {signalValue, signalValue, true, 50};
-            globalIot->save(&newSensor);
-            UiMutex::give();
-        }
-        receivedSignal.clear();
-        vTaskDelay(10);
+void addSensor(void * s) {
+    auto *signal = (struct ReceivedSignal*) s;
+    if (UiMutex::take()) {
+        string signalValue = signal->value.c_str();
+        lv_obj_t *component = ui_SensorItem_create(ui_Sensors);
+        lv_obj_t *label = ui_comp_get_child(component, UI_COMP_SENSORITEM_SENSORITEMPANEL_SENSORID);
+        lv_label_set_text(label, signalValue.c_str());
+        lv_obj_clear_flag(ui_comp_get_child(component, UI_COMP_SENSORITEM_SENSORITEMPANEL_LABEL15),LV_OBJ_FLAG_HIDDEN);
+        Sensor newSensor = {signalValue, signalValue, true, 50};
+        globalIot->save(&newSensor);
+        UiMutex::give();
     }
+    signal->clear();
 }
 
+bool scanIsRunning;
+ReceivedSignal currentSignal;
 void receiveSensor(const uint8_t *mac, const uint8_t *incomingData, int len) {
-    if (!scanIsRunning) {
+    if (!scanIsRunning || globalIot->getCurrentSensors().size() > 8) {
         return;
     }
-    memcpy(&receivedSignal, incomingData, sizeof(receivedSignal));
+    ReceivedSignal temp;
+    memcpy(&temp, incomingData, sizeof(temp));
+    string signalValue = temp.value.c_str();
+    if (temp.value != currentSignal.value && !signalValue.empty() && !globalIot->exist(signalValue)) {
+        memcpy(&currentSignal, incomingData, sizeof(currentSignal));
+        Task task = {
+                addSensor,
+                (void *) &currentSignal
+        };
+        globalQueue->addTask(&task);
+    }
 }
 
 void onSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
@@ -65,16 +68,16 @@ void onSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
 }
 
 void UiEventHandler::loadGeneralSettings(lv_event_t *e) {
-    string currentPin = preferences->get(SystemPin, emptyValue);
+    string currentPin = preferences->get(SystemPin, "");
     lv_textarea_set_text(ui_settingsPincodeInput, currentPin.c_str());
 }
 
 void UiEventHandler::loadDataInMain(lv_event_t *e) {
-    string mqttIp = preferences->get(MqttIp, defaultMqttIp);
-    string mqttPort = preferences->get(MqttPort, defaultMqttPort);
-    string mqttUsername = preferences->get(MqttUsername, defaultMqttUsername);
-    string mqttEntityId = preferences->get(MqttEntityId, defaultMqttEntityId);
-    string wifiSsid = preferences->get(WifiSsid, emptyValue);
+    string mqttIp = preferences->get(MqttIp, "ip empty");
+    string mqttPort = preferences->get(MqttPort, "port empty");
+    string mqttUsername = preferences->get(MqttUsername, "username empty");
+    string mqttEntityId = preferences->get(MqttEntityId, "id empty");
+    string wifiSsid = preferences->get(WifiSsid, "");
     int countAll = 0;
     int countActive = 0;
     for (auto sensor: ioTRadioSignal->getCurrentSensors()) {
@@ -106,7 +109,6 @@ void UiEventHandler::loadAllSensors(lv_event_t *e) {
 }
 
 Sensor *inEdit;
-
 void UiEventHandler::loadSensor(lv_event_t *e) {
     if (inEdit != nullptr) {
         lv_textarea_set_text(ui_sensorName, inEdit->name.c_str());
@@ -118,8 +120,8 @@ void UiEventHandler::loadSensor(lv_event_t *e) {
 }
 
 void UiEventHandler::loadFiWiSettings(lv_event_t *e) {
-    string wifiSsid = preferences->get(WifiSsid, emptyValue);
-    string wifiPass = preferences->get(WifiPassword, emptyValue);
+    string wifiSsid = preferences->get(WifiSsid, "");
+    string wifiPass = preferences->get(WifiPassword, "");
     if (!wifiSsid.empty()) {
         lv_textarea_set_text(ui_wifiSsid, wifiSsid.c_str());
     }
@@ -129,11 +131,11 @@ void UiEventHandler::loadFiWiSettings(lv_event_t *e) {
 }
 
 void UiEventHandler::loadMqttSettings(lv_event_t *e) {
-    string mqttIp = preferences->get(MqttIp, emptyValue);
-    string mqttPort = preferences->get(MqttPort, emptyValue);
-    string mqttUsername = preferences->get(MqttUsername, emptyValue);
-    string mqttEntityId = preferences->get(MqttEntityId, emptyValue);
-    string mqttPassword = preferences->get(MqttPassword, emptyValue);
+    string mqttIp = preferences->get(MqttIp, "");
+    string mqttPort = preferences->get(MqttPort, "");
+    string mqttUsername = preferences->get(MqttUsername, "");
+    string mqttEntityId = preferences->get(MqttEntityId, "");
+    string mqttPassword = preferences->get(MqttPassword, "");
     if (!mqttIp.empty()) {
         lv_textarea_set_text(ui_mqttIp, mqttIp.c_str());
     }
@@ -181,7 +183,6 @@ void UiEventHandler::deleteSensor(lv_event_t *e) {
 }
 
 void UiEventHandler::startScan(lv_event_t *e) {
-    taskScheduler->scheduleTask({AddSensorTask, addSensor, TaskPriority::High, 5000});
     scanIsRunning = true;
     ioTRadioSignal->addRecvHandler(receiveSensor);
     ioTRadioSignal->addSendHandler(onSent);
@@ -190,9 +191,7 @@ void UiEventHandler::startScan(lv_event_t *e) {
 
 void UiEventHandler::stopScan(lv_event_t *e) {
     scanIsRunning = false;
-    taskScheduler->deleteTask(AddSensorTask);
     ioTRadioSignal->stopScan();
-    dispatcher->reconnectToCloud();
 }
 
 void UiEventHandler::goToEditSensor(lv_event_t *e) {
@@ -223,7 +222,7 @@ void UiEventHandler::lockSystem(lv_event_t *e) {
 }
 
 void UiEventHandler::unlockSystem(lv_event_t *e) {
-    string currentPin = preferences->get(SystemPin, emptyValue);
+    string currentPin = preferences->get(SystemPin, "");
     string userPin = lv_textarea_get_text(ui_pincode);
     string unlockState = "0";
     bool isOk = true;
@@ -241,6 +240,7 @@ void UiEventHandler::unlockSystem(lv_event_t *e) {
         lv_disp_load_scr(ui_home);
     }
 
+    string emptyValue = "";
     lv_textarea_set_text(ui_pincode, emptyValue.c_str());
 }
 
@@ -271,10 +271,12 @@ void UiEventHandler::handleConnections() {
     }
 }
 
-UiEventHandler::UiEventHandler(ProjectPreferences *p, IoTRadioSignal *i, TaskScheduler *t, Dispatcher *d)
+UiEventHandler::UiEventHandler(ProjectPreferences *p, IoTRadioSignal *i, TaskScheduler *t, Dispatcher *d, QueueTask *q)
         : preferences(p),
           ioTRadioSignal(i),
           taskScheduler(t),
-          dispatcher(d) {
+          dispatcher(d),
+          queueTask(q) {
     globalIot = i;
+    globalQueue = q;
 }

@@ -24,7 +24,7 @@ void TaskScheduler::schedule() {
         string taskId = convertTaskId(task.name);
         auto handle = xTaskGetHandle(taskId.c_str());
         if (handle == nullptr) {
-            auto created = xTaskCreate(
+            auto code = xTaskCreate(
                     task.func,
                     taskId.c_str(),
                     task.stackDepth,
@@ -32,8 +32,8 @@ void TaskScheduler::schedule() {
                     task.priority,
                     nullptr
             );
-            if (created != pdPASS) {
-                throw std::runtime_error("Create task error");
+            if (code != pdPASS) {
+                throw std::runtime_error("Create task error " + to_string(code));
             }
         } else {
             vTaskResume(handle);

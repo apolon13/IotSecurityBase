@@ -1,16 +1,16 @@
 #include "SerialLogger.h"
 #include "Logger.h"
-#include "AudioQueueNotificator.h"
 #include "UiControl.h"
+#include "QueueTask.h"
 
 Dispatcher *dispatcher;
 UiControl *uiControl;
 UiEventHandler *eventHandler;
 Logger *logger;
-AudioQueueNotificator *notificator;
 TaskScheduler *taskScheduler;
 ProjectPreferences *preferences;
 IoTRadioSignal *ioTRadioSignal;
+QueueTask *queue;
 
 uint8_t receiverAddress[] = {0x08, 0xD1, 0xF9, 0xEB, 0x02, 0x58};
 #define I2S_DOUT      17
@@ -51,6 +51,8 @@ void loopMqtt(void *) {
             dispatcher->loop();
         }
 
+        Serial.print("Free memory - ");
+        Serial.println(ESP.getFreeHeap());
         eventHandler->handleConnections();
         vTaskDelay(1000);
     }
@@ -74,9 +76,9 @@ void setup() {
     preferences = new ProjectPreferences(logger);
     ioTRadioSignal = new IoTRadioSignal(preferences, GPIO_NUM_38, logger);
     dispatcher = new Dispatcher(preferences, logger);
-    notificator = new AudioQueueNotificator(I2S_BCLK, I2S_LRC, I2S_DOUT);
     taskScheduler = new TaskScheduler(logger);
-    uiControl = new UiControl(preferences, ioTRadioSignal, taskScheduler, dispatcher);
+    queue = new QueueTask();
+    uiControl = new UiControl(preferences, ioTRadioSignal, taskScheduler, dispatcher, queue);
     uiControl->init();
     eventHandler = uiControl->getEventHandler();
     taskScheduler->scheduleTask({LoopDisplayTask, loopDisplay, TaskPriority::Low, 5000});
@@ -89,7 +91,5 @@ void loop() {
     } catch (std::runtime_error error) {
         logger->debug(error.what());
     }
-    if (dispatcher->networkIsConnected()) {
-        //  notificator->run();
-    }
+    queue->run();
 }

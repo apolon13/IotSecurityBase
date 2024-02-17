@@ -3,6 +3,7 @@
 #include "IoTRadioSignal.h"
 #include "TaskScheduler.h"
 #include "Dispatcher.h"
+#include "QueueTask.h"
 
 #ifndef DISPLAY_UIEVENTHANDLER_H
 #define DISPLAY_UIEVENTHANDLER_H
@@ -13,8 +14,9 @@ private:
     IoTRadioSignal *ioTRadioSignal;
     TaskScheduler *taskScheduler;
     Dispatcher *dispatcher;
+    QueueTask *queueTask;
 public:
-    UiEventHandler(ProjectPreferences *p, IoTRadioSignal *i, TaskScheduler *t, Dispatcher *d);
+    UiEventHandler(ProjectPreferences *p, IoTRadioSignal *i, TaskScheduler *t, Dispatcher *d, QueueTask *q);
 
     void loadGeneralSettings(lv_event_t *e);
 

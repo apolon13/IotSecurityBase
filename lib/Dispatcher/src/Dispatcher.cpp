@@ -1,6 +1,7 @@
 #include "Dispatcher.h"
 #include "WiFiGeneric.h"
 #include <PubSubClient.h>
+#include <ESP32Ping.h>
 
 #define RELAY_TOPIC "base/relay/camera"
 #define SIGNAL_TOPIC "base/gsm/signal"
@@ -12,20 +13,10 @@ void receivedCallback(char *topic, byte *payload, unsigned int length) {
     Serial.println(topic);
 }
 
-void onEvent(arduino_event_id_t event, arduino_event_info_t info) {
-    Serial.println("event = ");
-    Serial.println(to_string(event).c_str());
-}
-
 Dispatcher::Dispatcher(ProjectPreferences *p, Logger *l) : projectPreferences(p), logger(l) {
     logger->debug("Init dispatcher");
     WiFi.persistent(false);
     WiFi.mode(WIFI_MODE_APSTA);
-    for ( int fooInt = ARDUINO_EVENT_WIFI_READY; fooInt != ARDUINO_EVENT_MAX; fooInt++ )
-    {
-        arduino_event_id_t event = static_cast<arduino_event_id_t>(fooInt);
-        WiFi.onEvent(onEvent, event);
-    }
     pubSub.setCallback(receivedCallback);
 }
 
@@ -35,10 +26,6 @@ void Dispatcher::connectToNetwork() {
 
 bool Dispatcher::hasNeedReconnectCloud() {
     return needReconnectCloud;
-}
-
-bool ethIsConnected(string mqttServer) {
-    return espClient.connect(mqttServer.c_str(), 80);
 }
 
 bool Dispatcher::cloudIsConnected() {
@@ -94,11 +81,15 @@ void Dispatcher::connectToMqtt() {
             logger->debug("MQTT connected");
             pubSub.subscribe(RELAY_TOPIC);
         } else {
+            IPAddress dns(8, 8, 8, 8);
             logger->debug("MQTT failed, status code = " + to_string(pubSub.state()));
-            if (!ethIsConnected(mqttServer)) {
-                logger->debug("Reconnect to network");
-                logger->debug("Network status = " + to_string(WiFi.status()));
+            if (!Ping.ping(dns, 1)) {
+                logger->debug("Reconnect to network, ping failed");
+                espClient.flush();
+                espClient.stop();
                 connectToWiFi();
+            } else {
+                logger->debug("Ethernet available");
             }
         }
     }

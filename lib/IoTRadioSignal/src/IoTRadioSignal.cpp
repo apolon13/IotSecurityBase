@@ -137,9 +137,12 @@ void IoTRadioSignal::save(Sensor *sensor) {
                         (inConfig.isEqual(sensor) ? newSensorConfigString : buildConfigStringBySensor(&inConfig)));
         }
     }
-    currentSensors.push_back(*sensor);
+    if (!hasInCurrentSensors(sensor)) {
+        currentSensors.push_back(*sensor);
+    }
     projectPreferences->set(IotSensor, newConfig);
 }
+
 
 void IoTRadioSignal::loadCurrentSensors() {
     currentSensors = {};
@@ -192,5 +195,12 @@ void IoTRadioSignal::addSendHandler(esp_now_send_cb_t sendCb) {
 bool IoTRadioSignal::exist(string signal) {
     auto signals = getSignals();
     return find(signals.begin(), signals.end(), signal) != signals.end();
+}
+
+bool IoTRadioSignal::hasInCurrentSensors(Sensor *sensor) {
+    auto iterator = std::find_if(currentSensors.begin(), currentSensors.end(), [sensor](const Sensor &s) {
+        return s.signal == sensor->signal;
+    });
+    return iterator != currentSensors.end();
 }
 

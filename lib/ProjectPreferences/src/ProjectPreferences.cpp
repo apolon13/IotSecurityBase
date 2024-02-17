@@ -1,5 +1,4 @@
 #include "ProjectPreferences.h"
-#include <SPI.h>
 #include "SdFat.h"
 SdFat SDFat;
 
@@ -8,7 +7,6 @@ using namespace std;
 #define FILENAME "/project.txt"
 #define DELIMITER '='
 #define TERMINATOR '\n'
-const uint8_t chipSelect = SS;
 
 struct Property {
     string value;
@@ -17,10 +15,9 @@ struct Property {
 };
 
 ProjectPreferences::ProjectPreferences(Logger *l): logger(l) {
-    if (!SDFat.begin(chipSelect, SD_SCK_MHZ(50))) {
+    if (!SDFat.begin()) {
         logger->debug("SD card init error");
     }
-    //SDFat.remove(FILENAME);
     if (!SDFat.exists(FILENAME)) {
         auto prefs = SDFat.open(FILENAME, O_CREAT);
         logger->debug((string)"Create new settings file " + FILENAME);

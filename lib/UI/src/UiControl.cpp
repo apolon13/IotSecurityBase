@@ -1,10 +1,6 @@
 #include "UiControl.h"
-SPIClass &spi = SPI;
-static uint32_t screenWidth;
-static uint32_t screenHeight;
 static lv_disp_draw_buf_t drawBuf;
-static lv_color_t buf1[800 * 480 / 10];
-static lv_color_t buf2[800 * 480 / 10];
+static lv_color_t buf[800 * 480 / 10];
 static lv_disp_drv_t dispDrv;
 
 #define TFT_BL 2
@@ -52,8 +48,8 @@ void flushDisplay(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color_
     lv_disp_flush_ready(disp);
 }
 
-UiControl::UiControl(ProjectPreferences *p, IoTRadioSignal *i, TaskScheduler *t, Dispatcher *d) {
-    eventHandler = new UiEventHandler(p, i, t, d);
+UiControl::UiControl(ProjectPreferences *p, IoTRadioSignal *i, TaskScheduler *t, Dispatcher *d, QueueTask *q) {
+    eventHandler = new UiEventHandler(p, i, t, d, q);
     gfx->begin();
     gfx->fillScreen(BLACK);
     gfx->setTextSize(2);
@@ -62,9 +58,11 @@ UiControl::UiControl(ProjectPreferences *p, IoTRadioSignal *i, TaskScheduler *t,
     digitalWrite(TFT_BL, HIGH);
     lv_init();
     touch_init();
+    uint32_t screenWidth;
+    uint32_t screenHeight;
     screenWidth = gfx->width();
     screenHeight = gfx->height();
-    lv_disp_draw_buf_init(&drawBuf, buf1, buf2, screenWidth * screenHeight / 10);
+    lv_disp_draw_buf_init(&drawBuf, buf, nullptr, screenWidth * screenHeight / 10);
     lv_disp_drv_init(&dispDrv);
     dispDrv.hor_res = screenWidth;
     dispDrv.ver_res = screenHeight;

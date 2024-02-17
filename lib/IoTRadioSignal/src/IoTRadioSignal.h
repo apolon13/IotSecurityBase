@@ -26,6 +26,7 @@ protected:
     Logger *logger;
     void loadCurrentSensors();
     vector<string> getSignals();
+    bool hasInCurrentSensors(Sensor *s);
 public:
     IoTRadioSignal(ProjectPreferences *p, int receivePin, Logger *l);
     void startScan();
