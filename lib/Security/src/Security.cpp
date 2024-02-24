@@ -1,5 +1,7 @@
 #include "Security.h"
 
+#include <utility>
+
 Security *selfSecurity;
 
 #define GUARD "Guard"
@@ -42,7 +44,6 @@ void Security::listenRadioCommands() {
 
 void Security::handleControl(string name) {
     auto lockScreen = ui->getEventHandler()->getLockScreen();
-    Serial.println(name.c_str());
     if (name == GUARD) {
         guard();
         projectPreferences->lockSystem();
@@ -83,7 +84,7 @@ Security::Security(IoTRadioDetect *d, IotRadioControl *c, UiControl *ui, Project
 void Security::listenMqttCommands() {
     securityTopic->refreshHandlers();
     securityTopic->addHandler([this](string payload) {
-        handleControl(payload.c_str());
+        handleControl(std::move(payload));
     });
 }
 
