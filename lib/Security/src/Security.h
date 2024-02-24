@@ -14,18 +14,30 @@ protected:
     IotRadioControl *iotRadioControl;
     ProjectPreferences *projectPreferences;
     UiControl *ui;
-    Topic *securityTopic;
+    Topic *securityCmdTopic;
+    Topic *receiveCmdTopic;
 
     void listenRadioCommands();
+
     void listenMqttCommands();
+
     void handleDetect(string signal);
+
     void handleControl(string signal);
+
     void guard();
+
     void disarm();
+
     void alarm();
+
     void mute();
+
 public:
-    explicit Security(IoTRadioDetect *d, IotRadioControl *c, UiControl *ui, ProjectPreferences *p, Topic *t);
+    explicit Security(IoTRadioDetect *d, IotRadioControl *c, UiControl *ui, ProjectPreferences *p, Topic *cmd,
+                      Topic *rcv);
+
     void listen();
 };
+
 #endif //DISPLAY_SECURITY_H

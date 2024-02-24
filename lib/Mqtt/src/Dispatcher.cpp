@@ -3,6 +3,7 @@
 #include <PubSubClient.h>
 #include <ESP32Ping.h>
 #include <utility>
+#include "PubSubDelegate.h"
 
 WiFiClient espClient;
 PubSubClient pubSub(espClient);
@@ -12,6 +13,10 @@ Dispatcher::Dispatcher(ProjectPreferences *p, Logger *l, vector<Topic *> t) : pr
     logger->debug("Init dispatcher");
     WiFi.persistent(false);
     WiFi.mode(WIFI_MODE_APSTA);
+    auto pubSubDelegate = new PubSubDelegate(&pubSub);
+    for (auto topic: topics) {
+        topic->withPubSub(pubSubDelegate);
+    }
     pubSub.setCallback([this](char *topic, byte *payload, unsigned int length) {
         string data;
         for (int i = 0; i < length; i++) {

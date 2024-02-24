@@ -64,6 +64,8 @@ void Security::handleControl(string name) {
     if (name == ALARM) {
         alarm();
     }
+
+    receiveCmdTopic->publish(name);
 }
 
 void Security::handleDetect(string signal) {
@@ -72,11 +74,13 @@ void Security::handleDetect(string signal) {
     }
 }
 
-Security::Security(IoTRadioDetect *d, IotRadioControl *c, UiControl *ui, ProjectPreferences *p, Topic *t) : ioTRadioDetect(d),
-                                                                                                  iotRadioControl(c),
-                                                                                                  ui(ui),
-                                                                                                  projectPreferences(p),
-                                                                                                  securityTopic(t) {
+Security::Security(IoTRadioDetect *d, IotRadioControl *c, UiControl *ui, ProjectPreferences *p, Topic *cmd, Topic *rcv)
+        : ioTRadioDetect(d),
+          iotRadioControl(c),
+          ui(ui),
+          projectPreferences(p),
+          securityCmdTopic(cmd),
+          receiveCmdTopic(rcv) {
     selfSecurity = this;
     projectPreferences->lockSystem();
     IoTRadio::addReceiver(receiverAddress);
@@ -84,8 +88,8 @@ Security::Security(IoTRadioDetect *d, IotRadioControl *c, UiControl *ui, Project
 }
 
 void Security::listenMqttCommands() {
-    securityTopic->refreshHandlers();
-    securityTopic->addHandler([this](string payload) {
+    securityCmdTopic->refreshHandlers();
+    securityCmdTopic->addHandler([this](string payload) {
         handleControl(std::move(payload));
     });
 }

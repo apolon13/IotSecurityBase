@@ -82,15 +82,17 @@ void setup() {
     logger->debug(preferences->get(LastError, "empty"));
     ioTRadioDetect = new IoTRadioDetect(preferences, logger);
     iotRadioControl = new IotRadioControl(preferences, logger);
-    auto securityTopic = new Topic("/security/command");
-    topics.push_back(securityTopic);
+    auto securityCmdTopic = new Topic("/security/command");
+    auto securityRcvTopic = new Topic("/security/receive");
+    topics.push_back(securityCmdTopic);
+    topics.push_back(securityRcvTopic);
     dispatcher = new Dispatcher(preferences, logger, topics);
     taskScheduler = new TaskScheduler(logger);
     queue = new QueueTask();
     uiControl = new UiControl(preferences, ioTRadioDetect, dispatcher, queue, iotRadioControl);
     uiControl->init();
     eventHandler = uiControl->getEventHandler();
-    security = new Security(ioTRadioDetect, iotRadioControl, uiControl, preferences, securityTopic);
+    security = new Security(ioTRadioDetect, iotRadioControl, uiControl, preferences, securityCmdTopic, securityRcvTopic);
     taskScheduler->addTask({LoopDisplayTask, loopDisplay, TaskPriority::Low, 5000});
     taskScheduler->addTask({LoopMqttTask, loopMqtt, TaskPriority::Low, 5000});
     auto listenCb = [](Events e) {
