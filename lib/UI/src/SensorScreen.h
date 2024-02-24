@@ -10,9 +10,9 @@ protected:
     bool scanIsRunning = false;
     long scanStartedAt = 0;
 public:
-    void beforeStartScan();
+    void beforeScan();
 
-    void afterStartScan();
+    void afterScan();
 };
 
 #endif //DISPLAY_SENSORSCREEN_H

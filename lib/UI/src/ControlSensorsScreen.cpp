@@ -86,14 +86,14 @@ void ControlSensorsScreen::saveNewControl(void *) {
     currentSignalWithControl->clear();
     IoTRadio::stopScan();
     controlAction = nullptr;
-    afterStartScan();
+    afterScan();
 }
 
 void ControlSensorsScreen::handleReceiveControl(const uint8_t *incomingData) {
     long now = millis();
     if (!scanIsRunning || (now - scanStartedAt) > 5000 || controlAction == nullptr) {
         IoTRadio::stopScan();
-        afterStartScan();
+        afterScan();
         return;
     }
     currentSignalWithControl = (ReceivedSignalWithControl *) incomingData;
@@ -112,7 +112,7 @@ void ControlSensorsScreen::handleReceiveControl(const uint8_t *incomingData) {
 }
 
 void ControlSensorsScreen::addControlAction(lv_event_t *e) {
-    beforeStartScan();
+    beforeScan();
     controlAction = e->target;
     IoTRadio::addRecvHandler([](const uint8_t *mac, const uint8_t *incomingData, int len) {
         selfControlSensorsScreen->handleReceiveControl(incomingData);

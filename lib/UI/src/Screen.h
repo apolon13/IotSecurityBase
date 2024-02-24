@@ -8,7 +8,7 @@
 using namespace std;
 
 enum Events {
-    EventOnRadioUse
+    EventOnAfterRadioUse
 };
 
 class Screen {

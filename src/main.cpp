@@ -96,9 +96,8 @@ void setup() {
     auto listenCb = [](Events e) {
         security->listen();
     };
-    eventHandler->getDetectSensorsScreen()->onEvent(listenCb, EventOnRadioUse);
-    eventHandler->getControlSensorsScreen()->onEvent(listenCb, EventOnRadioUse);
-
+    eventHandler->getDetectSensorsScreen()->onEvent(listenCb, EventOnAfterRadioUse);
+    eventHandler->getControlSensorsScreen()->onEvent(listenCb, EventOnAfterRadioUse);
 }
 
 void loop() {

@@ -28,7 +28,7 @@ void DetectSensorsScreen::loadAllSensors(lv_event_t *e) {
 }
 
 void DetectSensorsScreen::startScan(lv_event_t *e) {
-    beforeStartScan();
+    beforeScan();
     IoTRadio::addRecvHandler([](const uint8_t *mac, const uint8_t *incomingData, int len) {
         selfDetectSensorsScreen->handleReceiveSensor(incomingData);
     });
@@ -36,8 +36,8 @@ void DetectSensorsScreen::startScan(lv_event_t *e) {
 }
 
 void DetectSensorsScreen::stopScan(lv_event_t *e) {
-    afterStartScan();
     IoTRadio::stopScan();
+    afterScan();
 }
 
 void DetectSensorsScreen::goToEditSensor(lv_event_t *e) {
@@ -52,7 +52,7 @@ void DetectSensorsScreen::goToEditSensor(lv_event_t *e) {
 void DetectSensorsScreen::handleReceiveSensor(const uint8_t *incomingData) {
     if (!scanIsRunning || ioTRadioDetect->getCurrentSensors().size() > 8) {
         IoTRadio::stopScan();
-        afterStartScan();
+        afterScan();
         return;
     }
     currentSignal = (ReceivedSignal *) incomingData;

@@ -1,13 +1,13 @@
 #include "SensorScreen.h"
 #include "Arduino.h"
 
-void SensorScreen::beforeStartScan() {
+void SensorScreen::beforeScan() {
     scanIsRunning = true;
     scanStartedAt = millis();
 }
 
-void SensorScreen::afterStartScan() {
+void SensorScreen::afterScan() {
     scanIsRunning = false;
     scanStartedAt = 0;
-    triggerEvent(EventOnRadioUse);
+    triggerEvent(EventOnAfterRadioUse);
 }
