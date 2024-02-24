@@ -67,3 +67,15 @@ void ProjectPreferences::set(Props property, string value) {
 string ProjectPreferences::get(Props property, string defaultValue) {
     return readPreferencesProperty(convertProperty(property), defaultValue).value;
 }
+
+void ProjectPreferences::lockSystem() {
+    set(SystemState, SYSTEM_STATE_LOCK);
+}
+
+void ProjectPreferences::unlockSystem() {
+    set(SystemState, SYSTEM_STATE_UNLOCK);
+}
+
+bool ProjectPreferences::systemIsLocked() {
+    return get(SystemState, SYSTEM_STATE_UNLOCK) == SYSTEM_STATE_LOCK;
+}

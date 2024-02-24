@@ -1,4 +1,4 @@
-SET(SOURCES components/ui_comp_sensoritem.c
+SET(SOURCES components/ui_comp_controlitem.c
     components/ui_comp.c
     screens/ui_lockScreen.c
     screens/ui_home.c
@@ -7,6 +7,7 @@ SET(SOURCES components/ui_comp_sensoritem.c
     screens/ui_sensorsScreen.c
     screens/ui_edittSensorScreen.c
     screens/ui_generalSettingsScreen.c
+    screens/ui_controlsScreen.c
     ui.c
     components/ui_comp_hook.c
     ui_helpers.c

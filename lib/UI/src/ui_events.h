@@ -10,7 +10,6 @@
 extern "C" {
 #endif
 
-void enableReceive(lv_event_t * e);
 void unlockSystem(lv_event_t * e);
 void loadDataInMain(lv_event_t * e);
 void lockSystem(lv_event_t * e);
@@ -25,8 +24,10 @@ void loadSensor(lv_event_t * e);
 void saveSensorSettings(lv_event_t * e);
 void loadGeneralSettings(lv_event_t * e);
 void saveGeneralSettings(lv_event_t * e);
-void deleteSensor(lv_event_t * e);
-void goToEditSensor(lv_event_t * e);
+void loadAllControls(lv_event_t * e);
+void addControl(lv_event_t * e);
+void addControlAction(lv_event_t * e);
+void deleteControl(lv_event_t * e);
 
 #ifdef __cplusplus
 } /*extern "C"*/

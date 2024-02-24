@@ -28,7 +28,6 @@ extern "C" {
 #include "ui_events.h"
 // SCREEN: ui_lockScreen
 void ui_lockScreen_screen_init(void);
-void ui_event_lockScreen( lv_event_t * e);
 extern lv_obj_t *ui_lockScreen;
 extern lv_obj_t *ui_TabView6;
 extern lv_obj_t *ui_Label15;
@@ -65,12 +64,17 @@ extern lv_obj_t *ui_Label12;
 extern lv_obj_t *ui_wifiSsidLabel;
 extern lv_obj_t *ui_connectionStatusOff;
 extern lv_obj_t *ui_connectionStatusOn;
-extern lv_obj_t *ui_Panel1;
+extern lv_obj_t *ui_sensorsHome;
 extern lv_obj_t *ui_SensorsLabel;
 void ui_event_addSensorBtn( lv_event_t * e);
 extern lv_obj_t *ui_addSensorBtn;
 extern lv_obj_t *ui_Label13;
 extern lv_obj_t *ui_sensorsQty;
+extern lv_obj_t *ui_controlsHome;
+extern lv_obj_t *ui_Label33;
+void ui_event_AddControlBtn( lv_event_t * e);
+extern lv_obj_t *ui_AddControlBtn;
+extern lv_obj_t *ui_Label34;
 void ui_event_goToGeneralSettingsBtn( lv_event_t * e);
 extern lv_obj_t *ui_goToGeneralSettingsBtn;
 void ui_event_lockBtn( lv_event_t * e);
@@ -192,6 +196,21 @@ extern lv_obj_t *ui_abortBtn3;
 extern lv_obj_t *ui_Label25;
 void ui_event_Keyboard4( lv_event_t * e);
 extern lv_obj_t *ui_Keyboard4;
+// SCREEN: ui_controlsScreen
+void ui_controlsScreen_screen_init(void);
+void ui_event_controlsScreen( lv_event_t * e);
+extern lv_obj_t *ui_controlsScreen;
+extern lv_obj_t *ui_TabView8;
+extern lv_obj_t *ui_Label26;
+extern lv_obj_t *ui_Controls;
+void ui_event_controlActionsContainer( lv_event_t * e);
+extern lv_obj_t *ui_controlActionsContainer;
+void ui_event_abortBtn4( lv_event_t * e);
+extern lv_obj_t *ui_abortBtn4;
+extern lv_obj_t *ui_Label27;
+void ui_event_addControlBtn( lv_event_t * e);
+extern lv_obj_t *ui_addControlBtn;
+extern lv_obj_t *ui_addControlLabel1;
 extern lv_obj_t *ui____initial_actions0;
 
 LV_IMG_DECLARE( ui_img_1515518950);   // assets/wifi (1).png

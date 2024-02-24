@@ -25,7 +25,8 @@ extern "C" {
 lv_obj_t *ui_SensorItem_create(lv_obj_t *comp_parent);
 void ui_event_comp_SensorItem_deleteSensorBtn( lv_event_t * e);
 void ui_event_comp_SensorItem_editSensorBtn( lv_event_t * e);
-
+void goToEditSensor(lv_event_t * e);
+void deleteSensor(lv_event_t * e);
 #ifdef __cplusplus
 } /*extern "C"*/
 #endif

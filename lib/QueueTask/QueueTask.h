@@ -3,10 +3,8 @@
 #ifndef DISPLAY_QUEUE_H
 #define DISPLAY_QUEUE_H
 
-typedef void (* TaskHandle)( void * );
-
 struct Task {
-    TaskHandle handle;
+    std::function<void (void *data)> handle;
     void * args;
 };
 

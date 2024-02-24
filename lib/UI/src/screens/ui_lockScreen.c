@@ -47,7 +47,7 @@ lv_obj_set_style_pad_top(ui_lockContainer, 70, LV_PART_MAIN| LV_STATE_DEFAULT);
 lv_obj_set_style_pad_bottom(ui_lockContainer, 10, LV_PART_MAIN| LV_STATE_DEFAULT);
 
 ui_Panel3 = lv_obj_create(ui_lockContainer);
-lv_obj_set_height( ui_Panel3, 330);
+lv_obj_set_height( ui_Panel3, 395);
 lv_obj_set_width( ui_Panel3, lv_pct(100));
 lv_obj_clear_flag( ui_Panel3, LV_OBJ_FLAG_SCROLLABLE );    /// Flags
 
@@ -87,6 +87,5 @@ lv_obj_add_flag( ui_Keyboard2, LV_OBJ_FLAG_HIDDEN );   /// Flags
 lv_obj_add_event_cb(ui_pincode, ui_event_pincode, LV_EVENT_ALL, NULL);
 lv_obj_add_event_cb(ui_Button1, ui_event_Button1, LV_EVENT_ALL, NULL);
 lv_obj_add_event_cb(ui_Keyboard2, ui_event_Keyboard2, LV_EVENT_ALL, NULL);
-lv_obj_add_event_cb(ui_lockScreen, ui_event_lockScreen, LV_EVENT_ALL, NULL);
 
 }

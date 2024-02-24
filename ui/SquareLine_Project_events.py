@@ -94,3 +94,23 @@ def loadGeneralSettings(event_struct):
 def enableReceive(event_struct):
     return
 
+
+def checkSecurityState(event_struct):
+    return
+
+
+def addControl(event_struct):
+    return
+
+
+def addControlAction(event_struct):
+    return
+
+
+def deleteControl(event_struct):
+    return
+
+
+def loadAllControls(event_struct):
+    return
+

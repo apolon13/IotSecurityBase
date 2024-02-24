@@ -1,4 +1,5 @@
 #include "UiControl.h"
+
 static lv_disp_draw_buf_t drawBuf;
 static lv_color_t buf[800 * 480 / 10];
 static lv_disp_drv_t dispDrv;
@@ -48,8 +49,7 @@ void flushDisplay(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color_
     lv_disp_flush_ready(disp);
 }
 
-UiControl::UiControl(ProjectPreferences *p, IoTRadioSignal *i, TaskScheduler *t, Dispatcher *d, QueueTask *q) {
-    eventHandler = new UiEventHandler(p, i, t, d, q);
+UiControl::UiControl(ProjectPreferences *p, IoTRadioDetect *i, Dispatcher *d, QueueTask *q, IotRadioControl *ct) {
     gfx->begin();
     gfx->fillScreen(BLACK);
     gfx->setTextSize(2);
@@ -76,6 +76,7 @@ UiControl::UiControl(ProjectPreferences *p, IoTRadioSignal *i, TaskScheduler *t,
     indevDrv.read_cb = readTouchpad;
     lv_indev_drv_register(&indevDrv);
     gfx->fillScreen(BLACK);
+    eventHandler = new UiEventHandler(p, i, d, q, ct);
 }
 
 void UiControl::render() {
@@ -85,7 +86,7 @@ void UiControl::render() {
     }
 }
 
-UiEventHandler* UiControl::getEventHandler() {
+UiEventHandler *UiControl::getEventHandler() {
     return eventHandler;
 }
 

@@ -3,21 +3,28 @@
 #include <PubSubClient.h>
 #include <ESP32Ping.h>
 
-#define RELAY_TOPIC "base/relay/camera"
-#define SIGNAL_TOPIC "base/gsm/signal"
+#include <utility>
+
 
 WiFiClient espClient;
 PubSubClient pubSub(espClient);
 
-void receivedCallback(char *topic, byte *payload, unsigned int length) {
-    Serial.println(topic);
-}
-
-Dispatcher::Dispatcher(ProjectPreferences *p, Logger *l) : projectPreferences(p), logger(l) {
+Dispatcher::Dispatcher(ProjectPreferences *p, Logger *l, vector<Topic *> t) : projectPreferences(p), logger(l),
+                                                                              topics(std::move(t)) {
     logger->debug("Init dispatcher");
     WiFi.persistent(false);
     WiFi.mode(WIFI_MODE_APSTA);
-    pubSub.setCallback(receivedCallback);
+    pubSub.setCallback([this](char *topic, byte *payload, unsigned int length) {
+        string data;
+        for (int i = 0; i < length; i++) {
+            data.push_back((char)payload[i]);
+        }
+        for (auto item: topics) {
+            if (item->getName() == topic) {
+                item->handleData(data);
+            }
+        }
+    });
 }
 
 void Dispatcher::connectToNetwork() {
@@ -29,7 +36,7 @@ bool Dispatcher::hasNeedReconnectCloud() {
 }
 
 bool Dispatcher::cloudIsConnected() {
-   // logger->debug(connected ? "pubsub connected" : "pubsub disconnected");
+    // logger->debug(connected ? "pubsub connected" : "pubsub disconnected");
     return pubSub.connected();
 }
 
@@ -79,7 +86,9 @@ void Dispatcher::connectToMqtt() {
         pubSub.setServer(mqttServer.c_str(), stoi(mqttPort));
         if (pubSub.connect(id.c_str(), username.c_str(), pass.c_str())) {
             logger->debug("MQTT connected");
-            pubSub.subscribe(RELAY_TOPIC);
+            for (auto topic: topics) {
+                pubSub.subscribe(topic->getName().c_str());
+            }
         } else {
             IPAddress dns(8, 8, 8, 8);
             logger->debug("MQTT failed, status code = " + to_string(pubSub.state()));

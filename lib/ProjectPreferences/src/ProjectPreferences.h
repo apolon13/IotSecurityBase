@@ -6,6 +6,9 @@ using namespace std;
 #ifndef DISPLAY_PROJECTPREFERENCES_H
 #define DISPLAY_PROJECTPREFERENCES_H
 
+#define SYSTEM_STATE_LOCK "1"
+#define SYSTEM_STATE_UNLOCK "0"
+
 enum Props {
     MqttIp,
     MqttPort,
@@ -15,8 +18,11 @@ enum Props {
     WifiPassword,
     WifiSsid,
     IotSensor,
+    IotControl,
     SystemPin,
-    SystemState
+    SystemState,
+    EditableDetectSensor,
+    LastError
 };
 
 class ProjectPreferences {
@@ -40,10 +46,16 @@ private:
                 return "WifiSsid";
             case IotSensor:
                 return "IotSensor";
+            case IotControl:
+                return "IotControl";
             case SystemPin:
                 return "SystemPin";
             case SystemState:
                 return "SystemState";
+            case EditableDetectSensor:
+                return "EditableDetectSensor";
+            case LastError:
+                return "LastError";
         }
         throw std::invalid_argument("Invalid property");
     }
@@ -51,6 +63,9 @@ public:
     explicit ProjectPreferences(Logger *l);
     string get(Props property, string defaultValue);
     void set(Props property, string value);
+    void lockSystem();
+    void unlockSystem();
+    bool systemIsLocked();
 };
 #endif //DISPLAY_PROJECTPREFERENCES_H
 

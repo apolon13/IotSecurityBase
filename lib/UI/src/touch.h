@@ -4,7 +4,6 @@
  * GT911: https://github.com/TAMCTec/gt911-arduino.git
  * XPT2046: https://github.com/PaulStoffregen/XPT2046_Touchscreen.git
  ******************************************************************************/
-
 /* uncomment for FT6X36 */
 // #define TOUCH_FT6X36
 // #define TOUCH_FT6X36_SCL 38//19
@@ -139,6 +138,17 @@ bool touch_has_signal()
 #endif
 }
 
+long m(long x, long in_min, long in_max, long out_min, long out_max) {
+    const long run = in_max - in_min;
+    if(run == 0){
+        log_e("map(): Invalid input range, min == max");
+        return -1; // AVR returns -1, SAM returns 0
+    }
+    const long rise = out_max - out_min;
+    const long delta = x - in_min;
+    return (delta * rise) / run + out_min;
+}
+
 bool touch_touched()
 {
 #if defined(TOUCH_FT6X36)
@@ -160,8 +170,8 @@ bool touch_touched()
     touch_last_x = map(ts.points[0].y, TOUCH_MAP_X1, TOUCH_MAP_X2, 0, lcd->width() - 1);
     touch_last_y = map(ts.points[0].x, TOUCH_MAP_Y1, TOUCH_MAP_Y2, 0, lcd->height() - 1);
 #else
-    touch_last_x = map(ts.points[0].x, TOUCH_MAP_X1, TOUCH_MAP_X2, 0, gfx->width() - 1);
-    touch_last_y = map(ts.points[0].y, TOUCH_MAP_Y1, TOUCH_MAP_Y2, 0, gfx->height() - 1);
+    touch_last_x = m(ts.points[0].x, TOUCH_MAP_X1, TOUCH_MAP_X2, 0, gfx->width() - 1);
+    touch_last_y = m(ts.points[0].y, TOUCH_MAP_Y1, TOUCH_MAP_Y2, 0, gfx->height() - 1);
 #endif
     return true;
   }

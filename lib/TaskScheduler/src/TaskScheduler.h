@@ -7,7 +7,6 @@
 using namespace std;
 
 enum Tasks {
-    AddSensorTask,
     LoopDisplayTask,
     LoopMqttTask
 };
@@ -34,8 +33,6 @@ protected:
 
     static string convertTaskId(Tasks id) {
         switch (id) {
-            case AddSensorTask:
-                return "addSensor";
             case LoopDisplayTask:
                 return "loopDisplay";
             case LoopMqttTask:
@@ -49,7 +46,7 @@ public:
 
     void schedule();
 
-    void scheduleTask(TaskToSchedule t);
+    void addTask(TaskToSchedule t);
 
     void deleteTask(Tasks t);
 };

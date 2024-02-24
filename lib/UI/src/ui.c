@@ -11,7 +11,6 @@
 
 // SCREEN: ui_lockScreen
 void ui_lockScreen_screen_init(void);
-void ui_event_lockScreen( lv_event_t * e);
 lv_obj_t *ui_lockScreen;
 lv_obj_t *ui_TabView6;
 lv_obj_t *ui_Label15;
@@ -50,12 +49,17 @@ lv_obj_t *ui_Label12;
 lv_obj_t *ui_wifiSsidLabel;
 lv_obj_t *ui_connectionStatusOff;
 lv_obj_t *ui_connectionStatusOn;
-lv_obj_t *ui_Panel1;
+lv_obj_t *ui_sensorsHome;
 lv_obj_t *ui_SensorsLabel;
 void ui_event_addSensorBtn( lv_event_t * e);
 lv_obj_t *ui_addSensorBtn;
 lv_obj_t *ui_Label13;
 lv_obj_t *ui_sensorsQty;
+lv_obj_t *ui_controlsHome;
+lv_obj_t *ui_Label33;
+void ui_event_AddControlBtn( lv_event_t * e);
+lv_obj_t *ui_AddControlBtn;
+lv_obj_t *ui_Label34;
 void ui_event_goToGeneralSettingsBtn( lv_event_t * e);
 lv_obj_t *ui_goToGeneralSettingsBtn;
 void ui_event_lockBtn( lv_event_t * e);
@@ -187,6 +191,23 @@ lv_obj_t *ui_abortBtn3;
 lv_obj_t *ui_Label25;
 void ui_event_Keyboard4( lv_event_t * e);
 lv_obj_t *ui_Keyboard4;
+
+
+// SCREEN: ui_controlsScreen
+void ui_controlsScreen_screen_init(void);
+void ui_event_controlsScreen( lv_event_t * e);
+lv_obj_t *ui_controlsScreen;
+lv_obj_t *ui_TabView8;
+lv_obj_t *ui_Label26;
+lv_obj_t *ui_Controls;
+void ui_event_controlActionsContainer( lv_event_t * e);
+lv_obj_t *ui_controlActionsContainer;
+void ui_event_abortBtn4( lv_event_t * e);
+lv_obj_t *ui_abortBtn4;
+lv_obj_t *ui_Label27;
+void ui_event_addControlBtn( lv_event_t * e);
+lv_obj_t *ui_addControlBtn;
+lv_obj_t *ui_addControlLabel1;
 lv_obj_t *ui____initial_actions0;
 
 ///////////////////// TEST LVGL SETTINGS ////////////////////
@@ -200,12 +221,6 @@ lv_obj_t *ui____initial_actions0;
 ///////////////////// ANIMATIONS ////////////////////
 
 ///////////////////// FUNCTIONS ////////////////////
-void ui_event_lockScreen( lv_event_t * e) {
-    lv_event_code_t event_code = lv_event_get_code(e);lv_obj_t * target = lv_event_get_target(e);
-if ( event_code == LV_EVENT_SCREEN_LOADED) {
-      enableReceive( e );
-}
-}
 void ui_event_pincode( lv_event_t * e) {
     lv_event_code_t event_code = lv_event_get_code(e);lv_obj_t * target = lv_event_get_target(e);
 if ( event_code == LV_EVENT_CLICKED) {
@@ -250,6 +265,12 @@ void ui_event_addSensorBtn( lv_event_t * e) {
     lv_event_code_t event_code = lv_event_get_code(e);lv_obj_t * target = lv_event_get_target(e);
 if ( event_code == LV_EVENT_CLICKED) {
       _ui_screen_change( &ui_sensorsScreen, LV_SCR_LOAD_ANIM_NONE, 200, 0, &ui_sensorsScreen_screen_init);
+}
+}
+void ui_event_AddControlBtn( lv_event_t * e) {
+    lv_event_code_t event_code = lv_event_get_code(e);lv_obj_t * target = lv_event_get_target(e);
+if ( event_code == LV_EVENT_CLICKED) {
+      _ui_screen_change( &ui_controlsScreen, LV_SCR_LOAD_ANIM_NONE, 0, 0, &ui_controlsScreen_screen_init);
 }
 }
 void ui_event_goToGeneralSettingsBtn( lv_event_t * e) {
@@ -529,6 +550,30 @@ if ( event_code == LV_EVENT_READY) {
       _ui_flag_modify( ui_Keyboard4, LV_OBJ_FLAG_HIDDEN, _UI_MODIFY_FLAG_ADD);
 }
 }
+void ui_event_controlsScreen( lv_event_t * e) {
+    lv_event_code_t event_code = lv_event_get_code(e);lv_obj_t * target = lv_event_get_target(e);
+if ( event_code == LV_EVENT_SCREEN_LOADED) {
+      loadAllControls( e );
+}
+}
+void ui_event_controlActionsContainer( lv_event_t * e) {
+    lv_event_code_t event_code = lv_event_get_code(e);lv_obj_t * target = lv_event_get_target(e);
+if ( event_code == LV_EVENT_CLICKED) {
+      startScan( e );
+}
+}
+void ui_event_abortBtn4( lv_event_t * e) {
+    lv_event_code_t event_code = lv_event_get_code(e);lv_obj_t * target = lv_event_get_target(e);
+if ( event_code == LV_EVENT_CLICKED) {
+      _ui_screen_change( &ui_home, LV_SCR_LOAD_ANIM_NONE, 200, 0, &ui_home_screen_init);
+}
+}
+void ui_event_addControlBtn( lv_event_t * e) {
+    lv_event_code_t event_code = lv_event_get_code(e);lv_obj_t * target = lv_event_get_target(e);
+if ( event_code == LV_EVENT_CLICKED) {
+      addControl( e );
+}
+}
 
 ///////////////////// SCREENS ////////////////////
 
@@ -545,6 +590,7 @@ ui_wifiConfigScreen_screen_init();
 ui_sensorsScreen_screen_init();
 ui_edittSensorScreen_screen_init();
 ui_generalSettingsScreen_screen_init();
+ui_controlsScreen_screen_init();
 ui____initial_actions0 = lv_obj_create(NULL);
 lv_disp_load_scr( ui_lockScreen);
 }

@@ -107,7 +107,6 @@ lv_obj_add_event_cb(cui_SensorItem, get_component_child_event_cb, LV_EVENT_GET_C
 lv_obj_add_event_cb(cui_SensorItem, del_component_child_event_cb, LV_EVENT_DELETE, children);
 lv_obj_add_event_cb(cui_deleteSensorBtn, ui_event_comp_SensorItem_deleteSensorBtn, LV_EVENT_ALL, children);
 lv_obj_add_event_cb(cui_editSensorBtn, ui_event_comp_SensorItem_editSensorBtn, LV_EVENT_ALL, children);
-ui_comp_SensorItem_create_hook(cui_SensorItem);
 return cui_SensorItem; 
 }
 

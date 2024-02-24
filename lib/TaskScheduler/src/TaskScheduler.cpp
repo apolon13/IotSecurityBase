@@ -1,6 +1,6 @@
 #include "TaskScheduler.h"
 
-void TaskScheduler::scheduleTask(TaskToSchedule t) {
+void TaskScheduler::addTask(TaskToSchedule t) {
     bool exist = false;
     for (auto task: inRunning) {
         if (task == convertTaskId(t.name)) {

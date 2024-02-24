@@ -1,58 +1,50 @@
 #include "ui.h"
 #include "UiMutex.h"
-#include "IoTRadioSignal.h"
+#include "IoTRadioDetect.h"
 #include "TaskScheduler.h"
 #include "Dispatcher.h"
 #include "QueueTask.h"
+#include "IotRadioControl.h"
+#include "MainScreen.h"
+#include "DetectSensorsScreen.h"
+#include "ControlSensorsScreen.h"
+#include "MqttConfigScreen.h"
+#include "WifiSettingsScreen.h"
+#include "GeneralSettingsScreen.h"
+#include "EditDetectSensorScreen.h"
+#include "LockScreen.h"
 
 #ifndef DISPLAY_UIEVENTHANDLER_H
 #define DISPLAY_UIEVENTHANDLER_H
 
 class UiEventHandler {
 private:
-    ProjectPreferences *preferences;
-    IoTRadioSignal *ioTRadioSignal;
-    TaskScheduler *taskScheduler;
-    Dispatcher *dispatcher;
-    QueueTask *queueTask;
+    MainScreen *mainScreen;
+    DetectSensorsScreen *detectSensorsScreen;
+    ControlSensorsScreen *controlSensorsScreen;
+    MqttConfigScreen *mqttConfigScreen;
+    WifiSettingsScreen *wifiSettingsScreen;
+    GeneralSettingsScreen *generalSettingsScreen;
+    EditDetectSensorScreen *editDetectSensorScreen;
+    LockScreen *lockScreen;
 public:
-    UiEventHandler(ProjectPreferences *p, IoTRadioSignal *i, TaskScheduler *t, Dispatcher *d, QueueTask *q);
+    UiEventHandler(ProjectPreferences *p, IoTRadioDetect *i, Dispatcher *d, QueueTask *q, IotRadioControl *c);
 
-    void loadGeneralSettings(lv_event_t *e);
+    MainScreen *getMainScreen();
 
-    void loadDataInMain(lv_event_t *e);
+    DetectSensorsScreen *getDetectSensorsScreen();
 
-    void loadAllSensors(lv_event_t *e);
+    ControlSensorsScreen *getControlSensorsScreen();
 
-    void loadSensor(lv_event_t *e);
+    MqttConfigScreen *getMqttConfigScreen();
 
-    void loadFiWiSettings(lv_event_t *e);
+    WifiSettingsScreen *getWifiSettingsScreen();
 
-    void loadMqttSettings(lv_event_t *e);
+    GeneralSettingsScreen *getGeneralSettingsScreen();
 
-    void saveMqttSettings(lv_event_t *e);
+    EditDetectSensorScreen *getEditDetectSensorScreen();
 
-    void saveWifiSettings(lv_event_t *e);
-
-    void deleteSensor(lv_event_t *e);
-
-    void startScan(lv_event_t *e);
-
-    void stopScan(lv_event_t *e);
-
-    void goToEditSensor(lv_event_t *e);
-
-    void saveSensorSettings(lv_event_t *e);
-
-    void lockSystem(lv_event_t *e);
-
-    void unlockSystem(lv_event_t *e);
-
-    void saveGeneralSettings(lv_event_t *e);
-
-    void enableReceive(lv_event_t *e);
-
-    void handleConnections();
+    LockScreen *getLockScreen();
 };
 
 #endif //DISPLAY_UIEVENTHANDLER_H
