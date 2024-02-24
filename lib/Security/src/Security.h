@@ -16,6 +16,7 @@ protected:
     UiControl *ui;
     Topic *securityCmdTopic;
     Topic *receiveCmdTopic;
+    long lastAlarmEvent;
 
     void listenRadioCommands();
 

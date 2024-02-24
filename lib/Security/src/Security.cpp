@@ -69,8 +69,12 @@ void Security::handleControl(string name) {
 }
 
 void Security::handleDetect(string signal) {
+    long now = millis();
     if (projectPreferences->systemIsLocked()) {
-        receiveCmdTopic->publish(ALARM);
+        if ((now - lastAlarmEvent) > 5000) {
+            receiveCmdTopic->publish(ALARM);
+            lastAlarmEvent = now;
+        }
         alarm();
     }
 }
