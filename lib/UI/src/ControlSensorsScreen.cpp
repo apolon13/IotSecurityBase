@@ -26,8 +26,7 @@ void ControlSensorsScreen::loadAllControls(lv_event_t *e) {
     lv_obj_clean(ui_Controls);
     for (Sensor sensor: sensors) {
         string group = iotRadioControl->extractGroup(sensor.signal);
-        auto iterator = groupedSensors.find(group);
-        if (iterator != groupedSensors.end()) {
+        if (groupedSensors.find(group) != groupedSensors.end()) {
             auto current = groupedSensors.at(group);
             current.push_back(sensor);
             groupedSensors.erase(group);

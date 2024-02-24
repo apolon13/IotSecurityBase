@@ -1,8 +1,7 @@
 #include "Screen.h"
 
 void Screen::onEvent(std::function<void(Events)> handler, Events e) {
-    auto iterator = handlers.find(e);
-    if (iterator != handlers.end()) {
+    if (handlers.find(e) != handlers.end()) {
         auto current = handlers.at(e);
         current.push_back(handler);
         handlers.erase(e);
@@ -14,8 +13,7 @@ void Screen::onEvent(std::function<void(Events)> handler, Events e) {
 }
 
 void Screen::triggerEvent(Events e) {
-    auto iterator = handlers.find(e);
-    if (iterator != handlers.end()) {
+    if (handlers.find(e) != handlers.end()) {
         auto current = handlers.at(e);
         for (const auto &func: current) {
             func(e);
