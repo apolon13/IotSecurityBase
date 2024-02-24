@@ -4,11 +4,13 @@
 
 #ifndef DISPLAY_NULLLOGGER_H
 #define DISPLAY_NULLLOGGER_H
+
 #include "Logger.h"
 
-class NullLogger: public Logger {
+class NullLogger : public Logger {
 public:
     NullLogger();
+
     void debug(string msg);
 };
 

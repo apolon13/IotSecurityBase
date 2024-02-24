@@ -1,5 +1,4 @@
 #include "Security.h"
-
 #include <utility>
 
 Security *selfSecurity;
@@ -9,6 +8,7 @@ Security *selfSecurity;
 #define MUTE "Mute"
 #define ALARM "Alarm"
 
+uint8_t receiverAddress[] = {0x08, 0xD1, 0xF9, 0xEB, 0x02, 0x58};
 
 void Security::guard() {
     IoTRadio::sendMessageToPeer({true, false});
@@ -79,6 +79,8 @@ Security::Security(IoTRadioDetect *d, IotRadioControl *c, UiControl *ui, Project
                                                                                                   securityTopic(t) {
     selfSecurity = this;
     projectPreferences->lockSystem();
+    IoTRadio::addReceiver(receiverAddress);
+    listen();
 }
 
 void Security::listenMqttCommands() {

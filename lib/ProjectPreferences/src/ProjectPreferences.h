@@ -28,6 +28,7 @@ enum Props {
 class ProjectPreferences {
 private:
     Logger *logger;
+
     string convertProperty(Props property) {
         switch (property) {
             case MqttIp:
@@ -59,13 +60,20 @@ private:
         }
         throw std::invalid_argument("Invalid property");
     }
+
 public:
     explicit ProjectPreferences(Logger *l);
+
     string get(Props property, string defaultValue);
+
     void set(Props property, string value);
+
     void lockSystem();
+
     void unlockSystem();
+
     bool systemIsLocked();
 };
+
 #endif //DISPLAY_PROJECTPREFERENCES_H
 

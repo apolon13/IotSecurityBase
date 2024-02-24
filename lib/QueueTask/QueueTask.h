@@ -4,8 +4,8 @@
 #define DISPLAY_QUEUE_H
 
 struct Task {
-    std::function<void (void *data)> handle;
-    void * args;
+    std::function<void(void *data)> handle;
+    void *args;
 };
 
 class QueueTask {
@@ -14,7 +14,10 @@ private:
     Task currentTask;
 public:
     QueueTask();
+
     void addTask(Task *task);
+
     void run();
 };
+
 #endif //DISPLAY_QUEUE_H

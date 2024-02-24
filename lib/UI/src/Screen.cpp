@@ -17,7 +17,7 @@ void Screen::triggerEvent(Events e) {
     auto iterator = handlers.find(e);
     if (iterator != handlers.end()) {
         auto current = handlers.at(e);
-        for (const auto& func: current) {
+        for (const auto &func: current) {
             func(e);
         }
     }

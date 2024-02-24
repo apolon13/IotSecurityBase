@@ -5,14 +5,12 @@
 
 #ifndef DISPLAY_DISPATCHER_H
 #define DISPLAY_DISPATCHER_H
-typedef std::function<void()> onDisconnect;
 
 class Dispatcher {
 
 protected:
     Logger *logger;
     ProjectPreferences *projectPreferences;
-    bool needReconnectCloud = false;
     bool cloudConnectionInProcess = false;
     bool networkConnectionInProcess = false;
     vector<Topic *> topics;
@@ -26,16 +24,13 @@ public:
 
     void connectToNetwork();
 
-    void reconnectToCloud();
-
     void loop();
 
     bool networkIsConnected();
 
     bool cloudIsConnected();
 
-    bool hasNeedReconnectCloud();
-
     void connectToCloud();
 };
+
 #endif

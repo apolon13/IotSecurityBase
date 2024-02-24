@@ -17,11 +17,9 @@ QueueTask *queue;
 IotRadioControl *iotRadioControl;
 vector<Topic *> topics;
 
-uint8_t receiverAddress[] = {0x08, 0xD1, 0xF9, 0xEB, 0x02, 0x58};
-
 long timeWithoutNetworkConnection;
 long lastAttemptNetworkConnection;
-bool receiverAdded = false;
+
 void loopMqtt(void *) {
     while (true) {
         try {
@@ -38,14 +36,8 @@ void loopMqtt(void *) {
             }
 
             if (dispatcher->networkIsConnected() &&
-                (!dispatcher->cloudIsConnected() || dispatcher->hasNeedReconnectCloud())) {
+                (!dispatcher->cloudIsConnected())) {
                 dispatcher->connectToCloud();
-            }
-
-            if (!receiverAdded) {
-                IoTRadio::addReceiver(receiverAddress);
-                security->listen();
-                receiverAdded = true;
             }
 
             if (dispatcher->networkIsConnected()) {
@@ -66,6 +58,7 @@ void loopMqtt(void *) {
 }
 
 long lastDisplayLoop;
+
 void loopDisplay(void *) {
     while (true) {
         try {

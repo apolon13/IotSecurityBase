@@ -2,9 +2,7 @@
 #include "WiFiGeneric.h"
 #include <PubSubClient.h>
 #include <ESP32Ping.h>
-
 #include <utility>
-
 
 WiFiClient espClient;
 PubSubClient pubSub(espClient);
@@ -31,19 +29,12 @@ void Dispatcher::connectToNetwork() {
     connectToWiFi();
 }
 
-bool Dispatcher::hasNeedReconnectCloud() {
-    return needReconnectCloud;
-}
-
 bool Dispatcher::cloudIsConnected() {
-    // logger->debug(connected ? "pubsub connected" : "pubsub disconnected");
     return pubSub.connected();
 }
 
 bool Dispatcher::networkIsConnected() {
     bool connected = WiFi.isConnected();
-    //logger->debug(connected ? "network connected" : "network disconnected");
-    //logger->debug(WiFi.macAddress().c_str());
     return connected;
 }
 
@@ -102,12 +93,7 @@ void Dispatcher::connectToMqtt() {
             }
         }
     }
-    needReconnectCloud = false;
     cloudConnectionInProcess = false;
-}
-
-void Dispatcher::reconnectToCloud() {
-    needReconnectCloud = true;
 }
 
 void Dispatcher::connectToCloud() {

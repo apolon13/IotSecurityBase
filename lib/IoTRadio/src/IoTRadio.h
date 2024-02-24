@@ -22,6 +22,7 @@ struct Sensor {
     string signal;
     bool isActive;
     int sensitivity;
+
     bool isEqual(Sensor *s) const {
         return s->signal == signal;
     }
@@ -39,29 +40,51 @@ protected:
     Logger *logger;
 
     vector<string> getSignals();
+
     virtual Props getPreferencesConfigKey() = 0;
+
     void loadCurrentSensors();
+
     bool hasInCurrentSensors(Sensor *s);
+
     string getSensorsConfig();
+
     vector<string> getConfigLines();
+
     string buildConfigStringBySensor(Sensor *s);
+
     vector<string> parseSensorString(string sensorString);
+
     Sensor buildSensorByConfigString(string configString);
-    Sensor * getSensorByPredicate(std::function<bool(const Sensor &s)> predicate);
+
+    Sensor *getSensorByPredicate(std::function<bool(const Sensor &s)> predicate);
+
 public:
     IoTRadio(ProjectPreferences *p, Logger *l);
+
     void forget(string signal);
+
     bool exist(string signal);
+
     void save(Sensor *sensor);
-    Sensor* getSensorByName(const string& name);
-    Sensor* getSensorBySignal(const string& signal);
+
+    Sensor *getSensorByName(const string &name);
+
+    Sensor *getSensorBySignal(const string &signal);
+
     vector<Sensor> getCurrentSensors();
 
     static void addReceiver(const uint8_t macAddress[]);
+
     static void addRecvHandler(esp_now_recv_cb_t recvCb);
+
     static void addSendHandler(esp_now_send_cb_t sendCb);
+
     static void startScan();
+
     static void stopScan();
+
     static void sendMessageToPeer(PeerMessage msg);
 };
+
 #endif

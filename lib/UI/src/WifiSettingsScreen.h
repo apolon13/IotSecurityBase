@@ -4,12 +4,16 @@
 
 #ifndef DISPLAY_WIFISETTINGSSCREEN_H
 #define DISPLAY_WIFISETTINGSSCREEN_H
-class WifiSettingsScreen: public Screen {
+
+class WifiSettingsScreen : public Screen {
 private:
     ProjectPreferences *projectPreferences;
 public:
-    WifiSettingsScreen(ProjectPreferences *p): projectPreferences(p) {};
+    WifiSettingsScreen(ProjectPreferences *p) : projectPreferences(p) {};
+
     void loadFiWiSettings(lv_event_t *e);
+
     void saveWifiSettings(lv_event_t *e);
 };
+
 #endif //DISPLAY_WIFISETTINGSSCREEN_H

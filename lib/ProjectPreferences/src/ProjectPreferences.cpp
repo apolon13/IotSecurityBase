@@ -1,5 +1,6 @@
 #include "ProjectPreferences.h"
 #include "SdFat.h"
+
 SdFat SDFat;
 
 using namespace std;
@@ -14,13 +15,13 @@ struct Property {
     bool exist;
 };
 
-ProjectPreferences::ProjectPreferences(Logger *l): logger(l) {
+ProjectPreferences::ProjectPreferences(Logger *l) : logger(l) {
     if (!SDFat.begin()) {
         logger->debug("SD card init error");
     }
     if (!SDFat.exists(FILENAME)) {
         auto prefs = SDFat.open(FILENAME, O_CREAT);
-        logger->debug((string)"Create new settings file " + FILENAME);
+        logger->debug((string) "Create new settings file " + FILENAME);
         prefs.close();
     } else {
         logger->debug(string("Settings file - ") + FILENAME);
