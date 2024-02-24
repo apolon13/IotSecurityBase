@@ -70,6 +70,7 @@ void Security::handleControl(string name) {
 
 void Security::handleDetect(string signal) {
     if (projectPreferences->systemIsLocked()) {
+        receiveCmdTopic->publish(ALARM);
         alarm();
     }
 }
