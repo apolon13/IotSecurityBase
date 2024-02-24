@@ -76,6 +76,8 @@ public:
 
     static void addReceiver(const uint8_t macAddress[]);
 
+    static bool receiverExist(const uint8_t macAddress[]);
+
     static void addRecvHandler(esp_now_recv_cb_t recvCb);
 
     static void addSendHandler(esp_now_send_cb_t sendCb);

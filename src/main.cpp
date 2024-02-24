@@ -48,7 +48,7 @@ void loopMqtt(void *) {
                 dispatcher->loop();
             }
 
-            // Serial.println(ESP.getFreeHeap());
+             //Serial.println(ESP.getFreeHeap());
             eventHandler->getMainScreen()->handleConnections();
             vTaskDelay(1000);
         } catch (const exception &e) {

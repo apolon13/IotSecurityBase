@@ -159,7 +159,11 @@ vector<Sensor> IoTRadio::getCurrentSensors() {
 }
 
 void IoTRadio::addRecvHandler(esp_now_recv_cb_t recvCb) {
-    esp_now_register_recv_cb(recvCb);
+    auto resp = esp_now_register_recv_cb(recvCb);
+    if (resp != ESP_OK) {
+        gLogger->debug("addRecvHandler error" + to_string(resp));
+        return;
+    }
     addSendHandler([] (const uint8_t *mac_addr, esp_now_send_status_t status) {
       //  gLogger->debug("\r\nLast Packet Send Status:\t");
        // gLogger->debug(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
@@ -168,12 +172,19 @@ void IoTRadio::addRecvHandler(esp_now_recv_cb_t recvCb) {
 
 void IoTRadio::addReceiver(const uint8_t macAddress[]) {
     if (esp_now_init() != ESP_OK) {
+        gLogger->debug("Error esp_now init");
+        return;
+    }
+
+    if (receiverExist(macAddress)) {
+        gLogger->debug("Peer exist");
         return;
     }
     memcpy(Peer.peer_addr, macAddress, 6);
     Peer.encrypt = false;
     Peer.channel = 0;
     if (esp_now_add_peer(&Peer) != ESP_OK) {
+        gLogger->debug("Error add esp_now peer");
         return;
     }
 }
@@ -209,4 +220,8 @@ Sensor *IoTRadio::getSensorBySignal(const string& signal) {
 Sensor *IoTRadio::getSensorByPredicate(std::function<bool(const Sensor &s)> predicate) {
     auto iterator = std::find_if(currentSensors.begin(), currentSensors.end(),std::move(predicate));
     return iterator == currentSensors.end() ? nullptr : iterator.operator->();
+}
+
+bool IoTRadio::receiverExist(const uint8_t *macAddress) {
+    return esp_now_is_peer_exist(macAddress);
 }
