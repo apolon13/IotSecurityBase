@@ -11,7 +11,7 @@ class NullLogger : public Logger {
 public:
     NullLogger();
 
-    void debug(string msg);
+    void debug(string msg) override;
 };
 
-#endif //DISPLAY_NULLLOGGER_H
+#endif

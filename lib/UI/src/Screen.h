@@ -18,7 +18,7 @@ protected:
     void triggerEvent(Events e);
 
 public:
-    void onEvent(function<void(Events)> handler, Events e);
+    void onEvent(const function<void(Events)>& handler, Events e);
 };
 
-#endif //DISPLAY_SCREEN_H
+#endif

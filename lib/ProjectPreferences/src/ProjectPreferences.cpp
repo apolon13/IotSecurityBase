@@ -1,4 +1,6 @@
 #include "ProjectPreferences.h"
+
+#include <utility>
 #include "SdFat.h"
 
 SdFat SDFat;
@@ -20,9 +22,9 @@ ProjectPreferences::ProjectPreferences(Logger *l) : logger(l) {
         logger->debug("SD card init error");
     }
     if (!SDFat.exists(FILENAME)) {
-        auto prefs = SDFat.open(FILENAME, O_CREAT);
+        auto file = SDFat.open(FILENAME, O_CREAT);
         logger->debug((string) "Create new settings file " + FILENAME);
-        prefs.close();
+        file.close();
     } else {
         logger->debug(string("Settings file - ") + FILENAME);
     }
@@ -30,7 +32,7 @@ ProjectPreferences::ProjectPreferences(Logger *l) : logger(l) {
 
 Property readPreferencesProperty(const string &name, string defaultValue) {
     auto dataProvider = SDFat.open(FILENAME);
-    Property p = {defaultValue, 0, false};
+    Property p = {std::move(defaultValue), 0, false};
     dataProvider.seek(0);
     while (dataProvider.available()) {
         size_t position = dataProvider.position();
@@ -48,7 +50,7 @@ Property readPreferencesProperty(const string &name, string defaultValue) {
     return p;
 }
 
-void writePreferencesProperty(const string &name, string value) {
+void writePreferencesProperty(const string &name, const string& value) {
     Property currentValue = readPreferencesProperty(name, "");
     string newValue = name + DELIMITER + value + TERMINATOR;
     auto dataProvider = SDFat.open(FILENAME, (O_RDWR | O_CREAT | O_AT_END));
@@ -61,12 +63,12 @@ void writePreferencesProperty(const string &name, string value) {
     dataProvider.close();
 }
 
-void ProjectPreferences::set(Props property, string value) {
+void ProjectPreferences::set(Props property, const string& value) {
     writePreferencesProperty(convertProperty(property), value);
 }
 
 string ProjectPreferences::get(Props property, string defaultValue) {
-    return readPreferencesProperty(convertProperty(property), defaultValue).value;
+    return readPreferencesProperty(convertProperty(property), std::move(defaultValue)).value;
 }
 
 void ProjectPreferences::lockSystem() {

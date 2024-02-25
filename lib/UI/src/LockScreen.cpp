@@ -1,7 +1,7 @@
 #include "LockScreen.h"
 #include "UiMutex.h"
 
-void mutexWrap(std::function<void()> cb) {
+void mutexWrap(const std::function<void()>& cb) {
     if (UiMutex::take()) {
         cb();
         UiMutex::give();

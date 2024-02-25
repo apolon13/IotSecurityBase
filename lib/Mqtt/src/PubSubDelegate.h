@@ -13,4 +13,4 @@ public:
     explicit PubSubDelegate(PubSubClient *ps): pubSub(ps) {};
     void publish(const string& topic, const string& payload);
 };
-#endif //DISPLAY_PUBSUBDELEGATE_H
+#endif

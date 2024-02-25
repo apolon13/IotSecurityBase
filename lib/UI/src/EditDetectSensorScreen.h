@@ -18,4 +18,4 @@ public:
     void saveSensorSettings(lv_event_t *e);
 };
 
-#endif //DISPLAY_EDITDETECTSENSORSCREEN_H
+#endif

@@ -23,13 +23,13 @@ public:
 
     void withPubSub(PubSubDelegate *c);
 
-    void addHandler(function<void(string payload)> handler);
+    void addHandler(const function<void(string payload)>& handler);
 
     void publish(const string& payload);
 
     void refreshHandlers();
 
-    void handleData(string payload);
+    void handleData(const string& payload);
 };
 
 #endif

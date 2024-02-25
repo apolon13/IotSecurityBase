@@ -16,4 +16,4 @@ public:
     void saveGeneralSettings(lv_event_t *e);
 };
 
-#endif //DISPLAY_GENERALSETTINGSSCREEEN_H
+#endif

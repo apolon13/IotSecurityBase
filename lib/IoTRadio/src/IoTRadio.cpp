@@ -1,4 +1,5 @@
 #include "IoTRadio.h"
+#include <utility>
 
 #define SENSORS_DELIMITER '_'
 #define ATTRIBUTE_DELIMITER ','
@@ -41,14 +42,14 @@ vector<string> IoTRadio::parseSensorString(string sensorString) {
     return result;
 }
 
-void addToConfig(string *config, string value) {
+void addToConfig(string *config, const string& value) {
     config->append(!config->empty() ? SENSORS_DELIMITER + value : value);
 }
 
 Sensor IoTRadio::buildSensorByConfigString(string configString) {
     int key = 0;
     Sensor sensor;
-    vector<string> parsed = parseSensorString(configString);
+    vector<string> parsed = parseSensorString(std::move(configString));
     for_each(parsed.begin(), parsed.end(), [&key, &sensor](const string &n) {
         string active("1");
         switch (key) {
@@ -88,7 +89,7 @@ void IoTRadio::sendMessageToPeer(PeerMessage msg) {
     esp_now_send(Peer.peer_addr, (uint8_t *) &msg, sizeof(msg));
 }
 
-void IoTRadio::forget(string signal) {
+void IoTRadio::forget(const string& signal) {
     vector<string> signals = getSignals();
     auto iteratorSignals = find(signals.begin(), signals.end(), signal);
     if (iteratorSignals != signals.end()) {
@@ -126,7 +127,7 @@ void IoTRadio::save(Sensor *sensor) {
         addToConfig(&newConfig, currentConfig);
         addToConfig(&newConfig, newSensorConfigString);
     } else {
-        for (string line: getConfigLines()) {
+        for (const string& line: getConfigLines()) {
             Sensor inConfig = buildSensorByConfigString(line);
             addToConfig(&newConfig,
                         (inConfig.isEqual(sensor) ? newSensorConfigString : buildConfigStringBySensor(&inConfig)));
@@ -147,7 +148,7 @@ void IoTRadio::save(Sensor *sensor) {
 void IoTRadio::loadCurrentSensors() {
     currentSensors = {};
     auto config = getConfigLines();
-    for (string line: config) {
+    for (const string& line: config) {
         logger->debug("Sensor - " + line);
         Sensor newSensor = buildSensorByConfigString(line);
         currentSensors.push_back(newSensor);
@@ -193,7 +194,7 @@ void IoTRadio::addSendHandler(esp_now_send_cb_t sendCb) {
     esp_now_register_send_cb(sendCb);
 }
 
-bool IoTRadio::exist(string signal) {
+bool IoTRadio::exist(const string& signal) {
     auto signals = getSignals();
     return find(signals.begin(), signals.end(), signal) != signals.end();
 }

@@ -47,4 +47,4 @@ public:
     LockScreen *getLockScreen();
 };
 
-#endif //DISPLAY_UIEVENTHANDLER_H
+#endif

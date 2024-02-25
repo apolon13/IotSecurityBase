@@ -13,7 +13,7 @@ public:
         loadCurrentSensors();
     };
 
-    string extractGroup(string signal);
+    string extractGroup(const string& signal);
 };
 
 #endif

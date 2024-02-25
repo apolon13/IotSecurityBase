@@ -2,7 +2,7 @@
 
 class SerialLogger : public Logger {
 public:
-    SerialLogger(int speed);
+    explicit SerialLogger(int speed);
 
-    void debug(string msg);
+    void debug(string msg) override;
 };

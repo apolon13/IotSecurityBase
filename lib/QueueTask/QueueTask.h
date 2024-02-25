@@ -20,4 +20,4 @@ public:
     void run();
 };
 
-#endif //DISPLAY_QUEUE_H
+#endif

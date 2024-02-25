@@ -1,6 +1,6 @@
 #include "Screen.h"
 
-void Screen::onEvent(std::function<void(Events)> handler, Events e) {
+void Screen::onEvent(const std::function<void(Events)>& handler, Events e) {
     if (handlers.find(e) != handlers.end()) {
         auto current = handlers.at(e);
         current.push_back(handler);

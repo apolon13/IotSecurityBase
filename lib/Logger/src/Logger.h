@@ -10,4 +10,4 @@ public:
     virtual void debug(string msg) = 0;
 };
 
-#endif //DISPLAY_LOGGER_H
+#endif

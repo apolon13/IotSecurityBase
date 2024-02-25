@@ -35,4 +35,4 @@ public:
     void deleteControl(lv_event_t *e);
 };
 
-#endif //DISPLAY_CONTROLSENSORSSCREEN_H
+#endif

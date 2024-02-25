@@ -16,15 +16,15 @@ protected:
     UiControl *ui;
     Topic *securityCmdTopic;
     Topic *receiveCmdTopic;
-    long lastAlarmEvent;
+    long lastAlarmEvent = 0;
 
     void listenRadioCommands();
 
     void listenMqttCommands();
 
-    void handleDetect(string signal);
+    void handleDetect(const string& signal);
 
-    void handleControl(string signal);
+    void handleControl(const string& signal);
 
     void guard();
 
@@ -41,4 +41,4 @@ public:
     void listen();
 };
 
-#endif //DISPLAY_SECURITY_H
+#endif

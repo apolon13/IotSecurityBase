@@ -4,6 +4,7 @@
 #include "QueueTask.h"
 #include "IotRadioControl.h"
 #include "Security.h"
+#include "esp_task_wdt.h"
 
 Dispatcher *dispatcher;
 UiControl *uiControl;
@@ -48,7 +49,7 @@ void loopMqtt(void *) {
                 dispatcher->loop();
             }
 
-             //Serial.println(ESP.getFreeHeap());
+            //Serial.println(ESP.getFreeHeap());
             eventHandler->getMainScreen()->handleConnections();
             vTaskDelay(1000);
         } catch (const exception &e) {

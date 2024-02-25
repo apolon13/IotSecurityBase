@@ -10,4 +10,4 @@ public:
     static bool give();
 };
 
-#endif //DISPLAY_UIMUTEX_H
+#endif

@@ -16,4 +16,4 @@ public:
     void saveMqttSettings(lv_event_t *e);
 };
 
-#endif //DISPLAY_MQTTCONFIGSCREEN_H
+#endif

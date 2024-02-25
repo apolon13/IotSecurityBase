@@ -15,4 +15,4 @@ public:
     void afterScan();
 };
 
-#endif //DISPLAY_SENSORSCREEN_H
+#endif

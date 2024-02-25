@@ -62,9 +62,9 @@ protected:
 public:
     IoTRadio(ProjectPreferences *p, Logger *l);
 
-    void forget(string signal);
+    void forget(const string& signal);
 
-    bool exist(string signal);
+    bool exist(const string& signal);
 
     void save(Sensor *sensor);
 

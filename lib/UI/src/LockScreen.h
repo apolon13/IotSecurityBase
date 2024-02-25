@@ -18,4 +18,4 @@ public:
     void goTo(bool useMutex = false);
 };
 
-#endif //DISPLAY_LOCKSCREEN_H
+#endif

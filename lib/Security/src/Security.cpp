@@ -1,5 +1,4 @@
 #include "Security.h"
-#include <utility>
 
 Security *selfSecurity;
 
@@ -42,7 +41,7 @@ void Security::listenRadioCommands() {
 }
 
 
-void Security::handleControl(string name) {
+void Security::handleControl(const string& name) {
     auto lockScreen = ui->getEventHandler()->getLockScreen();
     if (name == GUARD) {
         guard();
@@ -68,9 +67,10 @@ void Security::handleControl(string name) {
     receiveCmdTopic->publish(name);
 }
 
-void Security::handleDetect(string signal) {
+void Security::handleDetect(const string& signal) {
     long now = millis();
-    if (projectPreferences->systemIsLocked()) {
+    auto detectSensor = selfSecurity->ioTRadioDetect->getSensorBySignal(signal);
+    if (projectPreferences->systemIsLocked() && detectSensor->isActive) {
         if ((now - lastAlarmEvent) > 5000) {
             receiveCmdTopic->publish(ALARM);
             lastAlarmEvent = now;
@@ -94,8 +94,8 @@ Security::Security(IoTRadioDetect *d, IotRadioControl *c, UiControl *ui, Project
 
 void Security::listenMqttCommands() {
     securityCmdTopic->refreshHandlers();
-    securityCmdTopic->addHandler([this](string payload) {
-        handleControl(std::move(payload));
+    securityCmdTopic->addHandler([this](const string& payload) {
+        handleControl(payload);
     });
 }
 

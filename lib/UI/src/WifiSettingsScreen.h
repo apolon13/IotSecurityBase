@@ -16,4 +16,4 @@ public:
     void saveWifiSettings(lv_event_t *e);
 };
 
-#endif //DISPLAY_WIFISETTINGSSCREEN_H
+#endif

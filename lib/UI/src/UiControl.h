@@ -26,4 +26,4 @@ public:
     UiEventHandler *getEventHandler();
 };
 
-#endif //DISPLAY_UICONTROL_H
+#endif

@@ -2,7 +2,7 @@
 
 void TaskScheduler::addTask(TaskToSchedule t) {
     bool exist = false;
-    for (auto task: inRunning) {
+    for (const auto& task: inRunning) {
         if (task == convertTaskId(t.name)) {
             exist = true;
             break;
@@ -42,7 +42,7 @@ void TaskScheduler::schedule() {
     }
     tasksToSchedule.clear();
 
-    for (auto task: tasksToDelete) {
+    for (const auto& task: tasksToDelete) {
         auto handle = xTaskGetHandle(task.c_str());
         vTaskSuspend(handle);
         auto iterator = find(inRunning.begin(), inRunning.end(), task);
@@ -53,7 +53,7 @@ void TaskScheduler::schedule() {
     tasksToDelete.clear();
 
     if ((currentMs - lastInfo) >= 5000) {
-        for (auto task : inRunning) {
+        for (const auto& task : inRunning) {
             auto handle = xTaskGetHandle(task.c_str());
             if (handle != nullptr) {
                 auto status = eTaskGetState(handle);
@@ -68,7 +68,7 @@ void TaskScheduler::schedule() {
 }
 
 void TaskScheduler::deleteTask(Tasks t) {
-    for (auto task: inRunning) {
+    for (const auto& task: inRunning) {
         if (task == convertTaskId(t)) {
             tasksToDelete.push_back(task);
             break;

@@ -34,4 +34,4 @@ public:
     void deleteSensor(lv_event_t *e);
 };
 
-#endif //DISPLAY_DETECTSENSORSSCREEN_H
+#endif

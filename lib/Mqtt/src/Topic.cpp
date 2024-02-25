@@ -4,13 +4,13 @@ string Topic::getName() {
     return topicName;
 }
 
-void Topic::handleData(string payload) {
-    for (auto func : handlers) {
+void Topic::handleData(const string& payload) {
+    for (const auto& func : handlers) {
         func(payload);
     }
 }
 
-void Topic::addHandler(function<void(string payload)> handler) {
+void Topic::addHandler(const function<void(string payload)>& handler) {
     handlers.push_back(handler);
 }
 

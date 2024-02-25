@@ -29,4 +29,4 @@ public:
     void handleConnections();
 };
 
-#endif //DISPLAY_MAINSCREEN_H
+#endif

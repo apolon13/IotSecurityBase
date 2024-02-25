@@ -4,6 +4,6 @@ Props IotRadioControl::getPreferencesConfigKey() {
     return IotControl;
 }
 
-string IotRadioControl::extractGroup(string signal) {
+string IotRadioControl::extractGroup(const string& signal) {
     return signal.substr(0, 3);
 }

@@ -66,7 +66,7 @@ public:
 
     string get(Props property, string defaultValue);
 
-    void set(Props property, string value);
+    void set(Props property, const string& value);
 
     void lockSystem();
 
@@ -75,5 +75,5 @@ public:
     bool systemIsLocked();
 };
 
-#endif //DISPLAY_PROJECTPREFERENCES_H
+#endif
 
