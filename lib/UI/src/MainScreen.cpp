@@ -20,11 +20,11 @@ void MainScreen::failedMqttConnection() {
 }
 
 void MainScreen::loadDataInMain(lv_event_t *e) {
-    string mqttIp = projectPreferences->get(MqttIp, "ip empty");
-    string mqttPort = projectPreferences->get(MqttPort, "port empty");
-    string mqttUsername = projectPreferences->get(MqttUsername, "username empty");
-    string mqttEntityId = projectPreferences->get(MqttEntityId, "id empty");
-    string wifiSsid = projectPreferences->get(WifiSsid, "");
+    string mqttIp = projectPreferences->get(ProjectPreferences::MqttIp, "ip empty");
+    string mqttPort = projectPreferences->get(ProjectPreferences::MqttPort, "port empty");
+    string mqttUsername = projectPreferences->get(ProjectPreferences::MqttUsername, "username empty");
+    string mqttEntityId = projectPreferences->get(ProjectPreferences::MqttEntityId, "id empty");
+    string wifiSsid = projectPreferences->get(ProjectPreferences::WifiSsid, "");
     int countAll = 0;
     int countActive = 0;
     for (auto sensor: ioTRadioDetect->getCurrentSensors()) {

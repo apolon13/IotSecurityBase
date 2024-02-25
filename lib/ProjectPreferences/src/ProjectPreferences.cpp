@@ -63,11 +63,11 @@ void writePreferencesProperty(const string &name, const string& value) {
     dataProvider.close();
 }
 
-void ProjectPreferences::set(Props property, const string& value) {
+void ProjectPreferences::set(ProjectPreferences::PreferencesKey property, const string& value) {
     writePreferencesProperty(convertProperty(property), value);
 }
 
-string ProjectPreferences::get(Props property, string defaultValue) {
+string ProjectPreferences::get(ProjectPreferences::PreferencesKey property, string defaultValue) {
     return readPreferencesProperty(convertProperty(property), std::move(defaultValue)).value;
 }
 

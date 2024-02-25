@@ -9,28 +9,12 @@ using namespace std;
 #define SYSTEM_STATE_LOCK "1"
 #define SYSTEM_STATE_UNLOCK "0"
 
-enum Props {
-    MqttIp,
-    MqttPort,
-    MqttUsername,
-    MqttPassword,
-    MqttEntityId,
-    WifiPassword,
-    WifiSsid,
-    IotSensor,
-    IotControl,
-    SystemPin,
-    SystemState,
-    EditableDetectSensor,
-    LastError
-};
-
 class ProjectPreferences {
 private:
     Logger *logger;
 
-    string convertProperty(Props property) {
-        switch (property) {
+    string convertProperty(int key) {
+        switch (key) {
             case MqttIp:
                 return "MqttIp";
             case MqttPort:
@@ -57,16 +41,31 @@ private:
                 return "EditableDetectSensor";
             case LastError:
                 return "LastError";
+            default:
+                throw std::invalid_argument("Invalid property");
         }
-        throw std::invalid_argument("Invalid property");
     }
-
 public:
+    enum PreferencesKey {
+        MqttIp,
+        MqttPort,
+        MqttUsername,
+        MqttPassword,
+        MqttEntityId,
+        WifiPassword,
+        WifiSsid,
+        IotSensor,
+        IotControl,
+        SystemPin,
+        SystemState,
+        EditableDetectSensor,
+        LastError
+    };
     explicit ProjectPreferences(Logger *l);
 
-    string get(Props property, string defaultValue);
+    string get(PreferencesKey key, string defaultValue);
 
-    void set(Props property, const string& value);
+    void set(PreferencesKey key, const string& value);
 
     void lockSystem();
 

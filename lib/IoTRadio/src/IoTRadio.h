@@ -41,7 +41,7 @@ protected:
 
     vector<string> getSignals();
 
-    virtual Props getPreferencesConfigKey() = 0;
+    virtual ProjectPreferences::PreferencesKey getPreferencesConfigKey() = 0;
 
     void loadCurrentSensors();
 

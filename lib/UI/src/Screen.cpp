@@ -1,22 +1,22 @@
 #include "Screen.h"
 
-void Screen::onEvent(const std::function<void(Events)>& handler, Events e) {
-    if (handlers.find(e) != handlers.end()) {
-        auto current = handlers.at(e);
+void Screen::onEvent(const std::function<void(int)>& handler, const int& id) {
+    if (handlers.find(id) != handlers.end()) {
+        auto current = handlers.at(id);
         current.push_back(handler);
-        handlers.erase(e);
-        handlers.insert(make_pair(e, current));
+        handlers.erase(id);
+        handlers.insert(make_pair(id, current));
     } else {
-        vector<std::function<void(Events)>> newHandlers = {handler};
-        handlers.insert(make_pair(e, newHandlers));
+        vector<std::function<void(int)>> newHandlers = {handler};
+        handlers.insert(make_pair(id, newHandlers));
     }
 }
 
-void Screen::triggerEvent(Events e) {
-    if (handlers.find(e) != handlers.end()) {
-        auto current = handlers.at(e);
+void Screen::triggerEvent(const int& id) {
+    if (handlers.find(id) != handlers.end()) {
+        auto current = handlers.at(id);
         for (const auto &func: current) {
-            func(e);
+            func(id);
         }
     }
 }

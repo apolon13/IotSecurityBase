@@ -9,5 +9,5 @@ void SensorScreen::beforeScan() {
 void SensorScreen::afterScan() {
     scanIsRunning = false;
     scanStartedAt = 0;
-    triggerEvent(EventOnAfterRadioUse);
+    triggerEvent((int)SensorScreenEvent::EventOnAfterRadioUse);
 }

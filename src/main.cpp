@@ -4,7 +4,6 @@
 #include "QueueTask.h"
 #include "IotRadioControl.h"
 #include "Security.h"
-#include "esp_task_wdt.h"
 
 Dispatcher *dispatcher;
 UiControl *uiControl;
@@ -53,7 +52,7 @@ void loopMqtt(void *) {
             eventHandler->getMainScreen()->handleConnections();
             vTaskDelay(1000);
         } catch (const exception &e) {
-            preferences->set(LastError, e.what());
+            preferences->set(ProjectPreferences::LastError, e.what());
         }
     }
 }
@@ -71,7 +70,7 @@ void loopDisplay(void *) {
             uiControl->render();
             vTaskDelay(5);
         } catch (const exception &e) {
-            preferences->set(LastError, e.what());
+            preferences->set(ProjectPreferences::LastError, e.what());
         }
     }
 }
@@ -80,7 +79,7 @@ void setup() {
     logger = new SerialLogger(9600);
     preferences = new ProjectPreferences(logger);
     logger->debug("Last error");
-    logger->debug(preferences->get(LastError, "empty"));
+    logger->debug(preferences->get(ProjectPreferences::LastError, "empty"));
     ioTRadioDetect = new IoTRadioDetect(preferences, logger);
     iotRadioControl = new IotRadioControl(preferences, logger);
     auto securityCmdTopic = new Topic("/security/command");
@@ -94,13 +93,13 @@ void setup() {
     uiControl->init();
     eventHandler = uiControl->getEventHandler();
     security = new Security(ioTRadioDetect, iotRadioControl, uiControl, preferences, securityCmdTopic, securityRcvTopic);
-    taskScheduler->addTask({LoopDisplayTask, loopDisplay, TaskPriority::Low, 5000});
-    taskScheduler->addTask({LoopMqttTask, loopMqtt, TaskPriority::Low, 5000});
-    auto listenCb = [](Events e) {
+    taskScheduler->addTask({"loopDisplay", loopDisplay, TaskPriority::Low, 5000});
+    taskScheduler->addTask({"loopMqtt", loopMqtt, TaskPriority::Low, 5000});
+    auto listenCb = [](int eventId) {
         security->listen();
     };
-    eventHandler->getDetectSensorsScreen()->onEvent(listenCb, EventOnAfterRadioUse);
-    eventHandler->getControlSensorsScreen()->onEvent(listenCb, EventOnAfterRadioUse);
+    eventHandler->getDetectSensorsScreen()->onEvent(listenCb, (int)SensorScreenEvent::EventOnAfterRadioUse);
+    eventHandler->getControlSensorsScreen()->onEvent(listenCb, (int)SensorScreenEvent::EventOnAfterRadioUse);
 }
 
 void loop() {

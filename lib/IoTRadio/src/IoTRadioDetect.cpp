@@ -1,5 +1,5 @@
 #include "IoTRadioDetect.h"
 
-Props IoTRadioDetect::getPreferencesConfigKey() {
-    return IotSensor;
+ProjectPreferences::PreferencesKey IoTRadioDetect::getPreferencesConfigKey() {
+    return ProjectPreferences::IotSensor;
 }

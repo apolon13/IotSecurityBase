@@ -6,7 +6,7 @@
 
 class IotRadioControl : public IoTRadio {
 protected:
-    Props getPreferencesConfigKey() override;
+    ProjectPreferences::PreferencesKey getPreferencesConfigKey() override;
 
 public:
     IotRadioControl(ProjectPreferences *p, Logger *l) : IoTRadio(p, l) {

@@ -1,11 +1,11 @@
 #include "MqttConfigScreen.h"
 
 void MqttConfigScreen::loadMqttSettings(lv_event_t *e) {
-    string mqttIp = projectPreferences->get(MqttIp, "");
-    string mqttPort = projectPreferences->get(MqttPort, "");
-    string mqttUsername = projectPreferences->get(MqttUsername, "");
-    string mqttEntityId = projectPreferences->get(MqttEntityId, "");
-    string mqttPassword = projectPreferences->get(MqttPassword, "");
+    string mqttIp = projectPreferences->get(ProjectPreferences::MqttIp, "");
+    string mqttPort = projectPreferences->get(ProjectPreferences::MqttPort, "");
+    string mqttUsername = projectPreferences->get(ProjectPreferences::MqttUsername, "");
+    string mqttEntityId = projectPreferences->get(ProjectPreferences::MqttEntityId, "");
+    string mqttPassword = projectPreferences->get(ProjectPreferences::MqttPassword, "");
     if (!mqttIp.empty()) {
         lv_textarea_set_text(ui_mqttIp, mqttIp.c_str());
     }
@@ -29,9 +29,9 @@ void MqttConfigScreen::saveMqttSettings(lv_event_t *e) {
     string username = lv_textarea_get_text(ui_mqttUsername);
     string entityId = lv_textarea_get_text(ui_mqttEntityId);
     string password = lv_textarea_get_text(ui_mqttPassword);
-    projectPreferences->set(MqttIp, ip);
-    projectPreferences->set(MqttPort, port);
-    projectPreferences->set(MqttUsername, username);
-    projectPreferences->set(MqttEntityId, entityId);
-    projectPreferences->set(MqttPassword, password);
+    projectPreferences->set(ProjectPreferences::MqttIp, ip);
+    projectPreferences->set(ProjectPreferences::MqttPort, port);
+    projectPreferences->set(ProjectPreferences::MqttUsername, username);
+    projectPreferences->set(ProjectPreferences::MqttEntityId, entityId);
+    projectPreferences->set(ProjectPreferences::MqttPassword, password);
 }

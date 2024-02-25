@@ -1,7 +1,7 @@
 #include "IotRadioControl.h"
 
-Props IotRadioControl::getPreferencesConfigKey() {
-    return IotControl;
+ProjectPreferences::PreferencesKey IotRadioControl::getPreferencesConfigKey() {
+    return ProjectPreferences::IotControl;
 }
 
 string IotRadioControl::extractGroup(const string& signal) {

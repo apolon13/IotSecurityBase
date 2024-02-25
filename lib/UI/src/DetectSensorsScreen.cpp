@@ -45,7 +45,7 @@ void DetectSensorsScreen::goToEditSensor(lv_event_t *e) {
     lv_obj_t *component = lv_obj_get_parent(panel);
     lv_obj_t *label = ui_comp_get_child(component, UI_COMP_SENSORITEM_SENSORITEMPANEL_SENSORID);
     string text = lv_label_get_text(label);
-    projectPreferences->set(EditableDetectSensor, text);
+    projectPreferences->set(ProjectPreferences::EditableDetectSensor, text);
     lv_disp_load_scr(ui_edittSensorScreen);
 }
 

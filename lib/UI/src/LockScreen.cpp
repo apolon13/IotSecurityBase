@@ -25,12 +25,12 @@ void LockScreen::goTo(bool useMutex) {
 
 void LockScreen::unlockSystem(lv_event_t *e, bool useMutex, bool ignorePin) {
     auto cb = [this, ignorePin]() {
-        string currentPin = projectPreferences->get(SystemPin, "");
+        string currentPin = projectPreferences->get(ProjectPreferences::SystemPin, "");
         string userPin = lv_textarea_get_text(ui_pincode);
         bool isOk = ignorePin;
 
         if (currentPin.empty() && !userPin.empty()) {
-            projectPreferences->set(SystemPin, userPin);
+            projectPreferences->set(ProjectPreferences::SystemPin, userPin);
             isOk = true;
         } else if (currentPin == userPin) {
             isOk = true;

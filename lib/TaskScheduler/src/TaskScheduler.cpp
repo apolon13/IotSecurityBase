@@ -1,9 +1,9 @@
 #include "TaskScheduler.h"
 
-void TaskScheduler::addTask(TaskToSchedule t) {
+void TaskScheduler::addTask(const TaskToSchedule& t) {
     bool exist = false;
     for (const auto& task: inRunning) {
-        if (task == convertTaskId(t.name)) {
+        if (task == t.name) {
             exist = true;
             break;
         }
@@ -21,15 +21,14 @@ long lastInfo;
 void TaskScheduler::schedule() {
     long currentMs = millis();
     for (auto task: tasksToSchedule) {
-        string taskId = convertTaskId(task.name);
-        auto handle = xTaskGetHandle(taskId.c_str());
+        auto handle = xTaskGetHandle(task.name.c_str());
         if (handle == nullptr) {
             auto code = xTaskCreate(
                     task.func,
-                    taskId.c_str(),
+                    task.name.c_str(),
                     task.stackDepth,
                     nullptr,
-                    task.priority,
+                    (int)task.priority,
                     nullptr
             );
             if (code != pdPASS) {
@@ -38,7 +37,7 @@ void TaskScheduler::schedule() {
         } else {
             vTaskResume(handle);
         }
-        inRunning.push_back(taskId);
+        inRunning.push_back(task.name);
     }
     tasksToSchedule.clear();
 
@@ -67,9 +66,9 @@ void TaskScheduler::schedule() {
     }
 }
 
-void TaskScheduler::deleteTask(Tasks t) {
+void TaskScheduler::deleteTask(const string& name) {
     for (const auto& task: inRunning) {
-        if (task == convertTaskId(t)) {
+        if (task == name) {
             tasksToDelete.push_back(task);
             break;
         }

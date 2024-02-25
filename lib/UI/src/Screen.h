@@ -7,18 +7,14 @@
 
 using namespace std;
 
-enum Events {
-    EventOnAfterRadioUse
-};
-
 class Screen {
 protected:
-    std::map<Events, vector<function<void(Events e)>>> handlers;
+    std::map<int, vector<function<void(int)>>> handlers;
 
-    void triggerEvent(Events e);
+    void triggerEvent(const int& id);
 
 public:
-    void onEvent(const function<void(Events)>& handler, Events e);
+    void onEvent(const function<void(int)>& handler, const int& id);
 };
 
 #endif

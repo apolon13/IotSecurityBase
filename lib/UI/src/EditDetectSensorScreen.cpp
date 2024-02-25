@@ -1,7 +1,7 @@
 #include "EditDetectSensorScreen.h"
 
 void EditDetectSensorScreen::loadSensor(lv_event_t *e) {
-    auto name = projectPreferences->get(EditableDetectSensor, "");
+    auto name = projectPreferences->get(ProjectPreferences::EditableDetectSensor, "");
     if (!name.empty()) {
         auto sensor = ioTRadioDetect->getSensorByName(name);
         lv_textarea_set_text(ui_sensorName, sensor->name.c_str());
@@ -14,7 +14,7 @@ void EditDetectSensorScreen::loadSensor(lv_event_t *e) {
 
 
 void EditDetectSensorScreen::saveSensorSettings(lv_event_t *e) {
-    auto name = projectPreferences->get(EditableDetectSensor, "");
+    auto name = projectPreferences->get(ProjectPreferences::EditableDetectSensor, "");
     if (!name.empty()) {
         auto sensor = ioTRadioDetect->getSensorByName(name);
         Sensor s = {
@@ -24,6 +24,6 @@ void EditDetectSensorScreen::saveSensorSettings(lv_event_t *e) {
                 lv_slider_get_value(ui_sensorSensitivity)
         };
         ioTRadioDetect->save(&s);
-        projectPreferences->set(EditableDetectSensor, "");
+        projectPreferences->set(ProjectPreferences::EditableDetectSensor, "");
     }
 }

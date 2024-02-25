@@ -12,6 +12,7 @@ lv_obj_t *getChildByClass(lv_obj_t *parent, const lv_obj_class_t *className) {
             return child;
         }
     }
+    return nullptr;
 }
 
 void ControlSensorsScreen::loadAllControls(lv_event_t *e) {

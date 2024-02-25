@@ -4,6 +4,9 @@
 #ifndef DISPLAY_SENSORSCREEN_H
 #define DISPLAY_SENSORSCREEN_H
 
+enum class SensorScreenEvent{
+    EventOnAfterRadioUse
+};
 
 class SensorScreen : public Screen {
 protected:

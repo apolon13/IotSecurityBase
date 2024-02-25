@@ -6,23 +6,18 @@
 
 using namespace std;
 
-enum Tasks {
-    LoopDisplayTask,
-    LoopMqttTask
-};
-
-enum TaskPriority {
+enum class TaskPriority {
     Low = 1,
     Middle,
     High
 };
 
-typedef struct {
-    Tasks name;
+struct TaskToSchedule {
+    string name;
     TaskFunction_t func;
     TaskPriority priority;
     int stackDepth;
-} TaskToSchedule;
+};
 
 class TaskScheduler {
 protected:
@@ -31,24 +26,14 @@ protected:
     std::vector<string> tasksToDelete;
     std::vector<string> inRunning;
 
-    static string convertTaskId(Tasks id) {
-        switch (id) {
-            case LoopDisplayTask:
-                return "loopDisplay";
-            case LoopMqttTask:
-                return "loopMqtt";
-        }
-        throw std::invalid_argument("Invalid task id");
-    }
-
 public:
     explicit TaskScheduler(Logger *l);
 
     void schedule();
 
-    void addTask(TaskToSchedule t);
+    void addTask(const TaskToSchedule& t);
 
-    void deleteTask(Tasks t);
+    void deleteTask(const string& name);
 };
 
 #endif
