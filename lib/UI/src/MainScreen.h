@@ -27,6 +27,8 @@ public:
     void loadDataInMain(lv_event_t *e);
 
     void handleConnections();
+
+    void goTo(bool useMutex);
 };
 
 #endif

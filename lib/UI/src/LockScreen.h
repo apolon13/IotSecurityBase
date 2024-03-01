@@ -5,13 +5,18 @@
 #ifndef DISPLAY_LOCKSCREEN_H
 #define DISPLAY_LOCKSCREEN_H
 
+enum class LockScreenEvent {
+    EventOnLock,
+    EventOnUnlock
+};
+
 class LockScreen : public Screen {
 private:
     ProjectPreferences *projectPreferences;
 public:
     explicit LockScreen(ProjectPreferences *p) : projectPreferences(p) {};
 
-    void unlockSystem(lv_event_t *e, bool useMutex = false, bool ignorePin = false);
+    void unlockSystem(lv_event_t *e);
 
     void lockSystem(lv_event_t *e);
 

@@ -1,15 +1,9 @@
 #include "LockScreen.h"
 #include "UiMutex.h"
 
-void mutexWrap(const std::function<void()>& cb) {
-    if (UiMutex::take()) {
-        cb();
-        UiMutex::give();
-    }
-}
 
 void LockScreen::lockSystem(lv_event_t *e) {
-    projectPreferences->lockSystem();
+    triggerEvent((int) LockScreenEvent::EventOnLock);
 }
 
 void LockScreen::goTo(bool useMutex) {
@@ -23,31 +17,22 @@ void LockScreen::goTo(bool useMutex) {
     }
 }
 
-void LockScreen::unlockSystem(lv_event_t *e, bool useMutex, bool ignorePin) {
-    auto cb = [this, ignorePin]() {
-        string currentPin = projectPreferences->get(ProjectPreferences::SystemPin, "");
-        string userPin = lv_textarea_get_text(ui_pincode);
-        bool isOk = ignorePin;
+void LockScreen::unlockSystem(lv_event_t *e) {
+    string currentPin = projectPreferences->get(ProjectPreferences::SystemPin, "");
+    string userPin = lv_textarea_get_text(ui_pincode);
+    bool isOk = false;
 
-        if (currentPin.empty() && !userPin.empty()) {
-            projectPreferences->set(ProjectPreferences::SystemPin, userPin);
-            isOk = true;
-        } else if (currentPin == userPin) {
-            isOk = true;
-        }
+    if (currentPin.empty() && !userPin.empty()) {
+        projectPreferences->set(ProjectPreferences::SystemPin, userPin);
+        isOk = true;
+    } else if (currentPin == userPin) {
+        isOk = true;
+    }
 
-        if (isOk) {
-            projectPreferences->unlockSystem();
-            lv_disp_load_scr(ui_home);
-        }
+    string emptyValue;
+    lv_textarea_set_text(ui_pincode, emptyValue.c_str());
 
-        string emptyValue;
-        lv_textarea_set_text(ui_pincode, emptyValue.c_str());
-    };
-
-    if (useMutex) {
-        mutexWrap(cb);
-    } else {
-        cb();
+    if (isOk) {
+        triggerEvent((int) LockScreenEvent::EventOnUnlock);
     }
 }

@@ -3,9 +3,9 @@
 static lv_disp_draw_buf_t drawBuf;
 static lv_color_t buf[800 * 480 / 10];
 static lv_disp_drv_t dispDrv;
+UiControl *selfUiControl;
 
 #define TFT_BL 2
-
 Arduino_ESP32RGBPanel *bus = new Arduino_ESP32RGBPanel(
         GFX_NOT_DEFINED /* CS */, GFX_NOT_DEFINED /* SCK */, GFX_NOT_DEFINED /* SDA */,
         40 /* DE */, 41 /* VSYNC */, 39 /* HSYNC */, 0 /* PCLK */,
@@ -30,10 +30,13 @@ void readTouchpad(lv_indev_drv_t *indev_driver, lv_indev_data_t *data) {
             data->state = LV_INDEV_STATE_PR;
             data->point.x = touch_last_x;
             data->point.y = touch_last_y;
+            selfUiControl->hasTouch();
         } else if (touch_released()) {
             data->state = LV_INDEV_STATE_REL;
+            selfUiControl->withoutTouch();
         }
     } else {
+        selfUiControl->withoutTouch();
         data->state = LV_INDEV_STATE_REL;
     }
 }
@@ -49,13 +52,30 @@ void flushDisplay(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color_
     lv_disp_flush_ready(disp);
 }
 
-UiControl::UiControl(ProjectPreferences *p, IoTRadioDetect *i, Dispatcher *d, QueueTask *q, IotRadioControl *ct) {
+void UiControl::backlightOn() {
+    if (!backlightIsOn) {
+        backlightIsOn = true;
+        digitalWrite(TFT_BL, HIGH);
+    }
+}
+
+void UiControl::backlightOff() {
+    if (backlightIsOn) {
+        triggerEvent((int)UiControlEvent::EventOnBacklightOff);
+        backlightIsOn = false;
+        digitalWrite(TFT_BL, LOW);
+    }
+
+}
+
+UiControl::UiControl(ProjectPreferences *p, IoTRadioDetect *i, Dispatcher *d, QueueTask *q, IotRadioControl *ct,
+                     int bcklTimeout) : backlightTimeout(bcklTimeout) {
     gfx->begin();
     gfx->fillScreen(BLACK);
     gfx->setTextSize(2);
     delay(200);
     pinMode(TFT_BL, OUTPUT);
-    digitalWrite(TFT_BL, HIGH);
+    backlightOn();
     lv_init();
     touch_init();
     uint32_t screenWidth;
@@ -77,10 +97,12 @@ UiControl::UiControl(ProjectPreferences *p, IoTRadioDetect *i, Dispatcher *d, Qu
     lv_indev_drv_register(&indevDrv);
     gfx->fillScreen(BLACK);
     eventHandler = new UiEventHandler(p, i, d, q, ct);
+    selfUiControl = this;
 }
 
 void UiControl::render() {
     if (UiMutex::take()) {
+        toggleBacklight();
         lv_timer_handler();
         UiMutex::give();
     }
@@ -92,4 +114,22 @@ UiEventHandler *UiControl::getEventHandler() {
 
 void UiControl::init() {
     ui_init();
+}
+
+void UiControl::withoutTouch() {
+    if (timeWithoutTouch < LONG_MAX) {
+        timeWithoutTouch++;
+    }
+}
+
+void UiControl::hasTouch() {
+    timeWithoutTouch = 0;
+}
+
+void UiControl::toggleBacklight() {
+    if (timeWithoutTouch > backlightTimeout) {
+        backlightOff();
+    } else {
+        backlightOn();
+    }
 }

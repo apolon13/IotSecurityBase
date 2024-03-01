@@ -14,6 +14,7 @@ protected:
     bool cloudConnectionInProcess = false;
     bool networkConnectionInProcess = false;
     vector<Topic *> topics;
+    int networkConnectionAttempts = 0;
 
     void connectToWiFi();
 
@@ -31,6 +32,8 @@ public:
     bool cloudIsConnected();
 
     void connectToCloud();
+
+    int getNetworkConnectionAttempts() const;
 };
 
 #endif

@@ -62,3 +62,15 @@ void MainScreen::handleConnections() {
         UiMutex::give();
     }
 }
+
+void MainScreen::goTo(bool useMutex) {
+    auto cb = [] () {
+        lv_disp_load_scr(ui_home);
+    };
+
+    if (useMutex) {
+        mutexWrap(cb);
+    } else {
+        cb();
+    }
+}

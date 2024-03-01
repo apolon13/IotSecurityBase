@@ -2,18 +2,24 @@
 #include "IotRadioControl.h"
 #include "TaskScheduler.h"
 #include "ProjectPreferences.h"
-#include "UiControl.h"
 #include "Topic.h"
+#include "EventableObject.h"
 
 #ifndef DISPLAY_SECURITY_H
 #define DISPLAY_SECURITY_H
 
-class Security {
+enum class SecurityEvent {
+    EventOnGuard,
+    EventOnDisarm,
+    EventOnAlarm,
+    EventOnMute
+};
+
+class Security: public EventableObject {
 protected:
     IoTRadioDetect *ioTRadioDetect;
     IotRadioControl *iotRadioControl;
     ProjectPreferences *projectPreferences;
-    UiControl *ui;
     Topic *securityCmdTopic;
     Topic *receiveCmdTopic;
     long lastAlarmEvent = 0;
@@ -24,7 +30,7 @@ protected:
 
     void handleDetect(const string& signal);
 
-    void handleControl(const string& signal);
+    void handleControl(const string& signal, bool needTriggerEvent = true);
 
     void guard();
 
@@ -35,10 +41,14 @@ protected:
     void mute();
 
 public:
-    explicit Security(IoTRadioDetect *d, IotRadioControl *c, UiControl *ui, ProjectPreferences *p, Topic *cmd,
+    explicit Security(IoTRadioDetect *d, IotRadioControl *c, ProjectPreferences *p, Topic *cmd,
                       Topic *rcv);
 
     void listen();
+
+    void lockSystem(bool silent);
+
+    void unlockSystem(bool silent);
 };
 
 #endif

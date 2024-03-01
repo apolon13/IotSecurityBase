@@ -34,40 +34,47 @@ void Security::listenRadioCommands() {
         }
         if (selfSecurity->iotRadioControl->exist(signalValue)) {
             auto sensor = selfSecurity->iotRadioControl->getSensorBySignal(signalValue);
-            selfSecurity->handleControl(sensor->name);
+            selfSecurity->handleControl(sensor->name, true);
         }
     });
     IoTRadio::startScan();
 }
 
 
-void Security::handleControl(const string& name) {
-    auto lockScreen = ui->getEventHandler()->getLockScreen();
+void Security::handleControl(const string &name, bool needTriggerEvent) {
+    int eventId = -1;
     if (name == GUARD) {
         guard();
         projectPreferences->lockSystem();
-        lockScreen->goTo(true);
+        eventId = (int) SecurityEvent::EventOnGuard;
     }
 
     if (name == DISARM) {
         disarm();
         if (projectPreferences->systemIsLocked()) {
-            lockScreen->unlockSystem(nullptr, true, true);
+            projectPreferences->unlockSystem();
+            eventId = (int) SecurityEvent::EventOnDisarm;
         }
     }
 
     if (name == MUTE) {
         mute();
+        eventId = (int) SecurityEvent::EventOnMute;
     }
 
     if (name == ALARM) {
         alarm();
+        eventId = (int) SecurityEvent::EventOnAlarm;
+    }
+
+    if (needTriggerEvent && eventId != -1) {
+        triggerEvent(eventId);
     }
 
     receiveCmdTopic->publish(name);
 }
 
-void Security::handleDetect(const string& signal) {
+void Security::handleDetect(const string &signal) {
     long now = millis();
     auto detectSensor = selfSecurity->ioTRadioDetect->getSensorBySignal(signal);
     if (projectPreferences->systemIsLocked() && detectSensor->isActive) {
@@ -79,10 +86,9 @@ void Security::handleDetect(const string& signal) {
     }
 }
 
-Security::Security(IoTRadioDetect *d, IotRadioControl *c, UiControl *ui, ProjectPreferences *p, Topic *cmd, Topic *rcv)
+Security::Security(IoTRadioDetect *d, IotRadioControl *c, ProjectPreferences *p, Topic *cmd, Topic *rcv)
         : ioTRadioDetect(d),
           iotRadioControl(c),
-          ui(ui),
           projectPreferences(p),
           securityCmdTopic(cmd),
           receiveCmdTopic(rcv) {
@@ -94,12 +100,20 @@ Security::Security(IoTRadioDetect *d, IotRadioControl *c, UiControl *ui, Project
 
 void Security::listenMqttCommands() {
     securityCmdTopic->refreshHandlers();
-    securityCmdTopic->addHandler([this](const string& payload) {
-        handleControl(payload);
+    securityCmdTopic->addHandler([this](const string &payload) {
+        handleControl(payload, true);
     });
 }
 
 void Security::listen() {
     listenRadioCommands();
     listenMqttCommands();
+}
+
+void Security::lockSystem(bool silent) {
+    handleControl(GUARD, !silent);
+}
+
+void Security::unlockSystem(bool silent) {
+    handleControl(DISARM, !silent);
 }

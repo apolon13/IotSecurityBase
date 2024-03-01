@@ -25,6 +25,11 @@ void loopMqtt(void *) {
         try {
             //logger->debug("stack size mqtt - " + to_string(uxTaskGetStackHighWaterMark(nullptr)));
             long now = millis();
+
+            if (dispatcher->getNetworkConnectionAttempts() > 10) {
+                ESP.restart();
+            }
+
             if (!dispatcher->networkIsConnected() && !timeWithoutNetworkConnection) {
                 timeWithoutNetworkConnection = millis();
             }
@@ -92,14 +97,50 @@ void setup() {
     uiControl = new UiControl(preferences, ioTRadioDetect, dispatcher, queue, iotRadioControl);
     uiControl->init();
     eventHandler = uiControl->getEventHandler();
-    security = new Security(ioTRadioDetect, iotRadioControl, uiControl, preferences, securityCmdTopic, securityRcvTopic);
+    security = new Security(ioTRadioDetect, iotRadioControl, preferences, securityCmdTopic, securityRcvTopic);
+    auto lockScreen = uiControl->getEventHandler()->getLockScreen();
+    auto mainScreen = uiControl->getEventHandler()->getMainScreen();
+
     taskScheduler->addTask({"loopDisplay", loopDisplay, TaskPriority::Low, 5000});
     taskScheduler->addTask({"loopMqtt", loopMqtt, TaskPriority::Low, 5000});
-    auto listenCb = [](int eventId) {
+
+    auto securityListenCb = [](int eventId) {
         security->listen();
     };
-    eventHandler->getDetectSensorsScreen()->onEvent(listenCb, (int)SensorScreenEvent::EventOnAfterRadioUse);
-    eventHandler->getControlSensorsScreen()->onEvent(listenCb, (int)SensorScreenEvent::EventOnAfterRadioUse);
+    eventHandler->getDetectSensorsScreen()->onEvent((int) SensorScreenEvent::EventOnAfterRadioUse, securityListenCb);
+    eventHandler->getControlSensorsScreen()->onEvent((int) SensorScreenEvent::EventOnAfterRadioUse, securityListenCb);
+
+    eventHandler->getLockScreen()->onEvent((int) LockScreenEvent::EventOnLock, [lockScreen](int eventId) {
+        security->lockSystem(true);
+        lockScreen->goTo(false);
+    });
+
+    eventHandler->getLockScreen()->onEvent((int) LockScreenEvent::EventOnUnlock, [mainScreen](int eventId) {
+        security->unlockSystem(true);
+        mainScreen->goTo(false);
+    });
+
+    auto touchCb = [](int eventId) {
+        uiControl->hasTouch();
+    };
+    security->onEvent((int) SecurityEvent::EventOnGuard, [lockScreen, touchCb](int eventId) {
+        touchCb(eventId);
+        lockScreen->goTo(true);
+    });
+
+    security->onEvent((int) SecurityEvent::EventOnDisarm, [mainScreen, touchCb](int eventId) {
+        touchCb(eventId);
+        security->unlockSystem(true);
+        mainScreen->goTo(true);
+    });
+
+    security->onEvent((int) SecurityEvent::EventOnAlarm, touchCb);
+    security->onEvent((int) SecurityEvent::EventOnMute, touchCb);
+
+    uiControl->onEvent((int) UiControlEvent::EventOnBacklightOff, [lockScreen](int eventId) {
+        security->lockSystem(true);
+        lockScreen->goTo(false);
+    });
 }
 
 void loop() {

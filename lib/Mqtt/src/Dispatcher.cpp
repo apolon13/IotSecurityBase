@@ -1,6 +1,7 @@
 #include "Dispatcher.h"
 #include "WiFiGeneric.h"
 #include <PubSubClient.h>
+#include <ESP32Ping.h>
 #include <utility>
 #include "PubSubDelegate.h"
 
@@ -51,6 +52,7 @@ void Dispatcher::connectToWiFi() {
     string password = projectPreferences->get(ProjectPreferences::WifiPassword, "");
     WiFi.begin(ssid.c_str(), password.c_str());
     WiFi.printDiag(Serial);
+    networkConnectionAttempts++;
     networkConnectionInProcess = false;
 }
 
@@ -85,9 +87,14 @@ void Dispatcher::connectToMqtt() {
                 pubSub.subscribe(topic->getName().c_str());
             }
         } else {
+            IPAddress dns(8, 8, 8, 8);
             logger->debug("MQTT failed, status code = " + to_string(pubSub.state()));
-            pubSub.disconnect();
-            connectToWiFi();
+            if (!Ping.ping(dns, 3)) {
+                logger->debug("Reconnect to network, ping failed");
+                connectToWiFi();
+            } else {
+                logger->debug("Ethernet available");
+            }
         }
     }
     cloudConnectionInProcess = false;
@@ -95,5 +102,9 @@ void Dispatcher::connectToMqtt() {
 
 void Dispatcher::connectToCloud() {
     connectToMqtt();
+}
+
+int Dispatcher::getNetworkConnectionAttempts() const {
+    return networkConnectionAttempts;
 }
 
