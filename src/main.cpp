@@ -86,25 +86,23 @@ void setup() {
 void loop() {
     auto logger = new SerialLogger(9600);
     ProjectPreferences preferences(logger);
-    logger->debug("Last error");
-    logger->debug(preferences.get(ProjectPreferences::LastError, "empty"));
-    auto ioTRadioDetect = new IoTRadioDetect(preferences);
-    auto iotRadioControl = new IotRadioControl(preferences);
-    auto securityCmdTopic = new Topic("/security/command");
-    auto securityRcvTopic = new Topic("/security/receive");
-    auto dispatcher = new Dispatcher(&preferences, logger, {securityCmdTopic, securityRcvTopic});
-    auto queue = new QueueTask();
+    IoTRadioDetect detect(preferences);
+    IotRadioControl control(preferences);
+    Topic cmd("/security/command");
+    Topic rcv("/security/receive");
+    Dispatcher dispatcher(preferences, {&cmd, &rcv});
+    QueueTask queue;
     auto uiControl = new UiControl(
             &preferences,
-            ioTRadioDetect,
-            dispatcher,
-            queue,
-            iotRadioControl,
+            &detect,
+            &dispatcher,
+            &queue,
+            &control,
             stoi(preferences.getSecurityTimeout()) * 1000
     );
     uiControl->init();
     eventHandler = uiControl->getEventHandler();
-    auto security = new Security(ioTRadioDetect, iotRadioControl, &preferences, securityCmdTopic, securityRcvTopic);
+    auto security = new Security(&detect, &control, &preferences, &cmd, &rcv);
     auto lockScreen = uiControl->getEventHandler()->getLockScreen();
     auto mainScreen = uiControl->getEventHandler()->getMainScreen();
 
@@ -147,15 +145,17 @@ void loop() {
     });
     auto taskScheduler = new TaskScheduler();
 
-    MQTTParameters mqttParameters = {&preferences, uiControl, dispatcher};
+    MQTTParameters mqttParameters = {&preferences, uiControl, &dispatcher};
     taskScheduler->addTask({"loopDisplay", loopDisplay, TaskPriority::Low, 5000, (void *) {uiControl}});
     taskScheduler->addTask({"loopMqtt", loopMqtt, TaskPriority::Low, 5000, (void *)&mqttParameters});
 
+    logger->debug("Last error");
+    logger->debug(preferences.get(ProjectPreferences::LastError, "empty"));
     try {
         taskScheduler->schedule();
     } catch (std::runtime_error error) {
         Serial.println(error.what());
     }
 
-    queue->run();
+    queue.run();
 }

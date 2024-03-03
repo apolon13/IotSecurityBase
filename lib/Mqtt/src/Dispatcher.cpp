@@ -8,9 +8,7 @@
 WiFiClient espClient;
 PubSubClient pubSub(espClient);
 
-Dispatcher::Dispatcher(ProjectPreferences *p, Logger *l, vector<Topic *> t) : projectPreferences(p), logger(l),
-                                                                              topics(std::move(t)) {
-    logger->debug("Init dispatcher");
+Dispatcher::Dispatcher(const ProjectPreferences& p, vector<Topic *> t) : projectPreferences(p), topics(std::move(t)) {
     WiFi.persistent(false);
     WiFi.mode(WIFI_MODE_APSTA);
     auto pubSubDelegate = new PubSubDelegate(&pubSub);
@@ -48,8 +46,8 @@ void Dispatcher::connectToWiFi() {
         return;
     }
     networkConnectionInProcess = true;
-    string ssid = projectPreferences->get(ProjectPreferences::WifiSsid, "");
-    string password = projectPreferences->get(ProjectPreferences::WifiPassword, "");
+    string ssid = projectPreferences.get(ProjectPreferences::WifiSsid, "");
+    string password = projectPreferences.get(ProjectPreferences::WifiPassword, "");
     WiFi.begin(ssid.c_str(), password.c_str());
     WiFi.printDiag(Serial);
     networkConnectionAttempts++;
@@ -66,34 +64,34 @@ void Dispatcher::connectToMqtt() {
     }
     cloudConnectionInProcess = true;
     string defaultValue;
-    string id = projectPreferences->get(ProjectPreferences::MqttEntityId, defaultValue);
-    string username = projectPreferences->get(ProjectPreferences::MqttUsername, defaultValue);
-    string pass = projectPreferences->get(ProjectPreferences::MqttPassword, defaultValue);
-    string mqttServer = projectPreferences->get(ProjectPreferences::MqttIp, defaultValue);
-    string mqttPort = projectPreferences->get(ProjectPreferences::MqttPort, defaultValue);
+    string id = projectPreferences.get(ProjectPreferences::MqttEntityId, defaultValue);
+    string username = projectPreferences.get(ProjectPreferences::MqttUsername, defaultValue);
+    string pass = projectPreferences.get(ProjectPreferences::MqttPassword, defaultValue);
+    string mqttServer = projectPreferences.get(ProjectPreferences::MqttIp, defaultValue);
+    string mqttPort = projectPreferences.get(ProjectPreferences::MqttPort, defaultValue);
     if (!mqttServer.empty() && !mqttPort.empty()) {
-        logger->debug("MQTT connecting ...");
+        Serial.println("MQTT connecting ...");
         pubSub.disconnect();
         string debugInfo = "MQTT server - ";
         debugInfo.append((string) mqttServer + ":" + mqttPort + "\n");
         debugInfo.append("MQTT credentials - ");
         debugInfo.append((string) username + " " + pass + "\n");
         debugInfo.append("MQTT id - " + id);
-        logger->debug(debugInfo);
+        Serial.println(debugInfo.c_str());
         pubSub.setServer(mqttServer.c_str(), stoi(mqttPort));
         if (pubSub.connect(id.c_str(), username.c_str(), pass.c_str())) {
-            logger->debug("MQTT connected");
+            Serial.println("MQTT connected");
             for (auto topic: topics) {
                 pubSub.subscribe(topic->getName().c_str());
             }
         } else {
             IPAddress dns(8, 8, 8, 8);
-            logger->debug("MQTT failed, status code = " + to_string(pubSub.state()));
+            Serial.println("MQTT failed");
             if (!Ping.ping(dns, 3)) {
-                logger->debug("Reconnect to network, ping failed");
+                Serial.println("Reconnect to network, ping failed");
                 connectToWiFi();
             } else {
-                logger->debug("Ethernet available");
+                Serial.println("Ethernet available");
             }
         }
     }
