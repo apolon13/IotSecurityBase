@@ -8,7 +8,7 @@ esp_now_peer_info_t Peer;
 Logger *gLogger;
 
 string IoTRadio::getSensorsConfig() {
-    return projectPreferences->get(getPreferencesConfigKey(), "");
+    return projectPreferences.get(getPreferencesConfigKey(), "");
 }
 
 string IoTRadio::buildConfigStringBySensor(Sensor *s) {
@@ -71,8 +71,8 @@ Sensor IoTRadio::buildSensorByConfigString(string configString) {
     return sensor;
 }
 
-IoTRadio::IoTRadio(ProjectPreferences *p, Logger *l) : projectPreferences(p), logger(l) {
-    gLogger = l;
+IoTRadio::IoTRadio(const ProjectPreferences& p) : projectPreferences(p){
+
 }
 
 void IoTRadio::startScan() {
@@ -105,7 +105,7 @@ void IoTRadio::forget(const string& signal) {
         if (iterator != currentSensors.end()) {
             currentSensors.erase(iterator);
         }
-        projectPreferences->set(getPreferencesConfigKey(), newConfig);
+        projectPreferences.set(getPreferencesConfigKey(), newConfig);
     }
 }
 
@@ -141,7 +141,7 @@ void IoTRadio::save(Sensor *sensor) {
             return s.signal == sensor->signal;
         }, *sensor);
     }
-    projectPreferences->set(getPreferencesConfigKey(), newConfig);
+    projectPreferences.set(getPreferencesConfigKey(), newConfig);
 }
 
 
@@ -149,7 +149,6 @@ void IoTRadio::loadCurrentSensors() {
     currentSensors = {};
     auto config = getConfigLines();
     for (const string& line: config) {
-        logger->debug("Sensor - " + line);
         Sensor newSensor = buildSensorByConfigString(line);
         currentSensors.push_back(newSensor);
     }

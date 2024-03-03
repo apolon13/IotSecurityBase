@@ -36,8 +36,7 @@ typedef struct {
 class IoTRadio {
 protected:
     vector<Sensor> currentSensors;
-    ProjectPreferences *projectPreferences;
-    Logger *logger;
+    ProjectPreferences projectPreferences;
 
     vector<string> getSignals();
 
@@ -60,7 +59,7 @@ protected:
     Sensor *getSensorByPredicate(std::function<bool(const Sensor &s)> predicate);
 
 public:
-    IoTRadio(ProjectPreferences *p, Logger *l);
+    IoTRadio(const ProjectPreferences& p);
 
     void forget(const string& signal);
 

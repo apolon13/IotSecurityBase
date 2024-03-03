@@ -85,26 +85,26 @@ void setup() {
 
 void loop() {
     auto logger = new SerialLogger(9600);
-    auto preferences = new ProjectPreferences(logger);
+    ProjectPreferences preferences(logger);
     logger->debug("Last error");
-    logger->debug(preferences->get(ProjectPreferences::LastError, "empty"));
-    auto ioTRadioDetect = new IoTRadioDetect(preferences, logger);
-    auto iotRadioControl = new IotRadioControl(preferences, logger);
+    logger->debug(preferences.get(ProjectPreferences::LastError, "empty"));
+    auto ioTRadioDetect = new IoTRadioDetect(preferences);
+    auto iotRadioControl = new IotRadioControl(preferences);
     auto securityCmdTopic = new Topic("/security/command");
     auto securityRcvTopic = new Topic("/security/receive");
-    auto dispatcher = new Dispatcher(preferences, logger, {securityCmdTopic, securityRcvTopic});
+    auto dispatcher = new Dispatcher(&preferences, logger, {securityCmdTopic, securityRcvTopic});
     auto queue = new QueueTask();
     auto uiControl = new UiControl(
-            preferences,
+            &preferences,
             ioTRadioDetect,
             dispatcher,
             queue,
             iotRadioControl,
-            stoi(preferences->getSecurityTimeout()) * 1000
+            stoi(preferences.getSecurityTimeout()) * 1000
     );
     uiControl->init();
     eventHandler = uiControl->getEventHandler();
-    auto security = new Security(ioTRadioDetect, iotRadioControl, preferences, securityCmdTopic, securityRcvTopic);
+    auto security = new Security(ioTRadioDetect, iotRadioControl, &preferences, securityCmdTopic, securityRcvTopic);
     auto lockScreen = uiControl->getEventHandler()->getLockScreen();
     auto mainScreen = uiControl->getEventHandler()->getMainScreen();
 
@@ -147,7 +147,7 @@ void loop() {
     });
     auto taskScheduler = new TaskScheduler();
 
-    MQTTParameters mqttParameters = {preferences, uiControl, dispatcher};
+    MQTTParameters mqttParameters = {&preferences, uiControl, dispatcher};
     taskScheduler->addTask({"loopDisplay", loopDisplay, TaskPriority::Low, 5000, (void *) {uiControl}});
     taskScheduler->addTask({"loopMqtt", loopMqtt, TaskPriority::Low, 5000, (void *)&mqttParameters});
 

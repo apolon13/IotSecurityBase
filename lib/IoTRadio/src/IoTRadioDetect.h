@@ -8,7 +8,7 @@ protected:
     ProjectPreferences::PreferencesKey getPreferencesConfigKey() override;
 
 public:
-    IoTRadioDetect(ProjectPreferences *p, Logger *l) : IoTRadio(p, l) {
+    IoTRadioDetect(const ProjectPreferences& p) : IoTRadio(p) {
         loadCurrentSensors();
     };
 };
