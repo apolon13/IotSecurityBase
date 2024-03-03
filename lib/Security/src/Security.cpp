@@ -42,33 +42,33 @@ void Security::listenRadioCommands() {
 
 
 void Security::handleControl(const string &name, bool needTriggerEvent) {
-    int eventId = -1;
+    auto eventId = SecurityEvent::UnknownEvent;
     if (name == GUARD) {
         guard();
         projectPreferences->lockSystem();
-        eventId = (int) SecurityEvent::EventOnGuard;
+        eventId = SecurityEvent::EventOnGuard;
     }
 
     if (name == DISARM) {
         disarm();
         if (projectPreferences->systemIsLocked()) {
             projectPreferences->unlockSystem();
-            eventId = (int) SecurityEvent::EventOnDisarm;
+            eventId = SecurityEvent::EventOnDisarm;
         }
     }
 
     if (name == MUTE) {
         mute();
-        eventId = (int) SecurityEvent::EventOnMute;
+        eventId = SecurityEvent::EventOnMute;
     }
 
     if (name == ALARM) {
         alarm();
-        eventId = (int) SecurityEvent::EventOnAlarm;
+        eventId = SecurityEvent::EventOnAlarm;
     }
 
-    if (needTriggerEvent && eventId != -1) {
-        triggerEvent(eventId);
+    if (needTriggerEvent && eventId != SecurityEvent::UnknownEvent) {
+        triggerEvent((int) eventId);
     }
 
     receiveCmdTopic->publish(name);
@@ -78,9 +78,9 @@ void Security::handleDetect(const string &signal) {
     long now = millis();
     auto detectSensor = selfSecurity->ioTRadioDetect->getSensorBySignal(signal);
     if (projectPreferences->systemIsLocked() && detectSensor->isActive) {
-        if ((now - lastAlarmEvent) > 5000) {
+        if ((now - lastAlarmEventTime) > 5000) {
             receiveCmdTopic->publish(ALARM);
-            lastAlarmEvent = now;
+            lastAlarmEventTime = now;
         }
         alarm();
     }

@@ -17,17 +17,17 @@ struct TaskToSchedule {
     TaskFunction_t func;
     TaskPriority priority;
     int stackDepth;
+    void *parameters;
 };
 
 class TaskScheduler {
 protected:
-    Logger *logger;
     std::vector<TaskToSchedule> tasksToSchedule;
     std::vector<string> tasksToDelete;
     std::vector<string> inRunning;
 
 public:
-    explicit TaskScheduler(Logger *l);
+    explicit TaskScheduler();
 
     void schedule();
 

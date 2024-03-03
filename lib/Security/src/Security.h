@@ -12,7 +12,8 @@ enum class SecurityEvent {
     EventOnGuard,
     EventOnDisarm,
     EventOnAlarm,
-    EventOnMute
+    EventOnMute,
+    UnknownEvent
 };
 
 class Security: public EventableObject {
@@ -22,7 +23,7 @@ protected:
     ProjectPreferences *projectPreferences;
     Topic *securityCmdTopic;
     Topic *receiveCmdTopic;
-    long lastAlarmEvent = 0;
+    long lastAlarmEventTime = 0;
 
     void listenRadioCommands();
 

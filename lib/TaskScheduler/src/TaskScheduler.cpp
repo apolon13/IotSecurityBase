@@ -13,7 +13,7 @@ void TaskScheduler::addTask(const TaskToSchedule& t) {
     }
 }
 
-TaskScheduler::TaskScheduler(Logger *l): logger(l) {
+TaskScheduler::TaskScheduler() {
 
 }
 
@@ -27,7 +27,7 @@ void TaskScheduler::schedule() {
                     task.func,
                     task.name.c_str(),
                     task.stackDepth,
-                    nullptr,
+                    task.parameters,
                     (int)task.priority,
                     nullptr
             );

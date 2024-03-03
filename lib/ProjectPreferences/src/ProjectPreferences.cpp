@@ -82,3 +82,15 @@ void ProjectPreferences::unlockSystem() {
 bool ProjectPreferences::systemIsLocked() {
     return get(SystemState, SYSTEM_STATE_UNLOCK) == SYSTEM_STATE_LOCK;
 }
+
+string ProjectPreferences::getSecurityTimeout() {
+    return readPreferencesProperty(convertProperty(SecurityTimeout), "30").value;
+}
+
+string ProjectPreferences::getConnectionTimeout() {
+    return readPreferencesProperty(convertProperty(ConnectionTimeout), "3").value;
+}
+
+string ProjectPreferences::getConnectionAttemptsBeforeRestart() {
+    return readPreferencesProperty(convertProperty(ConnectionAttemptsBeforeRestart), "10").value;
+}

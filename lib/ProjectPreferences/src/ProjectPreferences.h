@@ -41,10 +41,17 @@ private:
                 return "EditableDetectSensor";
             case LastError:
                 return "LastError";
+            case SecurityTimeout:
+                return "SecurityTimeout";
+            case ConnectionTimeout:
+                return "ConnectionTimeout";
+            case ConnectionAttemptsBeforeRestart:
+                return "ConnectionAttemptsBeforeRestart";
             default:
                 throw std::invalid_argument("Invalid property");
         }
     }
+
 public:
     enum PreferencesKey {
         MqttIp,
@@ -59,19 +66,29 @@ public:
         SystemPin,
         SystemState,
         EditableDetectSensor,
-        LastError
+        LastError,
+        SecurityTimeout,
+        ConnectionTimeout,
+        ConnectionAttemptsBeforeRestart,
     };
+
     explicit ProjectPreferences(Logger *l);
 
     string get(PreferencesKey key, string defaultValue);
 
-    void set(PreferencesKey key, const string& value);
+    void set(PreferencesKey key, const string &value);
 
     void lockSystem();
 
     void unlockSystem();
 
     bool systemIsLocked();
+
+    string getSecurityTimeout();
+
+    string getConnectionTimeout();
+
+    string getConnectionAttemptsBeforeRestart();
 };
 
 #endif

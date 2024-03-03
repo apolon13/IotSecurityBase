@@ -12,11 +12,11 @@
 #ifndef DISPLAY_UICONTROL_H
 #define DISPLAY_UICONTROL_H
 
-enum class UiControlEvent{
+enum class UiControlEvent {
     EventOnBacklightOff
 };
 
-class UiControl: public EventableObject {
+class UiControl : public EventableObject {
 private:
     UiEventHandler *eventHandler;
     long timeWithoutTouch = 0;
@@ -30,7 +30,7 @@ private:
     void backlightOff();
 
 public:
-    UiControl(ProjectPreferences *p, IoTRadioDetect *i, Dispatcher *d, QueueTask *q, IotRadioControl *ct, int bcklTimeout = 600);
+    UiControl(ProjectPreferences *p, IoTRadioDetect *i, Dispatcher *d, QueueTask *q, IotRadioControl *ct, int bcklTimeout);
 
     void render();
 

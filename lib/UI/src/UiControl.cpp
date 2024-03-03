@@ -118,7 +118,7 @@ void UiControl::init() {
 
 void UiControl::withoutTouch() {
     if (timeWithoutTouch < LONG_MAX) {
-        timeWithoutTouch++;
+        timeWithoutTouch += LV_INDEV_DEF_READ_PERIOD;
     }
 }
 

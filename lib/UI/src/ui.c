@@ -178,6 +178,7 @@ lv_obj_t *ui_generalSettingsScreen;
 lv_obj_t *ui_TabView7;
 lv_obj_t *ui_Label21;
 lv_obj_t *ui_Container6;
+lv_obj_t *ui_Container7;
 lv_obj_t *ui_settingsPincode;
 lv_obj_t *ui_pinlabel;
 void ui_event_settingsPincodeInput( lv_event_t * e);
@@ -189,6 +190,21 @@ lv_obj_t *ui_Label23;
 void ui_event_abortBtn3( lv_event_t * e);
 lv_obj_t *ui_abortBtn3;
 lv_obj_t *ui_Label25;
+lv_obj_t *ui_Container8;
+lv_obj_t *ui_settingsTimeout;
+lv_obj_t *ui_settingsTimeoutLabel;
+void ui_event_settingsTimeoutInput( lv_event_t * e);
+lv_obj_t *ui_settingsTimeoutInput;
+lv_obj_t *ui_Container9;
+lv_obj_t *ui_settingsConnectionTimeout;
+lv_obj_t *ui_settingsConnectionTimeoutLabel;
+void ui_event_settingsConnectionTimeoutInput( lv_event_t * e);
+lv_obj_t *ui_settingsConnectionTimeoutInput;
+lv_obj_t *ui_Container10;
+lv_obj_t *ui_settingsMaxAttempts;
+lv_obj_t *ui_settingsMaxAttemptsLabel;
+void ui_event_settingsMaxAttemptsInput( lv_event_t * e);
+lv_obj_t *ui_settingsMaxAttemptsInput;
 void ui_event_Keyboard4( lv_event_t * e);
 lv_obj_t *ui_Keyboard4;
 
@@ -542,6 +558,36 @@ void ui_event_abortBtn3( lv_event_t * e) {
     lv_event_code_t event_code = lv_event_get_code(e);lv_obj_t * target = lv_event_get_target(e);
 if ( event_code == LV_EVENT_CLICKED) {
       _ui_screen_change( &ui_home, LV_SCR_LOAD_ANIM_NONE, 200, 0, &ui_home_screen_init);
+}
+}
+void ui_event_settingsTimeoutInput( lv_event_t * e) {
+    lv_event_code_t event_code = lv_event_get_code(e);lv_obj_t * target = lv_event_get_target(e);
+if ( event_code == LV_EVENT_CLICKED) {
+      _ui_keyboard_set_target(ui_Keyboard4,  ui_settingsTimeoutInput);
+      _ui_flag_modify( ui_Keyboard4, LV_OBJ_FLAG_HIDDEN, _UI_MODIFY_FLAG_REMOVE);
+}
+if ( event_code == LV_EVENT_DEFOCUSED) {
+      _ui_flag_modify( ui_Keyboard4, LV_OBJ_FLAG_HIDDEN, _UI_MODIFY_FLAG_ADD);
+}
+}
+void ui_event_settingsConnectionTimeoutInput( lv_event_t * e) {
+    lv_event_code_t event_code = lv_event_get_code(e);lv_obj_t * target = lv_event_get_target(e);
+if ( event_code == LV_EVENT_CLICKED) {
+      _ui_keyboard_set_target(ui_Keyboard4,  ui_settingsConnectionTimeoutInput);
+      _ui_flag_modify( ui_Keyboard4, LV_OBJ_FLAG_HIDDEN, _UI_MODIFY_FLAG_REMOVE);
+}
+if ( event_code == LV_EVENT_DEFOCUSED) {
+      _ui_flag_modify( ui_Keyboard4, LV_OBJ_FLAG_HIDDEN, _UI_MODIFY_FLAG_ADD);
+}
+}
+void ui_event_settingsMaxAttemptsInput( lv_event_t * e) {
+    lv_event_code_t event_code = lv_event_get_code(e);lv_obj_t * target = lv_event_get_target(e);
+if ( event_code == LV_EVENT_CLICKED) {
+      _ui_keyboard_set_target(ui_Keyboard4,  ui_settingsMaxAttemptsInput);
+      _ui_flag_modify( ui_Keyboard4, LV_OBJ_FLAG_HIDDEN, _UI_MODIFY_FLAG_REMOVE);
+}
+if ( event_code == LV_EVENT_DEFOCUSED) {
+      _ui_flag_modify( ui_Keyboard4, LV_OBJ_FLAG_HIDDEN, _UI_MODIFY_FLAG_ADD);
 }
 }
 void ui_event_Keyboard4( lv_event_t * e) {
