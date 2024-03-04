@@ -9,7 +9,9 @@ void QueueTask::addTask(Task *task) {
 }
 
 void QueueTask::run() {
-    xQueueReceive(instance, &currentTask, portMAX_DELAY);
-    currentTask.handle(currentTask.args);
-    currentTask = {};
+    xQueueReceive(instance, &currentTask, 0);
+    if (currentTask.handle != nullptr) {
+        currentTask.handle(currentTask.args);
+        currentTask = {};
+    }
 }

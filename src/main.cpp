@@ -12,6 +12,10 @@ typedef struct {
 } UiParameters;
 
 typedef struct {
+    QueueTask& queue;
+} QueueParameters;
+
+typedef struct {
     ProjectPreferences& preferences;
     Dispatcher& dispatcher;
 } MQTTParameters;
@@ -43,8 +47,7 @@ void loopMqtt(void *data) {
             lastAttemptNetworkConnection = now;
         }
 
-        if (dispatcher.networkIsConnected() &&
-            (!dispatcher.cloudIsConnected())) {
+        if (dispatcher.networkIsConnected() && !dispatcher.cloudIsConnected()) {
             dispatcher.connectToCloud();
         }
 
@@ -73,6 +76,14 @@ void loopDisplay(void *data) {
             lastDisplayLoop = currentMs;
         }
         parameters->uiControl.render();
+        vTaskDelay(5);
+    }
+}
+
+void loopQueue(void *data) {
+    auto parameters = (QueueParameters *) data;
+    while (true) {
+        parameters->queue.run();
         vTaskDelay(5);
     }
 }
@@ -139,8 +150,10 @@ void loop() {
     TaskScheduler taskScheduler;
     MQTTParameters mqttParameters = {preferences, dispatcher};
     UiParameters uiParameters = {uiControl};
+    QueueParameters queueParameters = {queue};
     taskScheduler.addTask({"loopDisplay", loopDisplay, TaskPriority::Low, 5000, (void *) &uiParameters});
     taskScheduler.addTask({"loopMqtt", loopMqtt, TaskPriority::Low, 5000, (void *) &mqttParameters});
+    taskScheduler.addTask({"loopQueue", loopQueue, TaskPriority::Low, 3000, (void *) &queueParameters});
 
     try {
         taskScheduler.schedule();
@@ -148,5 +161,5 @@ void loop() {
         Serial.println(error.what());
     }
 
-    queue.run();
+    while(true);
 }
