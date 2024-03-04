@@ -68,8 +68,7 @@ void UiControl::backlightOff() {
 
 }
 
-UiControl::UiControl(ProjectPreferences *p, IoTRadioDetect *i, Dispatcher *d, QueueTask *q, IotRadioControl *ct,
-                     int bcklTimeout) : backlightTimeout(bcklTimeout) {
+UiControl::UiControl(int bcklTimeout) : backlightTimeout(bcklTimeout) {
     gfx->begin();
     gfx->fillScreen(BLACK);
     gfx->setTextSize(2);
@@ -96,7 +95,6 @@ UiControl::UiControl(ProjectPreferences *p, IoTRadioDetect *i, Dispatcher *d, Qu
     indevDrv.read_cb = readTouchpad;
     lv_indev_drv_register(&indevDrv);
     gfx->fillScreen(BLACK);
-    eventHandler = new UiEventHandler(p, i, d, q, ct);
     selfUiControl = this;
 }
 
@@ -108,16 +106,12 @@ void UiControl::render() {
     }
 }
 
-UiEventHandler *UiControl::getEventHandler() {
-    return eventHandler;
-}
-
 void UiControl::init() {
     ui_init();
 }
 
 void UiControl::withoutTouch() {
-    if (timeWithoutTouch < LONG_MAX) {
+    if (timeWithoutTouch < (LONG_MAX - LV_INDEV_DEF_READ_PERIOD)) {
         timeWithoutTouch += LV_INDEV_DEF_READ_PERIOD;
     }
 }

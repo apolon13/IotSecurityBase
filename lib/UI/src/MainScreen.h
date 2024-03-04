@@ -9,12 +9,11 @@
 
 class MainScreen : public Screen {
 private:
-    ProjectPreferences *projectPreferences;
-    IoTRadioDetect *ioTRadioDetect;
-    Dispatcher *dispatcher;
+    ProjectPreferences projectPreferences;
+    IoTRadioDetect ioTRadioDetect;
+    Dispatcher dispatcher;
 public:
-    MainScreen(ProjectPreferences *p, IoTRadioDetect *i, Dispatcher *d) : projectPreferences(p), ioTRadioDetect(i),
-                                                                          dispatcher(d) {};
+    MainScreen(const ProjectPreferences& p, const IoTRadioDetect& i, const Dispatcher& d) : projectPreferences(p), ioTRadioDetect(i), dispatcher(d) {};
 
     void showSuccessNetworkIcon();
 

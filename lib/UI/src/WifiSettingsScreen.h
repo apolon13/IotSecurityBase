@@ -7,9 +7,9 @@
 
 class WifiSettingsScreen : public Screen {
 private:
-    ProjectPreferences *projectPreferences;
+    ProjectPreferences projectPreferences;
 public:
-    WifiSettingsScreen(ProjectPreferences *p) : projectPreferences(p) {};
+    WifiSettingsScreen(const ProjectPreferences& p) : projectPreferences(p) {};
 
     void loadFiWiSettings(lv_event_t *e);
 

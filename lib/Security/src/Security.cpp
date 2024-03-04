@@ -29,11 +29,11 @@ void Security::listenRadioCommands() {
     IoTRadio::addRecvHandler([](const uint8_t *mac, const uint8_t *incomingData, int len) {
         auto *signal = (ReceivedSignal *) incomingData;
         string signalValue = signal->value.c_str();
-        if (selfSecurity->ioTRadioDetect->exist(signalValue)) {
+        if (selfSecurity->ioTRadioDetect.exist(signalValue)) {
             selfSecurity->handleDetect(signalValue);
         }
-        if (selfSecurity->iotRadioControl->exist(signalValue)) {
-            auto sensor = selfSecurity->iotRadioControl->getSensorBySignal(signalValue);
+        if (selfSecurity->iotRadioControl.exist(signalValue)) {
+            auto sensor = selfSecurity->iotRadioControl.getSensorBySignal(signalValue);
             selfSecurity->handleControl(sensor->name, true);
         }
     });
@@ -45,14 +45,14 @@ void Security::handleControl(const string &name, bool needTriggerEvent) {
     auto eventId = SecurityEvent::UnknownEvent;
     if (name == GUARD) {
         guard();
-        projectPreferences->lockSystem();
+        projectPreferences.lockSystem();
         eventId = SecurityEvent::EventOnGuard;
     }
 
     if (name == DISARM) {
         disarm();
-        if (projectPreferences->systemIsLocked()) {
-            projectPreferences->unlockSystem();
+        if (projectPreferences.systemIsLocked()) {
+            projectPreferences.unlockSystem();
             eventId = SecurityEvent::EventOnDisarm;
         }
     }
@@ -76,8 +76,8 @@ void Security::handleControl(const string &name, bool needTriggerEvent) {
 
 void Security::handleDetect(const string &signal) {
     long now = millis();
-    auto detectSensor = selfSecurity->ioTRadioDetect->getSensorBySignal(signal);
-    if (projectPreferences->systemIsLocked() && detectSensor->isActive) {
+    auto detectSensor = selfSecurity->ioTRadioDetect.getSensorBySignal(signal);
+    if (projectPreferences.systemIsLocked() && detectSensor->isActive) {
         if ((now - lastAlarmEventTime) > 5000) {
             receiveCmdTopic->publish(ALARM);
             lastAlarmEventTime = now;
@@ -86,14 +86,14 @@ void Security::handleDetect(const string &signal) {
     }
 }
 
-Security::Security(IoTRadioDetect *d, IotRadioControl *c, ProjectPreferences *p, Topic *cmd, Topic *rcv)
+Security::Security(const IoTRadioDetect &d, const IotRadioControl &c, const ProjectPreferences &p, Topic *cmd,Topic *rcv)
         : ioTRadioDetect(d),
           iotRadioControl(c),
           projectPreferences(p),
           securityCmdTopic(cmd),
           receiveCmdTopic(rcv) {
     selfSecurity = this;
-    projectPreferences->lockSystem();
+    projectPreferences.lockSystem();
     IoTRadio::addReceiver(receiverAddress);
     listen();
 }

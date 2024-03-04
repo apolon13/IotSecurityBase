@@ -4,7 +4,7 @@
 #include "Arduino_GFX_Library.h"
 #include "Wire.h"
 #include "TAMC_GT911.h"
-#include "UiEventHandler.h"
+#include "ScreenFactory.h"
 #include "UiMutex.h"
 #include "QueueTask.h"
 #include "IotRadioControl.h"
@@ -18,7 +18,6 @@ enum class UiControlEvent {
 
 class UiControl : public EventableObject {
 private:
-    UiEventHandler *eventHandler;
     long timeWithoutTouch = 0;
     bool backlightIsOn = false;
     int backlightTimeout;
@@ -30,13 +29,11 @@ private:
     void backlightOff();
 
 public:
-    UiControl(ProjectPreferences *p, IoTRadioDetect *i, Dispatcher *d, QueueTask *q, IotRadioControl *ct, int bcklTimeout);
+    explicit UiControl(int bcklTimeout);
 
     void render();
 
     void init();
-
-    UiEventHandler *getEventHandler();
 
     void withoutTouch();
 

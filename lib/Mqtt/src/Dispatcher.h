@@ -10,6 +10,7 @@ class Dispatcher {
 
 protected:
     ProjectPreferences projectPreferences;
+    PubSubDelegate *pubSubDelegate;
     bool cloudConnectionInProcess = false;
     bool networkConnectionInProcess = false;
     vector<Topic *> topics;

@@ -18,9 +18,9 @@ enum class SecurityEvent {
 
 class Security: public EventableObject {
 protected:
-    IoTRadioDetect *ioTRadioDetect;
-    IotRadioControl *iotRadioControl;
-    ProjectPreferences *projectPreferences;
+    IoTRadioDetect ioTRadioDetect;
+    IotRadioControl iotRadioControl;
+    ProjectPreferences projectPreferences;
     Topic *securityCmdTopic;
     Topic *receiveCmdTopic;
     long lastAlarmEventTime = 0;
@@ -42,8 +42,7 @@ protected:
     void mute();
 
 public:
-    explicit Security(IoTRadioDetect *d, IotRadioControl *c, ProjectPreferences *p, Topic *cmd,
-                      Topic *rcv);
+    explicit Security(const IoTRadioDetect& d, const IotRadioControl& c, const ProjectPreferences& p, Topic * cmd, Topic * rcv);
 
     void listen();
 

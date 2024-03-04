@@ -11,14 +11,14 @@ void DetectSensorsScreen::saveNewSensor(void *) {
         lv_label_set_text(label, signalValue.c_str());
         lv_obj_clear_flag(ui_comp_get_child(component, UI_COMP_SENSORITEM_SENSORITEMPANEL_LABEL15), LV_OBJ_FLAG_HIDDEN);
         Sensor newSensor = {signalValue, signalValue, true, 50};
-        ioTRadioDetect->save(&newSensor);
+        ioTRadioDetect.save(&newSensor);
         UiMutex::give();
     }
     currentSignal->clear();
 }
 
 void DetectSensorsScreen::loadAllSensors(lv_event_t *e) {
-    std::vector<Sensor> sensors = ioTRadioDetect->getCurrentSensors();
+    std::vector<Sensor> sensors = ioTRadioDetect.getCurrentSensors();
     lv_obj_clean(ui_Sensors);
     for (Sensor sensor: sensors) {
         lv_obj_t *component = ui_SensorItem_create(ui_Sensors);
@@ -45,31 +45,31 @@ void DetectSensorsScreen::goToEditSensor(lv_event_t *e) {
     lv_obj_t *component = lv_obj_get_parent(panel);
     lv_obj_t *label = ui_comp_get_child(component, UI_COMP_SENSORITEM_SENSORITEMPANEL_SENSORID);
     string text = lv_label_get_text(label);
-    projectPreferences->set(ProjectPreferences::EditableDetectSensor, text);
+    projectPreferences.set(ProjectPreferences::EditableDetectSensor, text);
     lv_disp_load_scr(ui_edittSensorScreen);
 }
 
 void DetectSensorsScreen::handleReceiveSensor(const uint8_t *incomingData) {
-    if (!scanIsRunning || ioTRadioDetect->getCurrentSensors().size() > 8) {
+    if (!scanIsRunning || ioTRadioDetect.getCurrentSensors().size() > 8) {
         IoTRadio::stopScan();
         afterScan();
         return;
     }
     currentSignal = (ReceivedSignal *) incomingData;
     string signalValue = currentSignal->value.c_str();
-    if (!signalValue.empty() && !ioTRadioDetect->exist(signalValue)
-        && !iotRadioControl->exist(signalValue)) {
+    if (!signalValue.empty() && !ioTRadioDetect.exist(signalValue)
+        && !iotRadioControl.exist(signalValue)) {
         Task task = {
                 [this](void *data) {
                     this->saveNewSensor(data);
                 },
                 nullptr
         };
-        queueTask->addTask(&task);
+        queueTask.addTask(&task);
     }
 }
 
-DetectSensorsScreen::DetectSensorsScreen(IoTRadioDetect *d, IotRadioControl *c, QueueTask *q, ProjectPreferences *p)
+DetectSensorsScreen::DetectSensorsScreen(const IoTRadioDetect& d, const IotRadioControl& c, const QueueTask& q, const ProjectPreferences& p)
         : ioTRadioDetect(d),
           queueTask(q),
           iotRadioControl(c),
@@ -82,6 +82,6 @@ void DetectSensorsScreen::deleteSensor(lv_event_t *e) {
     lv_obj_t *component = lv_obj_get_parent(panel);
     lv_obj_t *label = ui_comp_get_child(component, UI_COMP_SENSORITEM_SENSORITEMPANEL_SENSORID);
     string text = lv_label_get_text(label);
-    ioTRadioDetect->forget(ioTRadioDetect->getSensorByName(text)->signal);
+    ioTRadioDetect.forget(ioTRadioDetect.getSensorByName(text)->signal);
     lv_obj_del(component);
 }

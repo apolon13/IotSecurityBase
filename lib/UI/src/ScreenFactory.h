@@ -17,7 +17,7 @@
 #ifndef DISPLAY_UIEVENTHANDLER_H
 #define DISPLAY_UIEVENTHANDLER_H
 
-class UiEventHandler {
+class ScreenFactory {
 private:
     MainScreen *mainScreen;
     DetectSensorsScreen *detectSensorsScreen;
@@ -28,7 +28,7 @@ private:
     EditDetectSensorScreen *editDetectSensorScreen;
     LockScreen *lockScreen;
 public:
-    UiEventHandler(ProjectPreferences *p, IoTRadioDetect *i, Dispatcher *d, QueueTask *q, IotRadioControl *c);
+    ScreenFactory(const ProjectPreferences& p, const IoTRadioDetect& i, const Dispatcher& d, const QueueTask& q, const IotRadioControl& ct);
 
     MainScreen *getMainScreen();
 

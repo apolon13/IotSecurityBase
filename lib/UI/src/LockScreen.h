@@ -12,9 +12,9 @@ enum class LockScreenEvent {
 
 class LockScreen : public Screen {
 private:
-    ProjectPreferences *projectPreferences;
+    ProjectPreferences projectPreferences;
 public:
-    explicit LockScreen(ProjectPreferences *p) : projectPreferences(p) {};
+    explicit LockScreen(const ProjectPreferences &p) : projectPreferences(p) {};
 
     void unlockSystem(lv_event_t *e);
 

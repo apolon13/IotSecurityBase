@@ -17,16 +17,14 @@ struct Property {
     bool exist;
 };
 
-ProjectPreferences::ProjectPreferences(Logger *l) : logger(l) {
+ProjectPreferences::ProjectPreferences() {
     if (!SDFat.begin()) {
-        logger->debug("SD card init error");
+        Serial.println("SD card init error");
     }
     if (!SDFat.exists(FILENAME)) {
         auto file = SDFat.open(FILENAME, O_CREAT);
-        logger->debug((string) "Create new settings file " + FILENAME);
+        Serial.println("Create new settings file");
         file.close();
-    } else {
-        logger->debug(string("Settings file - ") + FILENAME);
     }
 }
 

@@ -20,14 +20,14 @@ void MainScreen::failedMqttConnection() {
 }
 
 void MainScreen::loadDataInMain(lv_event_t *e) {
-    string mqttIp = projectPreferences->get(ProjectPreferences::MqttIp, "ip empty");
-    string mqttPort = projectPreferences->get(ProjectPreferences::MqttPort, "port empty");
-    string mqttUsername = projectPreferences->get(ProjectPreferences::MqttUsername, "username empty");
-    string mqttEntityId = projectPreferences->get(ProjectPreferences::MqttEntityId, "id empty");
-    string wifiSsid = projectPreferences->get(ProjectPreferences::WifiSsid, "");
+    string mqttIp = projectPreferences.get(ProjectPreferences::MqttIp, "ip empty");
+    string mqttPort = projectPreferences.get(ProjectPreferences::MqttPort, "port empty");
+    string mqttUsername = projectPreferences.get(ProjectPreferences::MqttUsername, "username empty");
+    string mqttEntityId = projectPreferences.get(ProjectPreferences::MqttEntityId, "id empty");
+    string wifiSsid = projectPreferences.get(ProjectPreferences::WifiSsid, "");
     int countAll = 0;
     int countActive = 0;
-    for (auto sensor: ioTRadioDetect->getCurrentSensors()) {
+    for (auto sensor: ioTRadioDetect.getCurrentSensors()) {
         countAll++;
         if (sensor.isActive) {
             countActive++;
@@ -46,18 +46,18 @@ void MainScreen::loadDataInMain(lv_event_t *e) {
 }
 
 void MainScreen::handleConnections() {
-    if (!dispatcher->cloudIsConnected() && UiMutex::take()) {
+    if (!dispatcher.cloudIsConnected() && UiMutex::take()) {
         failedMqttConnection();
         UiMutex::give();
-    } else if (dispatcher->cloudIsConnected() && UiMutex::take()) {
+    } else if (dispatcher.cloudIsConnected() && UiMutex::take()) {
         successMqttConnection();
         UiMutex::give();
     }
 
-    if (!dispatcher->networkIsConnected() && UiMutex::take()) {
+    if (!dispatcher.networkIsConnected() && UiMutex::take()) {
         showFailedNetworkIcon();
         UiMutex::give();
-    } else if (dispatcher->networkIsConnected() && UiMutex::take()) {
+    } else if (dispatcher.networkIsConnected() && UiMutex::take()) {
         showSuccessNetworkIcon();
         UiMutex::give();
     }

@@ -11,8 +11,6 @@ using namespace std;
 
 class ProjectPreferences {
 private:
-    Logger *logger;
-
     string convertProperty(int key) {
         switch (key) {
             case MqttIp:
@@ -72,7 +70,7 @@ public:
         ConnectionAttemptsBeforeRestart,
     };
 
-    explicit ProjectPreferences(Logger *l);
+    explicit ProjectPreferences();
 
     string get(PreferencesKey key, string defaultValue);
 

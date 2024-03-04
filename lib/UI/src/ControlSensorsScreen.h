@@ -13,9 +13,9 @@ struct ReceivedSignalWithControl : public ReceivedSignal {
 
 class ControlSensorsScreen : public SensorScreen {
 private:
-    IoTRadioDetect *ioTRadioDetect;
-    IotRadioControl *iotRadioControl;
-    QueueTask *queueTask;
+    IoTRadioDetect ioTRadioDetect;
+    IotRadioControl iotRadioControl;
+    QueueTask queueTask;
     lv_obj_t *controlAction;
     ReceivedSignalWithControl *currentSignalWithControl;
 
@@ -24,7 +24,7 @@ private:
     void saveNewControl(void *);
 
 public:
-    ControlSensorsScreen(IoTRadioDetect *d, IotRadioControl *c, QueueTask *q);
+    ControlSensorsScreen(const IoTRadioDetect& d, const IotRadioControl& c, const QueueTask& q);
 
     void loadAllControls(lv_event_t *e);
 

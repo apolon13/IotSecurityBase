@@ -1,84 +1,84 @@
 #include "ui.h"
 #include "UiControl.h"
 
-extern UiEventHandler *eventHandler;
+extern ScreenFactory *screenFactory;
 
 void loadDataInMain(lv_event_t *e) {
-    eventHandler->getMainScreen()->loadDataInMain(e);
+    screenFactory->getMainScreen()->loadDataInMain(e);
 }
 
 void loadAllSensors(lv_event_t *e) {
-    eventHandler->getDetectSensorsScreen()->loadAllSensors(e);
+    screenFactory->getDetectSensorsScreen()->loadAllSensors(e);
 }
 
 void loadSensor(lv_event_t *e) {
-    eventHandler->getEditDetectSensorScreen()->loadSensor(e);
+    screenFactory->getEditDetectSensorScreen()->loadSensor(e);
 }
 
 void saveSensorSettings(lv_event_t *e) {
-    eventHandler->getEditDetectSensorScreen()->saveSensorSettings(e);
+    screenFactory->getEditDetectSensorScreen()->saveSensorSettings(e);
 }
 
 void loadFiWiSettings(lv_event_t *e) {
-    eventHandler->getWifiSettingsScreen()->loadFiWiSettings(e);
+    screenFactory->getWifiSettingsScreen()->loadFiWiSettings(e);
 }
 
 void loadMqttSettings(lv_event_t *e) {
-    eventHandler->getMqttConfigScreen()->loadMqttSettings(e);
+    screenFactory->getMqttConfigScreen()->loadMqttSettings(e);
 }
 
 void saveMqttSettings(lv_event_t *e) {
-    eventHandler->getMqttConfigScreen()->saveMqttSettings(e);
+    screenFactory->getMqttConfigScreen()->saveMqttSettings(e);
 }
 
 void saveWifiSettings(lv_event_t *e) {
-    eventHandler->getWifiSettingsScreen()->saveWifiSettings(e);
+    screenFactory->getWifiSettingsScreen()->saveWifiSettings(e);
 }
 
 void deleteSensor(lv_event_t *e) {
-    eventHandler->getDetectSensorsScreen()->deleteSensor(e);
+    screenFactory->getDetectSensorsScreen()->deleteSensor(e);
 }
 
 void startScan(lv_event_t *e) {
-    eventHandler->getDetectSensorsScreen()->startScan(e);
+    screenFactory->getDetectSensorsScreen()->startScan(e);
 }
 
 void stopScan(lv_event_t *e) {
-    eventHandler->getDetectSensorsScreen()->stopScan(e);
+    screenFactory->getDetectSensorsScreen()->stopScan(e);
 }
 
 void goToEditSensor(lv_event_t *e) {
-    eventHandler->getDetectSensorsScreen()->goToEditSensor(e);
+    screenFactory->getDetectSensorsScreen()->goToEditSensor(e);
 }
 
 void lockSystem(lv_event_t *e) {
-    eventHandler->getLockScreen()->lockSystem(e);
+    screenFactory->getLockScreen()->lockSystem(e);
 }
 
 void unlockSystem(lv_event_t *e) {
-    eventHandler->getLockScreen()->unlockSystem(e);
+    screenFactory->getLockScreen()->unlockSystem(e);
 }
 
 void saveGeneralSettings(lv_event_t *e) {
-    eventHandler->getGeneralSettingsScreen()->saveGeneralSettings(e);
+    screenFactory->getGeneralSettingsScreen()->saveGeneralSettings(e);
 }
 
 void loadGeneralSettings(lv_event_t *e) {
-    eventHandler->getGeneralSettingsScreen()->loadGeneralSettings(e);
+    screenFactory->getGeneralSettingsScreen()->loadGeneralSettings(e);
 }
 
 void loadAllControls(lv_event_t *e) {
-    eventHandler->getControlSensorsScreen()->loadAllControls(e);
+    screenFactory->getControlSensorsScreen()->loadAllControls(e);
 }
 
 void addControl(lv_event_t *e) {
-    eventHandler->getControlSensorsScreen()->addControl(e);
+    screenFactory->getControlSensorsScreen()->addControl(e);
 }
 
 void addControlAction(lv_event_t *e) {
-    eventHandler->getControlSensorsScreen()->addControlAction(e);
+    screenFactory->getControlSensorsScreen()->addControlAction(e);
 }
 
 void deleteControl(lv_event_t *e) {
-    eventHandler->getControlSensorsScreen()->deleteControl(e);
+    screenFactory->getControlSensorsScreen()->deleteControl(e);
 }
