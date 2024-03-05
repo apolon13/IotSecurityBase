@@ -17,9 +17,7 @@ TaskScheduler::TaskScheduler() {
 
 }
 
-long lastInfo;
 void TaskScheduler::schedule() {
-    long currentMs = millis();
     for (auto task: tasksToSchedule) {
         auto handle = xTaskGetHandle(task.name.c_str());
         if (handle == nullptr) {
@@ -50,20 +48,6 @@ void TaskScheduler::schedule() {
         }
     }
     tasksToDelete.clear();
-
-    if ((currentMs - lastInfo) >= 5000) {
-        for (const auto& task : inRunning) {
-            auto handle = xTaskGetHandle(task.c_str());
-            if (handle != nullptr) {
-                auto status = eTaskGetState(handle);
-               // logger->debug("Task " + task);
-               // logger->debug("Status " + to_string(status));
-            } else {
-              //  logger->debug(task + " not found");
-            }
-        }
-        lastInfo = currentMs;
-    }
 }
 
 void TaskScheduler::deleteTask(const string& name) {

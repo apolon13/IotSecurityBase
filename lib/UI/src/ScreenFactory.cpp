@@ -1,6 +1,6 @@
 #include "ScreenFactory.h"
 
-ScreenFactory::ScreenFactory(const ProjectPreferences& p, const IoTRadioDetect& i, const Dispatcher& d, const QueueTask& q, const IotRadioControl& ct) {
+ScreenFactory::ScreenFactory(ProjectPreferences& p, IoTRadioDetect& i, Dispatcher& d, QueueTask& q, IotRadioControl& ct) {
     mainScreen = new MainScreen(p, i, d);
     detectSensorsScreen = new DetectSensorsScreen(i, ct, q, p);
     controlSensorsScreen = new ControlSensorsScreen(i, ct, q);

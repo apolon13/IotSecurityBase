@@ -71,7 +71,7 @@ Sensor IoTRadio::buildSensorByConfigString(string configString) {
     return sensor;
 }
 
-IoTRadio::IoTRadio(const ProjectPreferences& p) : projectPreferences(p){
+IoTRadio::IoTRadio(ProjectPreferences& p) : projectPreferences(p){
 
 }
 

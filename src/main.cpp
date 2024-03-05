@@ -102,7 +102,7 @@ void loop() {
     Topic rcv("/security/receive");
     Dispatcher dispatcher(preferences, {&cmd, &rcv});
     QueueTask queue;
-    Security security(detect, control, preferences, &cmd, &rcv);
+    Security security(detect, control, preferences, cmd, rcv);
     screenFactory = new ScreenFactory(preferences,detect,dispatcher,queue,control);
     UiControl uiControl(stoi(preferences.getSecurityTimeout()) * 1000);
     uiControl.init();

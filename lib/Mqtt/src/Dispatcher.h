@@ -9,7 +9,7 @@
 class Dispatcher {
 
 protected:
-    ProjectPreferences projectPreferences;
+    ProjectPreferences& projectPreferences;
     PubSubDelegate *pubSubDelegate;
     bool cloudConnectionInProcess = false;
     bool networkConnectionInProcess = false;
@@ -21,7 +21,7 @@ protected:
     void connectToMqtt();
 
 public:
-    Dispatcher(const ProjectPreferences& p, vector<Topic *> t);
+    Dispatcher(ProjectPreferences& p, vector<Topic *> t);
 
     void connectToNetwork();
 

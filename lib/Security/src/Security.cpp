@@ -71,7 +71,7 @@ void Security::handleControl(const string &name, bool needTriggerEvent) {
         triggerEvent((int) eventId);
     }
 
-    receiveCmdTopic->publish(name);
+    receiveCmdTopic.publish(name);
 }
 
 void Security::handleDetect(const string &signal) {
@@ -79,14 +79,14 @@ void Security::handleDetect(const string &signal) {
     auto detectSensor = selfSecurity->ioTRadioDetect.getSensorBySignal(signal);
     if (projectPreferences.systemIsLocked() && detectSensor->isActive) {
         if ((now - lastAlarmEventTime) > 5000) {
-            receiveCmdTopic->publish(ALARM);
+            receiveCmdTopic.publish(ALARM);
             lastAlarmEventTime = now;
         }
         alarm();
     }
 }
 
-Security::Security(const IoTRadioDetect &d, const IotRadioControl &c, const ProjectPreferences &p, Topic *cmd,Topic *rcv)
+Security::Security(IoTRadioDetect &d, IotRadioControl &c, ProjectPreferences &p, Topic& cmd, Topic& rcv)
         : ioTRadioDetect(d),
           iotRadioControl(c),
           projectPreferences(p),
@@ -99,8 +99,8 @@ Security::Security(const IoTRadioDetect &d, const IotRadioControl &c, const Proj
 }
 
 void Security::listenMqttCommands() {
-    securityCmdTopic->refreshHandlers();
-    securityCmdTopic->addHandler([this](const string &payload) {
+    securityCmdTopic.refreshHandlers();
+    securityCmdTopic.addHandler([this](const string &payload) {
         handleControl(payload, true);
     });
 }

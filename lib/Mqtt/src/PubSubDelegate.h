@@ -8,9 +8,9 @@ using namespace std;
 
 class PubSubDelegate {
 private:
-    PubSubClient pubSub;
+    PubSubClient& pubSub;
 public:
-    explicit PubSubDelegate(const PubSubClient& ps): pubSub(ps) {};
+    explicit PubSubDelegate(PubSubClient& ps): pubSub(ps) {};
     void publish(const string& topic, const string& payload);
 };
 #endif

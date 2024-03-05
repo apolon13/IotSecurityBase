@@ -8,10 +8,10 @@
 
 class EditDetectSensorScreen : public Screen {
 private:
-    IoTRadioDetect ioTRadioDetect;
-    ProjectPreferences projectPreferences;
+    IoTRadioDetect& ioTRadioDetect;
+    ProjectPreferences& projectPreferences;
 public:
-    EditDetectSensorScreen(const IoTRadioDetect& i, const ProjectPreferences& p) : ioTRadioDetect(i), projectPreferences(p) {};
+    EditDetectSensorScreen(IoTRadioDetect& i, ProjectPreferences& p) : ioTRadioDetect(i), projectPreferences(p) {};
 
     void loadSensor(lv_event_t *e);
 

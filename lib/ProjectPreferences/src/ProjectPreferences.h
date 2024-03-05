@@ -10,7 +10,9 @@ using namespace std;
 #define SYSTEM_STATE_UNLOCK "0"
 
 class ProjectPreferences {
-private:
+protected:
+    unordered_map<int, string> cache;
+
     string convertProperty(int key) {
         switch (key) {
             case MqttIp:

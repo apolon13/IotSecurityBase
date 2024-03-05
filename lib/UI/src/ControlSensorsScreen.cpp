@@ -134,7 +134,7 @@ void ControlSensorsScreen::deleteControl(lv_event_t *e) {
     lv_obj_del(component);
 }
 
-ControlSensorsScreen::ControlSensorsScreen(const IoTRadioDetect& d, const IotRadioControl& c, const QueueTask& q) : iotRadioControl(c),
+ControlSensorsScreen::ControlSensorsScreen(IoTRadioDetect& d, IotRadioControl& c, QueueTask& q) : iotRadioControl(c),
                                                                                                   ioTRadioDetect(d),
                                                                                                   queueTask(q) {
     selfControlSensorsScreen = this;

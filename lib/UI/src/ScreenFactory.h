@@ -28,7 +28,7 @@ private:
     EditDetectSensorScreen *editDetectSensorScreen;
     LockScreen *lockScreen;
 public:
-    ScreenFactory(const ProjectPreferences& p, const IoTRadioDetect& i, const Dispatcher& d, const QueueTask& q, const IotRadioControl& ct);
+    ScreenFactory(ProjectPreferences& p, IoTRadioDetect& i, Dispatcher& d, QueueTask& q, IotRadioControl& ct);
 
     MainScreen *getMainScreen();
 

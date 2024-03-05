@@ -8,7 +8,7 @@
 WiFiClient espClient;
 PubSubClient pubSub(espClient);
 
-Dispatcher::Dispatcher(const ProjectPreferences& p, vector<Topic *> t) : projectPreferences(p), topics(std::move(t)) {
+Dispatcher::Dispatcher(ProjectPreferences& p, vector<Topic *> t) : projectPreferences(p), topics(std::move(t)) {
     WiFi.persistent(false);
     WiFi.mode(WIFI_MODE_APSTA);
     pubSubDelegate = new PubSubDelegate(pubSub);

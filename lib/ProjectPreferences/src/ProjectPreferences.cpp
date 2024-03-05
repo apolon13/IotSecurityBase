@@ -63,10 +63,17 @@ void writePreferencesProperty(const string &name, const string& value) {
 
 void ProjectPreferences::set(ProjectPreferences::PreferencesKey property, const string& value) {
     writePreferencesProperty(convertProperty(property), value);
+    cache.insert_or_assign(property, value);
 }
 
 string ProjectPreferences::get(ProjectPreferences::PreferencesKey property, string defaultValue) {
-    return readPreferencesProperty(convertProperty(property), std::move(defaultValue)).value;
+    try {
+        return cache.at(property);
+    } catch (out_of_range& e) {
+        auto value = readPreferencesProperty(convertProperty(property), std::move(defaultValue)).value;
+        cache.insert_or_assign(property, value);
+        return value;
+    }
 }
 
 void ProjectPreferences::lockSystem() {
