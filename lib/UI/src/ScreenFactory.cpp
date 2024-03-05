@@ -1,6 +1,7 @@
 #include "ScreenFactory.h"
 
-ScreenFactory::ScreenFactory(ProjectPreferences& p, IoTRadioDetect& i, Dispatcher& d, QueueTask& q, IotRadioControl& ct) {
+ScreenFactory::ScreenFactory(ProjectPreferences &p, IoTRadioDetect &i, Dispatcher &d, QueueTask &q,
+                             IotRadioControl &ct) {
     mainScreen = new MainScreen(p, i, d);
     detectSensorsScreen = new DetectSensorsScreen(i, ct, q, p);
     controlSensorsScreen = new ControlSensorsScreen(i, ct, q);
@@ -11,34 +12,34 @@ ScreenFactory::ScreenFactory(ProjectPreferences& p, IoTRadioDetect& i, Dispatche
     lockScreen = new LockScreen(p);
 }
 
-MainScreen *ScreenFactory::getMainScreen() {
-    return mainScreen;
+MainScreen &ScreenFactory::getMainScreen() {
+    return *mainScreen;
 }
 
-DetectSensorsScreen *ScreenFactory::getDetectSensorsScreen() {
-    return detectSensorsScreen;
+DetectSensorsScreen &ScreenFactory::getDetectSensorsScreen() {
+    return *detectSensorsScreen;
 }
 
-ControlSensorsScreen *ScreenFactory::getControlSensorsScreen() {
-    return controlSensorsScreen;
+ControlSensorsScreen &ScreenFactory::getControlSensorsScreen() {
+    return *controlSensorsScreen;
 }
 
-MqttConfigScreen *ScreenFactory::getMqttConfigScreen() {
-    return mqttConfigScreen;
+MqttConfigScreen &ScreenFactory::getMqttConfigScreen() {
+    return *mqttConfigScreen;
 }
 
-WifiSettingsScreen *ScreenFactory::getWifiSettingsScreen() {
-    return wifiSettingsScreen;
+WifiSettingsScreen &ScreenFactory::getWifiSettingsScreen() {
+    return *wifiSettingsScreen;
 }
 
-GeneralSettingsScreen *ScreenFactory::getGeneralSettingsScreen() {
-    return generalSettingsScreen;
+GeneralSettingsScreen &ScreenFactory::getGeneralSettingsScreen() {
+    return *generalSettingsScreen;
 }
 
-EditDetectSensorScreen *ScreenFactory::getEditDetectSensorScreen() {
-    return editDetectSensorScreen;
+EditDetectSensorScreen &ScreenFactory::getEditDetectSensorScreen() {
+    return *editDetectSensorScreen;
 }
 
-LockScreen *ScreenFactory::getLockScreen() {
-    return lockScreen;
+LockScreen &ScreenFactory::getLockScreen() {
+    return *lockScreen;
 }

@@ -16,16 +16,16 @@
 // #define TOUCH_MAP_Y2 480
 
 /* uncomment for GT911 */
- #define TOUCH_GT911
- #define TOUCH_GT911_SCL 20//20
- #define TOUCH_GT911_SDA 19//19
- #define TOUCH_GT911_INT -1//-1
- #define TOUCH_GT911_RST -1//38
- #define TOUCH_GT911_ROTATION ROTATION_NORMAL
- #define TOUCH_MAP_X1 800//480
- #define TOUCH_MAP_X2 0
- #define TOUCH_MAP_Y1 480//272
- #define TOUCH_MAP_Y2 0
+#define TOUCH_GT911
+#define TOUCH_GT911_SCL 20//20
+#define TOUCH_GT911_SDA 19//19
+#define TOUCH_GT911_INT -1//-1
+#define TOUCH_GT911_RST -1//38
+#define TOUCH_GT911_ROTATION ROTATION_NORMAL
+#define TOUCH_MAP_X1 800//480
+#define TOUCH_MAP_X2 0
+#define TOUCH_MAP_Y1 480//272
+#define TOUCH_MAP_Y2 0
 
 /* uncomment for XPT2046 */
 // #define TOUCH_XPT2046
@@ -49,9 +49,12 @@ FT6X36 ts(&Wire, TOUCH_FT6X36_INT);
 bool touch_touched_flag = true, touch_released_flag = true;
 
 #elif defined(TOUCH_GT911)
+
 #include <Wire.h>
 #include <TAMC_GT911.h>
-TAMC_GT911 ts = TAMC_GT911(TOUCH_GT911_SDA, TOUCH_GT911_SCL, TOUCH_GT911_INT, TOUCH_GT911_RST, max(TOUCH_MAP_X1, TOUCH_MAP_X2), max(TOUCH_MAP_Y1, TOUCH_MAP_Y2));
+
+TAMC_GT911 ts = TAMC_GT911(TOUCH_GT911_SDA, TOUCH_GT911_SCL, TOUCH_GT911_INT, TOUCH_GT911_RST,
+                           max(TOUCH_MAP_X1, TOUCH_MAP_X2), max(TOUCH_MAP_Y1, TOUCH_MAP_Y2));
 
 #elif defined(TOUCH_XPT2046)
 #include <XPT2046_Touchscreen.h>
@@ -101,46 +104,44 @@ void touch(TPoint p, TEvent e)
 }
 #endif
 
-void touch_init()
-{
+void touch_init() {
 #if defined(TOUCH_FT6X36)
-  Wire.begin(TOUCH_FT6X36_SDA, TOUCH_FT6X36_SCL);
-  ts.begin();
-  ts.registerTouchHandler(touch);
+    Wire.begin(TOUCH_FT6X36_SDA, TOUCH_FT6X36_SCL);
+    ts.begin();
+    ts.registerTouchHandler(touch);
 
 #elif defined(TOUCH_GT911)
-  Wire.begin(TOUCH_GT911_SDA, TOUCH_GT911_SCL);
-  ts.begin();
-  ts.setRotation(TOUCH_GT911_ROTATION);
+    Wire.begin(TOUCH_GT911_SDA, TOUCH_GT911_SCL);
+    ts.begin();
+    ts.setRotation(TOUCH_GT911_ROTATION);
 
 #elif defined(TOUCH_XPT2046)
-  SPI.begin(TOUCH_XPT2046_SCK, TOUCH_XPT2046_MISO, TOUCH_XPT2046_MOSI, TOUCH_XPT2046_CS);
-  ts.begin();
-  ts.setRotation(TOUCH_XPT2046_ROTATION);
+    SPI.begin(TOUCH_XPT2046_SCK, TOUCH_XPT2046_MISO, TOUCH_XPT2046_MOSI, TOUCH_XPT2046_CS);
+    ts.begin();
+    ts.setRotation(TOUCH_XPT2046_ROTATION);
 
 #endif
 }
 
-bool touch_has_signal()
-{
+bool touch_has_signal() {
 #if defined(TOUCH_FT6X36)
-  ts.loop();
-  return touch_touched_flag || touch_released_flag;
+    ts.loop();
+    return touch_touched_flag || touch_released_flag;
 
 #elif defined(TOUCH_GT911)
-  return true;
+    return true;
 
 #elif defined(TOUCH_XPT2046)
-  return ts.tirqTouched();
+    return ts.tirqTouched();
 
 #else
-  return false;
+    return false;
 #endif
 }
 
 long m(long x, long in_min, long in_max, long out_min, long out_max) {
     const long run = in_max - in_min;
-    if(run == 0){
+    if (run == 0) {
         log_e("map(): Invalid input range, min == max");
         return -1; // AVR returns -1, SAM returns 0
     }
@@ -149,80 +150,75 @@ long m(long x, long in_min, long in_max, long out_min, long out_max) {
     return (delta * rise) / run + out_min;
 }
 
-bool touch_touched()
-{
+bool touch_touched() {
 #if defined(TOUCH_FT6X36)
-  if (touch_touched_flag)
-  {
-    touch_touched_flag = false;
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+    if (touch_touched_flag)
+    {
+      touch_touched_flag = false;
+      return true;
+    }
+    else
+    {
+      return false;
+    }
 
 #elif defined(TOUCH_GT911)
-  ts.read();
-  if (ts.isTouched)
-  {
+    ts.read();
+    if (ts.isTouched) {
 #if defined(TOUCH_SWAP_XY)
-    touch_last_x = map(ts.points[0].y, TOUCH_MAP_X1, TOUCH_MAP_X2, 0, lcd->width() - 1);
-    touch_last_y = map(ts.points[0].x, TOUCH_MAP_Y1, TOUCH_MAP_Y2, 0, lcd->height() - 1);
+        touch_last_x = map(ts.points[0].y, TOUCH_MAP_X1, TOUCH_MAP_X2, 0, lcd->width() - 1);
+        touch_last_y = map(ts.points[0].x, TOUCH_MAP_Y1, TOUCH_MAP_Y2, 0, lcd->height() - 1);
 #else
-    touch_last_x = m(ts.points[0].x, TOUCH_MAP_X1, TOUCH_MAP_X2, 0, gfx->width() - 1);
-    touch_last_y = m(ts.points[0].y, TOUCH_MAP_Y1, TOUCH_MAP_Y2, 0, gfx->height() - 1);
+        touch_last_x = m(ts.points[0].x, TOUCH_MAP_X1, TOUCH_MAP_X2, 0, gfx->width() - 1);
+        touch_last_y = m(ts.points[0].y, TOUCH_MAP_Y1, TOUCH_MAP_Y2, 0, gfx->height() - 1);
 #endif
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+        return true;
+    } else {
+        return false;
+    }
 
 #elif defined(TOUCH_XPT2046)
-  if (ts.touched())
-  {
-    TS_Point p = ts.getPoint();
+    if (ts.touched())
+    {
+      TS_Point p = ts.getPoint();
 #if defined(TOUCH_SWAP_XY)
-    touch_last_x = map(p.y, TOUCH_MAP_X1, TOUCH_MAP_X2, 0, lcd->width() - 1);
-    touch_last_y = map(p.x, TOUCH_MAP_Y1, TOUCH_MAP_Y2, 0, lcd->height() - 1);
+      touch_last_x = map(p.y, TOUCH_MAP_X1, TOUCH_MAP_X2, 0, lcd->width() - 1);
+      touch_last_y = map(p.x, TOUCH_MAP_Y1, TOUCH_MAP_Y2, 0, lcd->height() - 1);
 #else
-    touch_last_x = map(p.x, TOUCH_MAP_X1, TOUCH_MAP_X2, 0, lcd->width() - 1);
-    touch_last_y = map(p.y, TOUCH_MAP_Y1, TOUCH_MAP_Y2, 0, lcd->height() - 1);
+      touch_last_x = map(p.x, TOUCH_MAP_X1, TOUCH_MAP_X2, 0, lcd->width() - 1);
+      touch_last_y = map(p.y, TOUCH_MAP_Y1, TOUCH_MAP_Y2, 0, lcd->height() - 1);
 #endif
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+      return true;
+    }
+    else
+    {
+      return false;
+    }
 
 #else
-  return false;
+    return false;
 #endif
 }
 
-bool touch_released()
-{
+bool touch_released() {
 #if defined(TOUCH_FT6X36)
-  if (touch_released_flag)
-  {
-    touch_released_flag = false;
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+    if (touch_released_flag)
+    {
+      touch_released_flag = false;
+      return true;
+    }
+    else
+    {
+      return false;
+    }
 
 #elif defined(TOUCH_GT911)
-  return true;
+    return true;
 
 #elif defined(TOUCH_XPT2046)
-  return true;
+    return true;
 
 #else
-  return false;
+    return false;
 #endif
 }

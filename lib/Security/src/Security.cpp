@@ -86,7 +86,7 @@ void Security::handleDetect(const string &signal) {
     }
 }
 
-Security::Security(IoTRadioDetect &d, IotRadioControl &c, ProjectPreferences &p, Topic& cmd, Topic& rcv)
+Security::Security(IoTRadioDetect &d, IotRadioControl &c, ProjectPreferences &p, Topic &cmd, Topic &rcv)
         : ioTRadioDetect(d),
           iotRadioControl(c),
           projectPreferences(p),

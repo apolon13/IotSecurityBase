@@ -12,7 +12,7 @@ enum class LockScreenEvent {
 
 class LockScreen : public Screen {
 private:
-    ProjectPreferences& projectPreferences;
+    ProjectPreferences &projectPreferences;
 public:
     explicit LockScreen(ProjectPreferences &p) : projectPreferences(p) {};
 

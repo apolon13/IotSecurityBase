@@ -25,7 +25,7 @@ void ControlSensorsScreen::loadAllControls(lv_event_t *e) {
             UI_COMP_CONTROLITEM_CONTROLPANEL_ALARMPANEL
     };
     lv_obj_clean(ui_Controls);
-    for (const auto& sensor: sensors) {
+    for (const auto &sensor: sensors) {
         string group = iotRadioControl.extractGroup(sensor.signal);
         if (groupedSensors.find(group) != groupedSensors.end()) {
             auto current = groupedSensors.at(group);
@@ -43,7 +43,7 @@ void ControlSensorsScreen::loadAllControls(lv_event_t *e) {
         auto controlId = ui_comp_get_child(component, UI_COMP_CONTROLITEM_CONTROLPANEL_CONTROLID);
         lv_label_set_text(controlId, key.c_str());
         for (auto &&panelId: panels) {
-            for (const auto& sensor: sensorsInMap) {
+            for (const auto &sensor: sensorsInMap) {
                 lv_obj_t *panel = ui_comp_get_child(component, panelId);
                 string action = lv_label_get_text(getChildByClass(panel, &lv_label_class));
                 if (sensor.name == action) {
@@ -126,7 +126,7 @@ void ControlSensorsScreen::deleteControl(lv_event_t *e) {
     lv_obj_t *groupIdLabel = ui_comp_get_child(component, UI_COMP_CONTROLITEM_CONTROLPANEL_CONTROLID);
     string groupId = lv_label_get_text(groupIdLabel);
     auto sensors = iotRadioControl.getCurrentSensors();
-    for (const auto& sensor: sensors) {
+    for (const auto &sensor: sensors) {
         if (iotRadioControl.extractGroup(sensor.signal) == groupId) {
             iotRadioControl.forget(sensor.signal);
         }
@@ -134,7 +134,7 @@ void ControlSensorsScreen::deleteControl(lv_event_t *e) {
     lv_obj_del(component);
 }
 
-ControlSensorsScreen::ControlSensorsScreen(IoTRadioDetect& d, IotRadioControl& c, QueueTask& q) : iotRadioControl(c),
+ControlSensorsScreen::ControlSensorsScreen(IoTRadioDetect &d, IotRadioControl &c, QueueTask &q) : iotRadioControl(c),
                                                                                                   ioTRadioDetect(d),
                                                                                                   queueTask(q) {
     selfControlSensorsScreen = this;

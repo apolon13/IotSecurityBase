@@ -11,9 +11,10 @@ class EventableObject {
 protected:
     std::map<int, vector<function<void(int)>>> handlers;
 
-    void triggerEvent(const int& id);
+    void triggerEvent(const int &id);
 
 public:
-    void onEvent(const int& id, const function<void(int)>& handler);
+    void onEvent(const int &id, const function<void(int)> &handler);
 };
+
 #endif //DISPLAY_EVENTABLEOBJECT_H

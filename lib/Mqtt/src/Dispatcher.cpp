@@ -8,7 +8,7 @@
 WiFiClient espClient;
 PubSubClient pubSub(espClient);
 
-Dispatcher::Dispatcher(ProjectPreferences& p, vector<Topic *> t) : projectPreferences(p), topics(std::move(t)) {
+Dispatcher::Dispatcher(ProjectPreferences &p, vector<Topic *> t) : projectPreferences(p), topics(std::move(t)) {
     WiFi.persistent(false);
     WiFi.mode(WIFI_MODE_APSTA);
     pubSubDelegate = new PubSubDelegate(pubSub);
@@ -18,7 +18,7 @@ Dispatcher::Dispatcher(ProjectPreferences& p, vector<Topic *> t) : projectPrefer
     pubSub.setCallback([this](char *topic, uint8_t *payload, unsigned int length) {
         string data;
         for (int i = 0; i < length; i++) {
-            data.push_back((char)payload[i]);
+            data.push_back((char) payload[i]);
         }
         for (auto item: topics) {
             if (item->getName() == topic) {

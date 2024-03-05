@@ -1,8 +1,8 @@
 #include "TaskScheduler.h"
 
-void TaskScheduler::addTask(const TaskToSchedule& t) {
+void TaskScheduler::addTask(const TaskToSchedule &t) {
     bool exist = false;
-    for (const auto& task: inRunning) {
+    for (const auto &task: inRunning) {
         if (task == t.name) {
             exist = true;
             break;
@@ -26,7 +26,7 @@ void TaskScheduler::schedule() {
                     task.name.c_str(),
                     task.stackDepth,
                     task.parameters,
-                    (int)task.priority,
+                    (int) task.priority,
                     nullptr
             );
             if (code != pdPASS) {
@@ -39,7 +39,7 @@ void TaskScheduler::schedule() {
     }
     tasksToSchedule.clear();
 
-    for (const auto& task: tasksToDelete) {
+    for (const auto &task: tasksToDelete) {
         auto handle = xTaskGetHandle(task.c_str());
         vTaskSuspend(handle);
         auto iterator = find(inRunning.begin(), inRunning.end(), task);
@@ -50,8 +50,8 @@ void TaskScheduler::schedule() {
     tasksToDelete.clear();
 }
 
-void TaskScheduler::deleteTask(const string& name) {
-    for (const auto& task: inRunning) {
+void TaskScheduler::deleteTask(const string &name) {
+    for (const auto &task: inRunning) {
         if (task == name) {
             tasksToDelete.push_back(task);
             break;

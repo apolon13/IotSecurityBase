@@ -69,7 +69,7 @@ void DetectSensorsScreen::handleReceiveSensor(const uint8_t *incomingData) {
     }
 }
 
-DetectSensorsScreen::DetectSensorsScreen(IoTRadioDetect& d, IotRadioControl& c, QueueTask& q, ProjectPreferences& p)
+DetectSensorsScreen::DetectSensorsScreen(IoTRadioDetect &d, IotRadioControl &c, QueueTask &q, ProjectPreferences &p)
         : ioTRadioDetect(d),
           queueTask(q),
           iotRadioControl(c),

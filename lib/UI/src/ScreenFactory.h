@@ -28,23 +28,23 @@ private:
     EditDetectSensorScreen *editDetectSensorScreen;
     LockScreen *lockScreen;
 public:
-    ScreenFactory(ProjectPreferences& p, IoTRadioDetect& i, Dispatcher& d, QueueTask& q, IotRadioControl& ct);
+    ScreenFactory(ProjectPreferences &p, IoTRadioDetect &i, Dispatcher &d, QueueTask &q, IotRadioControl &ct);
 
-    MainScreen *getMainScreen();
+    MainScreen &getMainScreen();
 
-    DetectSensorsScreen *getDetectSensorsScreen();
+    DetectSensorsScreen &getDetectSensorsScreen();
 
-    ControlSensorsScreen *getControlSensorsScreen();
+    ControlSensorsScreen &getControlSensorsScreen();
 
-    MqttConfigScreen *getMqttConfigScreen();
+    MqttConfigScreen &getMqttConfigScreen();
 
-    WifiSettingsScreen *getWifiSettingsScreen();
+    WifiSettingsScreen &getWifiSettingsScreen();
 
-    GeneralSettingsScreen *getGeneralSettingsScreen();
+    GeneralSettingsScreen &getGeneralSettingsScreen();
 
-    EditDetectSensorScreen *getEditDetectSensorScreen();
+    EditDetectSensorScreen &getEditDetectSensorScreen();
 
-    LockScreen *getLockScreen();
+    LockScreen &getLockScreen();
 };
 
 #endif

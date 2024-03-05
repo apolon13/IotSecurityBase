@@ -48,7 +48,7 @@ Property readPreferencesProperty(const string &name, string defaultValue) {
     return p;
 }
 
-void writePreferencesProperty(const string &name, const string& value) {
+void writePreferencesProperty(const string &name, const string &value) {
     Property currentValue = readPreferencesProperty(name, "");
     string newValue = name + DELIMITER + value + TERMINATOR;
     auto dataProvider = SDFat.open(FILENAME, (O_RDWR | O_CREAT | O_AT_END));
@@ -61,7 +61,7 @@ void writePreferencesProperty(const string &name, const string& value) {
     dataProvider.close();
 }
 
-void ProjectPreferences::set(ProjectPreferences::PreferencesKey property, const string& value) {
+void ProjectPreferences::set(ProjectPreferences::PreferencesKey property, const string &value) {
     writePreferencesProperty(convertProperty(property), value);
     cache.insert_or_assign(property, value);
 }
@@ -69,7 +69,7 @@ void ProjectPreferences::set(ProjectPreferences::PreferencesKey property, const 
 string ProjectPreferences::get(ProjectPreferences::PreferencesKey property, string defaultValue) {
     try {
         return cache.at(property);
-    } catch (out_of_range& e) {
+    } catch (out_of_range &e) {
         auto value = readPreferencesProperty(convertProperty(property), std::move(defaultValue)).value;
         cache.insert_or_assign(property, value);
         return value;

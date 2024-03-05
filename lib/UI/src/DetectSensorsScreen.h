@@ -10,10 +10,10 @@
 
 class DetectSensorsScreen : public SensorScreen {
 private:
-    ProjectPreferences& projectPreferences;
-    IoTRadioDetect& ioTRadioDetect;
-    IotRadioControl& iotRadioControl;
-    QueueTask& queueTask;
+    ProjectPreferences &projectPreferences;
+    IoTRadioDetect &ioTRadioDetect;
+    IotRadioControl &iotRadioControl;
+    QueueTask &queueTask;
     ReceivedSignal *currentSignal;
 
     void handleReceiveSensor(const uint8_t *incomingData);
@@ -21,7 +21,7 @@ private:
     void saveNewSensor(void *);
 
 public:
-    DetectSensorsScreen(IoTRadioDetect& d, IotRadioControl& c, QueueTask& q, ProjectPreferences& p);
+    DetectSensorsScreen(IoTRadioDetect &d, IotRadioControl &c, QueueTask &q, ProjectPreferences &p);
 
     void loadAllSensors(lv_event_t *e);
 

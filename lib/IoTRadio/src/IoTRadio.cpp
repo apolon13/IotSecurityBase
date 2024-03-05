@@ -42,7 +42,7 @@ vector<string> IoTRadio::parseSensorString(string sensorString) {
     return result;
 }
 
-void addToConfig(string *config, const string& value) {
+void addToConfig(string *config, const string &value) {
     config->append(!config->empty() ? SENSORS_DELIMITER + value : value);
 }
 
@@ -71,7 +71,7 @@ Sensor IoTRadio::buildSensorByConfigString(string configString) {
     return sensor;
 }
 
-IoTRadio::IoTRadio(ProjectPreferences& p) : projectPreferences(p){
+IoTRadio::IoTRadio(ProjectPreferences &p) : projectPreferences(p) {
 
 }
 
@@ -89,7 +89,7 @@ void IoTRadio::sendMessageToPeer(PeerMessage msg) {
     esp_now_send(Peer.peer_addr, (uint8_t *) &msg, sizeof(msg));
 }
 
-void IoTRadio::forget(const string& signal) {
+void IoTRadio::forget(const string &signal) {
     vector<string> signals = getSignals();
     auto iteratorSignals = find(signals.begin(), signals.end(), signal);
     if (iteratorSignals != signals.end()) {
@@ -127,7 +127,7 @@ void IoTRadio::save(Sensor *sensor) {
         addToConfig(&newConfig, currentConfig);
         addToConfig(&newConfig, newSensorConfigString);
     } else {
-        for (const string& line: getConfigLines()) {
+        for (const string &line: getConfigLines()) {
             Sensor inConfig = buildSensorByConfigString(line);
             addToConfig(&newConfig,
                         (inConfig.isEqual(sensor) ? newSensorConfigString : buildConfigStringBySensor(&inConfig)));
@@ -148,7 +148,7 @@ void IoTRadio::save(Sensor *sensor) {
 void IoTRadio::loadCurrentSensors() {
     currentSensors = {};
     auto config = getConfigLines();
-    for (const string& line: config) {
+    for (const string &line: config) {
         Sensor newSensor = buildSensorByConfigString(line);
         currentSensors.push_back(newSensor);
     }
@@ -164,9 +164,9 @@ void IoTRadio::addRecvHandler(esp_now_recv_cb_t recvCb) {
         gLogger->debug("addRecvHandler error" + to_string(resp));
         return;
     }
-    addSendHandler([] (const uint8_t *mac_addr, esp_now_send_status_t status) {
-      //  gLogger->debug("\r\nLast Packet Send Status:\t");
-       // gLogger->debug(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
+    addSendHandler([](const uint8_t *mac_addr, esp_now_send_status_t status) {
+        //  gLogger->debug("\r\nLast Packet Send Status:\t");
+        // gLogger->debug(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
     });
 }
 
@@ -193,7 +193,7 @@ void IoTRadio::addSendHandler(esp_now_send_cb_t sendCb) {
     esp_now_register_send_cb(sendCb);
 }
 
-bool IoTRadio::exist(const string& signal) {
+bool IoTRadio::exist(const string &signal) {
     auto signals = getSignals();
     return find(signals.begin(), signals.end(), signal) != signals.end();
 }
@@ -202,23 +202,23 @@ bool IoTRadio::hasInCurrentSensors(Sensor *sensor) {
     auto iterator = std::find_if(currentSensors.begin(), currentSensors.end(), [sensor](const Sensor &s) {
         return s.signal == sensor->signal;
     });
-    return getSensorByPredicate([sensor](const Sensor &s) {return s.signal == sensor->signal;}) != nullptr;
+    return getSensorByPredicate([sensor](const Sensor &s) { return s.signal == sensor->signal; }) != nullptr;
 }
 
-Sensor *IoTRadio::getSensorByName(const string& name) {
-    return getSensorByPredicate([name] (const Sensor &s) {
+Sensor *IoTRadio::getSensorByName(const string &name) {
+    return getSensorByPredicate([name](const Sensor &s) {
         return s.name == name;
     });
 }
 
-Sensor *IoTRadio::getSensorBySignal(const string& signal) {
-    return getSensorByPredicate([signal] (const Sensor &s) {
+Sensor *IoTRadio::getSensorBySignal(const string &signal) {
+    return getSensorByPredicate([signal](const Sensor &s) {
         return s.signal == signal;
     });
 }
 
 Sensor *IoTRadio::getSensorByPredicate(std::function<bool(const Sensor &s)> predicate) {
-    auto iterator = std::find_if(currentSensors.begin(), currentSensors.end(),std::move(predicate));
+    auto iterator = std::find_if(currentSensors.begin(), currentSensors.end(), std::move(predicate));
     return iterator == currentSensors.end() ? nullptr : iterator.operator->();
 }
 

@@ -1,6 +1,6 @@
 #include "EventableObject.h"
 
-void EventableObject::onEvent(const int& id, const std::function<void(int)>& handler) {
+void EventableObject::onEvent(const int &id, const std::function<void(int)> &handler) {
     if (handlers.find(id) != handlers.end()) {
         auto current = handlers.at(id);
         current.push_back(handler);
@@ -12,7 +12,7 @@ void EventableObject::onEvent(const int& id, const std::function<void(int)>& han
     }
 }
 
-void EventableObject::triggerEvent(const int& id) {
+void EventableObject::triggerEvent(const int &id) {
     if (handlers.find(id) != handlers.end()) {
         auto current = handlers.at(id);
         for (const auto &func: current) {

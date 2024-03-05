@@ -7,9 +7,9 @@
 
 class MqttConfigScreen : public Screen {
 private:
-    ProjectPreferences& projectPreferences;
+    ProjectPreferences &projectPreferences;
 public:
-    MqttConfigScreen(ProjectPreferences& p) : projectPreferences(p) {};
+    MqttConfigScreen(ProjectPreferences &p) : projectPreferences(p) {};
 
     void loadMqttSettings(lv_event_t *e);
 

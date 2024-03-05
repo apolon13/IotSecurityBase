@@ -4,7 +4,7 @@
 #ifndef DISPLAY_SENSORSCREEN_H
 #define DISPLAY_SENSORSCREEN_H
 
-enum class SensorScreenEvent{
+enum class SensorScreenEvent {
     EventOnAfterRadioUse
 };
 

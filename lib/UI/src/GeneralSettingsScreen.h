@@ -7,9 +7,9 @@
 
 class GeneralSettingsScreen : public Screen {
 private:
-    ProjectPreferences& projectPreferences;
+    ProjectPreferences &projectPreferences;
 public:
-    explicit GeneralSettingsScreen(ProjectPreferences& p) : projectPreferences(p) {};
+    explicit GeneralSettingsScreen(ProjectPreferences &p) : projectPreferences(p) {};
 
     void loadGeneralSettings(lv_event_t *e);
 

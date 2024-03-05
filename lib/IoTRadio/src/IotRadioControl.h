@@ -9,11 +9,11 @@ protected:
     ProjectPreferences::PreferencesKey getPreferencesConfigKey() override;
 
 public:
-    IotRadioControl(ProjectPreferences& p) : IoTRadio(p) {
+    IotRadioControl(ProjectPreferences &p) : IoTRadio(p) {
         loadCurrentSensors();
     };
 
-    string extractGroup(const string& signal);
+    string extractGroup(const string &signal);
 };
 
 #endif

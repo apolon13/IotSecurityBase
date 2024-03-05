@@ -31,9 +31,9 @@ public:
 
     void schedule();
 
-    void addTask(const TaskToSchedule& t);
+    void addTask(const TaskToSchedule &t);
 
-    void deleteTask(const string& name);
+    void deleteTask(const string &name);
 };
 
 #endif

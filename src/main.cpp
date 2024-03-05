@@ -30,7 +30,7 @@ void loopMqtt(void *data) {
     auto maxConnectionAttemptsBeforeRestart = stoi(parameters->preferences.getConnectionAttemptsBeforeRestart());
     auto dispatcher = parameters->dispatcher;
     while (true) {
-        //logger->debug("stack size mqtt - " + to_string(uxTaskGetStackHighWaterMark(nullptr)));
+        //logger.debug("stack size mqtt - " + to_string(uxTaskGetStackHighWaterMark(nullptr)));
         long now = millis();
 
         if (dispatcher.getNetworkConnectionAttempts() >= maxConnectionAttemptsBeforeRestart) {
@@ -60,7 +60,7 @@ void loopMqtt(void *data) {
         }
 
         Serial.println(ESP.getFreeHeap());
-        screenFactory->getMainScreen()->handleConnections();
+        screenFactory->getMainScreen().handleConnections();
         vTaskDelay(1000);
     }
 }
@@ -72,7 +72,7 @@ void loopDisplay(void *data) {
     while (true) {
         long currentMs = millis();
         if ((currentMs - lastDisplayLoop) >= 1000) {
-            //logger->debug("stack size display - " + to_string(uxTaskGetStackHighWaterMark(nullptr)));
+            //logger.debug("stack size display - " + to_string(uxTaskGetStackHighWaterMark(nullptr)));
             lastDisplayLoop = currentMs;
         }
         parameters->uiControl.render();
@@ -112,39 +112,39 @@ void loop() {
     auto securityListenCb = [&security](int eventId) {
         security.listen();
     };
-    screenFactory->getDetectSensorsScreen()->onEvent((int) SensorScreenEvent::EventOnAfterRadioUse, securityListenCb);
-    screenFactory->getControlSensorsScreen()->onEvent((int) SensorScreenEvent::EventOnAfterRadioUse, securityListenCb);
+    screenFactory->getDetectSensorsScreen().onEvent((int) SensorScreenEvent::EventOnAfterRadioUse, securityListenCb);
+    screenFactory->getControlSensorsScreen().onEvent((int) SensorScreenEvent::EventOnAfterRadioUse, securityListenCb);
 
-    screenFactory->getLockScreen()->onEvent((int) LockScreenEvent::EventOnLock, [lockScreen, &security](int eventId) {
+    lockScreen.onEvent((int) LockScreenEvent::EventOnLock, [&lockScreen, &security](int eventId) {
         security.lockSystem(true);
-        lockScreen->goTo(false);
+        lockScreen.goTo(false);
     });
 
-    screenFactory->getLockScreen()->onEvent((int) LockScreenEvent::EventOnUnlock, [mainScreen, &security](int eventId) {
+    lockScreen.onEvent((int) LockScreenEvent::EventOnUnlock, [&mainScreen, &security](int eventId) {
         security.unlockSystem(true);
-        mainScreen->goTo(false);
+        mainScreen.goTo(false);
     });
 
     auto touchCb = [&uiControl](int eventId) {
         uiControl.hasTouch();
     };
-    security.onEvent((int) SecurityEvent::EventOnGuard, [lockScreen, touchCb](int eventId) {
+    security.onEvent((int) SecurityEvent::EventOnGuard, [&lockScreen, touchCb](int eventId) {
         touchCb(eventId);
-        lockScreen->goTo(true);
+        lockScreen.goTo(true);
     });
 
-    security.onEvent((int) SecurityEvent::EventOnDisarm, [mainScreen, touchCb, &security](int eventId) {
+    security.onEvent((int) SecurityEvent::EventOnDisarm, [&mainScreen, touchCb, &security](int eventId) {
         touchCb(eventId);
         security.unlockSystem(true);
-        mainScreen->goTo(true);
+        mainScreen.goTo(true);
     });
 
     security.onEvent((int) SecurityEvent::EventOnAlarm, touchCb);
     security.onEvent((int) SecurityEvent::EventOnMute, touchCb);
 
-    uiControl.onEvent((int) UiControlEvent::EventOnBacklightOff, [lockScreen, &security](int eventId) {
+    uiControl.onEvent((int) UiControlEvent::EventOnBacklightOff, [&lockScreen, &security](int eventId) {
         security.lockSystem(true);
-        lockScreen->goTo(false);
+        lockScreen.goTo(false);
     });
 
     TaskScheduler taskScheduler;

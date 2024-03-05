@@ -61,7 +61,7 @@ void UiControl::backlightOn() {
 
 void UiControl::backlightOff() {
     if (backlightIsOn) {
-        triggerEvent((int)UiControlEvent::EventOnBacklightOff);
+        triggerEvent((int) UiControlEvent::EventOnBacklightOff);
         backlightIsOn = false;
         digitalWrite(TFT_BL, LOW);
     }
