@@ -8,16 +8,16 @@
 ScreenFactory *screenFactory;
 
 typedef struct {
-    UiControl& uiControl;
+    UiControl &uiControl;
 } UiParameters;
 
 typedef struct {
-    QueueTask& queue;
+    QueueTask &queue;
 } QueueParameters;
 
 typedef struct {
-    ProjectPreferences& preferences;
-    Dispatcher& dispatcher;
+    ProjectPreferences &preferences;
+    Dispatcher &dispatcher;
 } MQTTParameters;
 
 
@@ -103,7 +103,7 @@ void loop() {
     Dispatcher dispatcher(preferences, {&cmd, &rcv});
     QueueTask queue;
     Security security(detect, control, preferences, cmd, rcv);
-    screenFactory = new ScreenFactory(preferences,detect,dispatcher,queue,control);
+    screenFactory = new ScreenFactory(preferences, detect, dispatcher, queue, control);
     UiControl uiControl(stoi(preferences.getSecurityTimeout()) * 1000);
     uiControl.init();
     auto lockScreen = screenFactory->getLockScreen();
@@ -161,5 +161,5 @@ void loop() {
         Serial.println(error.what());
     }
 
-    while(true);
+    while (true);
 }
