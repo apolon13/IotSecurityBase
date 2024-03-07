@@ -1,4 +1,5 @@
 #include "ProjectPreferences.h"
+#include "ProjectPreferencesMutex.h"
 
 #include <utility>
 #include "SdFat.h"
@@ -17,48 +18,59 @@ struct Property {
     bool exist;
 };
 
+unordered_map<int, string> ProjectPreferences::cache = {};
+
 ProjectPreferences::ProjectPreferences() {
-    if (!SDFat.begin()) {
-        Serial.println("SD card init error");
-    }
-    if (!SDFat.exists(FILENAME)) {
-        auto file = SDFat.open(FILENAME, O_CREAT);
-        Serial.println("Create new settings file");
-        file.close();
+    if (ProjectPreferencesMutex::take()) {
+        if (!SDFat.begin()) {
+            Serial.println("SD card init error");
+        }
+        if (!SDFat.exists(FILENAME)) {
+            auto file = SDFat.open(FILENAME, O_CREAT);
+            Serial.println("Create new settings file");
+            file.close();
+        }
+        ProjectPreferencesMutex::give();
     }
 }
 
 Property readPreferencesProperty(const string &name, string defaultValue) {
-    auto dataProvider = SDFat.open(FILENAME);
-    Property p = {std::move(defaultValue), 0, false};
-    dataProvider.seek(0);
-    while (dataProvider.available()) {
-        size_t position = dataProvider.position();
-        string line = dataProvider.readStringUntil(TERMINATOR).c_str();
-        if (line.find(name) != string::npos) {
-            p = {
-                    line.substr(line.find(DELIMITER) + 1),
-                    position,
-                    true
-            };
-            break;
+    if (ProjectPreferencesMutex::take()) {
+        auto dataProvider = SDFat.open(FILENAME);
+        Property p = {std::move(defaultValue), 0, false};
+        dataProvider.seek(0);
+        while (dataProvider.available()) {
+            size_t position = dataProvider.position();
+            string line = dataProvider.readStringUntil(TERMINATOR).c_str();
+            if (line.find(name) != string::npos) {
+                p = {
+                        line.substr(line.find(DELIMITER) + 1),
+                        position,
+                        true
+                };
+                break;
+            }
         }
+        dataProvider.close();
+        ProjectPreferencesMutex::give();
+        return p;
     }
-    dataProvider.close();
-    return p;
 }
 
 void writePreferencesProperty(const string &name, const string &value) {
     Property currentValue = readPreferencesProperty(name, "");
-    string newValue = name + DELIMITER + value + TERMINATOR;
-    auto dataProvider = SDFat.open(FILENAME, (O_RDWR | O_CREAT | O_AT_END));
-    if (currentValue.exist) {
-        dataProvider.seek(currentValue.position);
-    } else {
-        dataProvider.seek(dataProvider.size());
+    if (ProjectPreferencesMutex::take()) {
+        string newValue = name + DELIMITER + value + TERMINATOR;
+        auto dataProvider = SDFat.open(FILENAME, (O_RDWR | O_CREAT | O_AT_END));
+        if (currentValue.exist) {
+            dataProvider.seek(currentValue.position);
+        } else {
+            dataProvider.seek(dataProvider.size());
+        }
+        dataProvider.print(newValue.c_str());
+        dataProvider.close();
+        ProjectPreferencesMutex::give();
     }
-    dataProvider.print(newValue.c_str());
-    dataProvider.close();
 }
 
 void ProjectPreferences::set(ProjectPreferences::PreferencesKey property, const string &value) {

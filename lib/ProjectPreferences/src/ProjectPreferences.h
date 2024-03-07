@@ -11,7 +11,7 @@ using namespace std;
 
 class ProjectPreferences {
 protected:
-    unordered_map<int, string> cache;
+    static unordered_map<int, string> cache;
 
     string convertProperty(int key) {
         switch (key) {
