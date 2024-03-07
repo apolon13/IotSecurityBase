@@ -101,13 +101,13 @@ bool ProjectPreferences::systemIsLocked() {
 }
 
 string ProjectPreferences::getSecurityTimeout() {
-    return readPreferencesProperty(convertProperty(SecurityTimeout), "30").value;
+    return get(SecurityTimeout, "30");
 }
 
 string ProjectPreferences::getConnectionTimeout() {
-    return readPreferencesProperty(convertProperty(ConnectionTimeout), "3").value;
+    return get(ConnectionTimeout, "3");
 }
 
 string ProjectPreferences::getConnectionAttemptsBeforeRestart() {
-    return readPreferencesProperty(convertProperty(ConnectionAttemptsBeforeRestart), "10").value;
+    return get(ConnectionAttemptsBeforeRestart, "10");
 }
