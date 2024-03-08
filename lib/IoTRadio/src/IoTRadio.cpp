@@ -161,7 +161,7 @@ vector<Sensor> IoTRadio::getCurrentSensors() {
 void IoTRadio::addRecvHandler(esp_now_recv_cb_t recvCb) {
     auto resp = esp_now_register_recv_cb(recvCb);
     if (resp != ESP_OK) {
-        gLogger->debug("addRecvHandler error" + to_string(resp));
+        //gLogger->debug("addRecvHandler error" + to_string(resp));
         return;
     }
     addSendHandler([](const uint8_t *mac_addr, esp_now_send_status_t status) {
