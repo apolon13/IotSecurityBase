@@ -11,10 +11,8 @@ class MainScreen : public Screen {
 private:
     ProjectPreferences &projectPreferences;
     IoTRadioDetect &ioTRadioDetect;
-    Dispatcher &dispatcher;
 public:
-    MainScreen(ProjectPreferences &p, IoTRadioDetect &i, Dispatcher &d) : projectPreferences(p), ioTRadioDetect(i),
-                                                                          dispatcher(d) {};
+    MainScreen(ProjectPreferences &p, IoTRadioDetect &i) : projectPreferences(p), ioTRadioDetect(i) {};
 
     void showSuccessNetworkIcon();
 
@@ -26,7 +24,7 @@ public:
 
     void loadDataInMain(lv_event_t *e);
 
-    void handleConnections();
+    void handleConnections(bool cloudIsConnected, bool networkIsConnected);
 
     void goTo(bool useMutex);
 };

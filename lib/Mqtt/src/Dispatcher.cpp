@@ -2,29 +2,22 @@
 #include "WiFiGeneric.h"
 #include <PubSubClient.h>
 #include <ESP32Ping.h>
-#include <utility>
 #include "PubSubDelegate.h"
 
 WiFiClient espClient;
 PubSubClient pubSub(espClient);
 
-Dispatcher::Dispatcher(ProjectPreferences &p, vector<Topic *> t) : projectPreferences(p), topics(std::move(t)) {
+Dispatcher::Dispatcher(ProjectPreferences &p, TopicsContainer &t) : projectPreferences(p), topicsContainer(t) {
     WiFi.persistent(false);
     WiFi.mode(WIFI_MODE_APSTA);
     pubSubDelegate = new PubSubDelegate(pubSub);
-    for (auto topic: topics) {
-        topic->withPubSub(pubSubDelegate);
-    }
+    topicsContainer.setPublishClient(pubSubDelegate);
     pubSub.setCallback([this](char *topic, uint8_t *payload, unsigned int length) {
         string data;
         for (int i = 0; i < length; i++) {
             data.push_back((char) payload[i]);
         }
-        for (auto item: topics) {
-            if (item->getName() == topic) {
-                item->handleData(data);
-            }
-        }
+        topicsContainer.handleSubscribeData(topic, data);
     });
 }
 
@@ -81,8 +74,8 @@ void Dispatcher::connectToMqtt() {
         pubSub.setServer(mqttServer.c_str(), stoi(mqttPort));
         if (pubSub.connect(id.c_str(), username.c_str(), pass.c_str())) {
             Serial.println("MQTT connected");
-            for (auto topic: topics) {
-                pubSub.subscribe(topic->getName().c_str());
+            for (const auto& name: topicsContainer.getTopicNames()) {
+                pubSub.subscribe(name.c_str());
             }
         } else {
             IPAddress dns(8, 8, 8, 8);

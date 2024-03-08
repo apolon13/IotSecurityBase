@@ -45,19 +45,19 @@ void MainScreen::loadDataInMain(lv_event_t *e) {
     lv_label_set_text(ui_sensorsQty, sensorsCount.c_str());
 }
 
-void MainScreen::handleConnections() {
-    if (!dispatcher.cloudIsConnected() && UiMutex::take()) {
+void MainScreen::handleConnections(bool cloudIsConnected, bool networkIsConnected) {
+    if (!cloudIsConnected && UiMutex::take()) {
         failedMqttConnection();
         UiMutex::give();
-    } else if (dispatcher.cloudIsConnected() && UiMutex::take()) {
+    } else if (cloudIsConnected && UiMutex::take()) {
         successMqttConnection();
         UiMutex::give();
     }
 
-    if (!dispatcher.networkIsConnected() && UiMutex::take()) {
+    if (!networkIsConnected && UiMutex::take()) {
         showFailedNetworkIcon();
         UiMutex::give();
-    } else if (dispatcher.networkIsConnected() && UiMutex::take()) {
+    } else if (networkIsConnected && UiMutex::take()) {
         showSuccessNetworkIcon();
         UiMutex::give();
     }

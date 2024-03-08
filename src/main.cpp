@@ -1,9 +1,9 @@
-#include "SerialLogger.h"
 #include "Logger.h"
 #include "UiControl.h"
 #include "QueueTask.h"
 #include "IotRadioControl.h"
 #include "Security.h"
+#include "TopicsContainer.h"
 
 ScreenFactory *screenFactory;
 
@@ -60,7 +60,10 @@ void loopMqtt(void *data) {
         }
 
         Serial.println(ESP.getFreeHeap());
-        screenFactory->getMainScreen().handleConnections();
+        screenFactory->getMainScreen().handleConnections(
+                dispatcher.cloudIsConnected(),
+                dispatcher.networkIsConnected()
+        );
         vTaskDelay(1000);
     }
 }
@@ -100,10 +103,14 @@ void loop() {
     IotRadioControl control(preferences);
     Topic cmdTopic("/security/command");
     Topic rcvTopic("/security/receive");
-    Dispatcher dispatcher(preferences, {&cmdTopic, &rcvTopic});
+    TopicsContainer topicsContainer({
+        &cmdTopic,
+        &rcvTopic
+    });
+    Dispatcher dispatcher(preferences, topicsContainer);
     QueueTask queue;
     Security security(detect, control, preferences, cmdTopic, rcvTopic);
-    screenFactory = new ScreenFactory(preferences, detect, dispatcher, queue, control);
+    screenFactory = new ScreenFactory(preferences, detect, queue, control);
     UiControl uiControl(stoi(preferences.getSecurityTimeout()) * 1000);
     uiControl.init();
     auto lockScreen = screenFactory->getLockScreen();

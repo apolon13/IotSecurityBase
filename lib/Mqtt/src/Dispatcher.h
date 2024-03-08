@@ -1,7 +1,7 @@
 #include <WiFi.h>
 #include "ProjectPreferences.h"
 #include <vector>
-#include "Topic.h"
+#include "TopicsContainer.h"
 
 #ifndef DISPLAY_DISPATCHER_H
 #define DISPLAY_DISPATCHER_H
@@ -13,7 +13,7 @@ protected:
     PubSubDelegate *pubSubDelegate;
     bool cloudConnectionInProcess = false;
     bool networkConnectionInProcess = false;
-    vector<Topic *> topics;
+    TopicsContainer &topicsContainer;
     int networkConnectionAttempts = 0;
 
     void connectToWiFi();
@@ -21,7 +21,7 @@ protected:
     void connectToMqtt();
 
 public:
-    Dispatcher(ProjectPreferences &p, vector<Topic *> t);
+    Dispatcher(ProjectPreferences &p, TopicsContainer &t);
 
     void connectToNetwork();
 

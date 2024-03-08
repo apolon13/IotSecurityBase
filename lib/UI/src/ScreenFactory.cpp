@@ -1,8 +1,7 @@
 #include "ScreenFactory.h"
 
-ScreenFactory::ScreenFactory(ProjectPreferences &p, IoTRadioDetect &i, Dispatcher &d, QueueTask &q,
-                             IotRadioControl &ct) {
-    mainScreen = new MainScreen(p, i, d);
+ScreenFactory::ScreenFactory(ProjectPreferences &p, IoTRadioDetect &i, QueueTask &q, IotRadioControl &ct) {
+    mainScreen = new MainScreen(p, i);
     detectSensorsScreen = new DetectSensorsScreen(i, ct, q, p);
     controlSensorsScreen = new ControlSensorsScreen(i, ct, q);
     mqttConfigScreen = new MqttConfigScreen(p);

@@ -28,7 +28,7 @@ private:
     EditDetectSensorScreen *editDetectSensorScreen;
     LockScreen *lockScreen;
 public:
-    ScreenFactory(ProjectPreferences &p, IoTRadioDetect &i, Dispatcher &d, QueueTask &q, IotRadioControl &ct);
+    ScreenFactory(ProjectPreferences &p, IoTRadioDetect &i, QueueTask &q, IotRadioControl &ct);
 
     MainScreen &getMainScreen();
 
