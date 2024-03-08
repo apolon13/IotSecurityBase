@@ -3,6 +3,7 @@
 #ifndef DISPLAY_LOGGER_H
 #define DISPLAY_LOGGER_H
 
+
 class Logger {
 protected:
     Stream *stream;
