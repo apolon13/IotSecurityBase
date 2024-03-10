@@ -1,5 +1,7 @@
 #include "WifiSettingsScreen.h"
 
+using namespace std;
+
 void WifiSettingsScreen::loadFiWiSettings(lv_event_t *e) {
     string wifiSsid = projectPreferences.get(ProjectPreferences::WifiSsid, "");
     string wifiPass = projectPreferences.get(ProjectPreferences::WifiPassword, "");

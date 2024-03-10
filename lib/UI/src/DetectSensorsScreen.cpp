@@ -3,6 +3,8 @@
 
 DetectSensorsScreen *selfDetectSensorsScreen;
 
+using namespace std;
+
 void DetectSensorsScreen::saveNewSensor(void *) {
     if (UiMutex::take()) {
         string signalValue = currentSignal->value.c_str();

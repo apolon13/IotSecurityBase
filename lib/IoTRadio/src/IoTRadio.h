@@ -4,8 +4,6 @@
 #include <esp_wifi_types.h>
 #include <vector>
 
-using namespace std;
-
 #ifndef DISPLAY_IOTRADIO_H
 #define DISPLAY_IOTRADIO_H
 
@@ -18,8 +16,8 @@ struct ReceivedSignal {
 };
 
 struct Sensor {
-    string name;
-    string signal;
+    std::string name;
+    std::string signal;
     bool isActive;
     int sensitivity;
 
@@ -35,10 +33,10 @@ typedef struct {
 
 class IoTRadio {
 protected:
-    vector<Sensor> currentSensors;
+    std::vector<Sensor> currentSensors;
     ProjectPreferences &projectPreferences;
 
-    vector<string> getSignals();
+    std::vector<std::string> getSignals();
 
     virtual ProjectPreferences::PreferencesKey getPreferencesConfigKey() = 0;
 
@@ -46,32 +44,32 @@ protected:
 
     bool hasInCurrentSensors(Sensor *s);
 
-    string getSensorsConfig();
+    std::string getSensorsConfig();
 
-    vector<string> getConfigLines();
+    std::vector<std::string> getConfigLines();
 
-    string buildConfigStringBySensor(Sensor *s);
+    std::string buildConfigStringBySensor(Sensor *s);
 
-    vector<string> parseSensorString(string sensorString);
+    std::vector<std::string> parseSensorString(std::string sensorString);
 
-    Sensor buildSensorByConfigString(string configString);
+    Sensor buildSensorByConfigString(std::string configString);
 
     Sensor *getSensorByPredicate(std::function<bool(const Sensor &s)> predicate);
 
 public:
     IoTRadio(ProjectPreferences &p);
 
-    void forget(const string &signal);
+    void forget(const std::string &signal);
 
-    bool exist(const string &signal);
+    bool exist(const std::string &signal);
 
     void save(Sensor *sensor);
 
-    Sensor *getSensorByName(const string &name);
+    Sensor *getSensorByName(const std::string &name);
 
-    Sensor *getSensorBySignal(const string &signal);
+    Sensor *getSensorBySignal(const std::string &signal);
 
-    vector<Sensor> getCurrentSensors();
+    std::vector<Sensor> getCurrentSensors();
 
     static void addReceiver(const uint8_t macAddress[]);
 

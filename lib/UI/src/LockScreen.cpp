@@ -1,6 +1,7 @@
 #include "LockScreen.h"
 #include "UiMutex.h"
 
+using namespace std;
 
 void LockScreen::lockSystem(lv_event_t *e) {
     triggerEvent((int) LockScreenEvent::EventOnLock);

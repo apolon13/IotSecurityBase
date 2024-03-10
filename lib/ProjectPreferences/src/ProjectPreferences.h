@@ -7,6 +7,12 @@
 #define SYSTEM_STATE_LOCK "1"
 #define SYSTEM_STATE_UNLOCK "0"
 
+struct Property {
+    std::string value;
+    size_t position;
+    bool exist;
+};
+
 class ProjectPreferences {
 protected:
     static std::unordered_map<int, std::string> cache;
@@ -50,6 +56,10 @@ protected:
         }
     }
 
+    virtual Property readPreferencesProperty(const std::string &name, std::string defaultValue) = 0;
+
+    virtual void writePreferencesProperty(const std::string &name, const std::string &value) = 0;
+
 public:
     enum PreferencesKey {
         MqttIp,
@@ -69,8 +79,6 @@ public:
         ConnectionTimeout,
         ConnectionAttemptsBeforeRestart,
     };
-
-    explicit ProjectPreferences();
 
     std::string get(PreferencesKey key, std::string defaultValue);
 

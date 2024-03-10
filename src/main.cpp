@@ -4,6 +4,7 @@
 #include "IotRadioControl.h"
 #include "Security.h"
 #include "TopicsContainer.h"
+#include "FileProjectPreferences.h"
 
 ScreenFactory *screenFactory;
 
@@ -98,7 +99,7 @@ void setup() {
 
 void loop() {
     Serial.begin(115200);
-    ProjectPreferences preferences;
+    FileProjectPreferences preferences("/project.txt");
     IoTRadioDetect detect(preferences);
     IotRadioControl control(preferences);
     Topic cmdTopic("/security/command");

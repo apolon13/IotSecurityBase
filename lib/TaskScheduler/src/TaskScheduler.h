@@ -4,8 +4,6 @@
 #ifndef DISPLAY_SCHEDULER_H
 #define DISPLAY_SCHEDULER_H
 
-using namespace std;
-
 enum class TaskPriority {
     Low = 1,
     Middle,
@@ -13,7 +11,7 @@ enum class TaskPriority {
 };
 
 struct TaskToSchedule {
-    string name;
+    std::string name;
     TaskFunction_t func;
     TaskPriority priority;
     int stackDepth;
@@ -23,8 +21,8 @@ struct TaskToSchedule {
 class TaskScheduler {
 protected:
     std::vector<TaskToSchedule> tasksToSchedule;
-    std::vector<string> tasksToDelete;
-    std::vector<string> inRunning;
+    std::vector<std::string> tasksToDelete;
+    std::vector<std::string> inRunning;
 
 public:
     explicit TaskScheduler();
@@ -33,7 +31,7 @@ public:
 
     void addTask(const TaskToSchedule &t);
 
-    void deleteTask(const string &name);
+    void deleteTask(const std::string &name);
 };
 
 #endif

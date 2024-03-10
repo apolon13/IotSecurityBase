@@ -7,6 +7,8 @@
 esp_now_peer_info_t Peer;
 Logger *gLogger;
 
+using namespace std;
+
 string IoTRadio::getSensorsConfig() {
     return projectPreferences.get(getPreferencesConfigKey(), "");
 }

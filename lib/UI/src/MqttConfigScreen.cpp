@@ -1,5 +1,7 @@
 #include "MqttConfigScreen.h"
 
+using namespace std;
+
 void MqttConfigScreen::loadMqttSettings(lv_event_t *e) {
     string mqttIp = projectPreferences.get(ProjectPreferences::MqttIp, "");
     string mqttPort = projectPreferences.get(ProjectPreferences::MqttPort, "");

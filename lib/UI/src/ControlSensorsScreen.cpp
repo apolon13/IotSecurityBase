@@ -4,6 +4,8 @@
 
 ControlSensorsScreen *selfControlSensorsScreen;
 
+using namespace std;
+
 lv_obj_t *getChildByClass(lv_obj_t *parent, const lv_obj_class_t *className) {
     int i;
     for (i = 0; i < lv_obj_get_child_cnt(parent); i++) {

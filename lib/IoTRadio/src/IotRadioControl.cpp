@@ -1,5 +1,7 @@
 #include "IotRadioControl.h"
 
+using namespace std;
+
 ProjectPreferences::PreferencesKey IotRadioControl::getPreferencesConfigKey() {
     return ProjectPreferences::IotControl;
 }

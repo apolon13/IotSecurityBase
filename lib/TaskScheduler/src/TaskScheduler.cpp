@@ -1,5 +1,7 @@
 #include "TaskScheduler.h"
 
+using namespace std;
+
 void TaskScheduler::addTask(const TaskToSchedule &t) {
     bool exist = false;
     for (const auto &task: inRunning) {

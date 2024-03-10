@@ -29,9 +29,9 @@ protected:
 
     void listenMqttCommands();
 
-    void handleDetect(const string &signal);
+    void handleDetect(const std::string &signal);
 
-    void handleControl(const string &signal, bool needTriggerEvent = true);
+    void handleControl(const std::string &signal, bool needTriggerEvent = true);
 
     void guard();
 

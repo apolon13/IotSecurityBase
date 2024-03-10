@@ -8,6 +8,7 @@ Security *selfSecurity;
 #define ALARM "Alarm"
 
 uint8_t receiverAddress[] = {0x08, 0xD1, 0xF9, 0xEB, 0x02, 0x58};
+using namespace std;
 
 void Security::guard() {
     IoTRadio::sendMessageToPeer({true, false});

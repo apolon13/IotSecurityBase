@@ -1,6 +1,8 @@
 #include "MainScreen.h"
 #include "UiMutex.h"
 
+using namespace std;
+
 void MainScreen::showSuccessNetworkIcon() {
     lv_obj_add_flag(ui_connectionStatusOff, LV_OBJ_FLAG_HIDDEN);
     lv_obj_clear_flag(ui_connectionStatusOn, LV_OBJ_FLAG_HIDDEN);

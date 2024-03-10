@@ -1,5 +1,7 @@
 #include "GeneralSettingsScreen.h"
 
+using namespace std;
+
 void GeneralSettingsScreen::saveGeneralSettings(lv_event_t *e) {
     string newPin = lv_textarea_get_text(ui_settingsPincodeInput);
     string newConnectionTimeout = lv_textarea_get_text(ui_settingsConnectionTimeoutInput);

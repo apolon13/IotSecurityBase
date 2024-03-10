@@ -1,5 +1,7 @@
 #include "EventableObject.h"
 
+using namespace std;
+
 void EventableObject::onEvent(const int &id, const std::function<void(int)> &handler) {
     if (handlers.find(id) != handlers.end()) {
         auto current = handlers.at(id);

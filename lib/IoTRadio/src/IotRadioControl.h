@@ -13,7 +13,7 @@ public:
         loadCurrentSensors();
     };
 
-    string extractGroup(const string &signal);
+    std::string extractGroup(const std::string &signal);
 };
 
 #endif
