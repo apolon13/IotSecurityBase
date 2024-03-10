@@ -7,6 +7,8 @@
 WiFiClient espClient;
 PubSubClient pubSub(espClient);
 
+using namespace std;
+
 Dispatcher::Dispatcher(ProjectPreferences &p, TopicsContainer &t) : projectPreferences(p), topicsContainer(t) {
     WiFi.persistent(false);
     WiFi.mode(WIFI_MODE_APSTA);
@@ -74,7 +76,7 @@ void Dispatcher::connectToMqtt() {
         pubSub.setServer(mqttServer.c_str(), stoi(mqttPort));
         if (pubSub.connect(id.c_str(), username.c_str(), pass.c_str())) {
             Serial.println("MQTT connected");
-            for (const auto& name: topicsContainer.getTopicNames()) {
+            for (const auto &name: topicsContainer.getTopicNames()) {
                 pubSub.subscribe(name.c_str());
             }
         } else {

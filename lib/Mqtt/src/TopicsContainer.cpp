@@ -1,5 +1,7 @@
 #include "TopicsContainer.h"
 
+using namespace std;
+
 void TopicsContainer::setPublishClient(PubSubDelegate *pubSubDelegate) {
     for (auto topic : topics) {
         topic->withPubSub(pubSubDelegate);

@@ -4,15 +4,13 @@
 #ifndef DISPLAY_PUBSUBDELEGATE_H
 #define DISPLAY_PUBSUBDELEGATE_H
 
-using namespace std;
-
 class PubSubDelegate {
 private:
     PubSubClient &pubSub;
 public:
     explicit PubSubDelegate(PubSubClient &ps) : pubSub(ps) {};
 
-    void publish(const string &topic, const string &payload);
+    void publish(const std::string &topic, const std::string &payload);
 };
 
 #endif

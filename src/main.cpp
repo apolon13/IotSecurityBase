@@ -59,7 +59,7 @@ void loopMqtt(void *data) {
             dispatcher.loop();
         }
 
-        Serial.println(ESP.getFreeHeap());
+       // Serial.println(ESP.getFreeHeap());
         screenFactory->getMainScreen().handleConnections(
                 dispatcher.cloudIsConnected(),
                 dispatcher.networkIsConnected()
@@ -97,7 +97,7 @@ void setup() {
 }
 
 void loop() {
-    Serial.begin(9600);
+    Serial.begin(115200);
     ProjectPreferences preferences;
     IoTRadioDetect detect(preferences);
     IotRadioControl control(preferences);
@@ -161,6 +161,7 @@ void loop() {
     taskScheduler.addTask({"loopDisplay", loopDisplay, TaskPriority::Low, 5000, (void *) &uiParameters});
     taskScheduler.addTask({"loopMqtt", loopMqtt, TaskPriority::Low, 5000, (void *) &mqttParameters});
     taskScheduler.addTask({"loopQueue", loopQueue, TaskPriority::Low, 3000, (void *) &queueParameters});
+
 
     try {
         taskScheduler.schedule();

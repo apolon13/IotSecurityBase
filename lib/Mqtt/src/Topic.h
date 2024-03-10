@@ -9,27 +9,25 @@
 #ifndef DISPLAY_TOPIC_H
 #define DISPLAY_TOPIC_H
 
-using namespace std;
-
 class Topic {
 private:
-    string topicName;
-    vector<function<void(string payload)>> handlers;
+    std::string topicName;
+    std::vector<std::function<void(std::string payload)>> handlers;
     PubSubDelegate *client;
 public:
-    explicit Topic(string n) : topicName(std::move(n)) {};
+    explicit Topic(std::string n) : topicName(std::move(n)) {};
 
-    string getName();
+    std::string getName();
 
     void withPubSub(PubSubDelegate *c);
 
-    void addHandler(const function<void(string payload)> &handler);
+    void addHandler(const std::function<void(std::string payload)> &handler);
 
-    void publish(const string &payload);
+    void publish(const std::string &payload);
 
     void refreshHandlers();
 
-    void handleData(const string &payload);
+    void handleData(const std::string &payload);
 };
 
 #endif

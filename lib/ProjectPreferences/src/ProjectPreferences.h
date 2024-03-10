@@ -1,8 +1,6 @@
 #include "SD.h"
 #include "Logger.h"
 
-using namespace std;
-
 #ifndef DISPLAY_PROJECTPREFERENCES_H
 #define DISPLAY_PROJECTPREFERENCES_H
 
@@ -11,9 +9,9 @@ using namespace std;
 
 class ProjectPreferences {
 protected:
-    static unordered_map<int, string> cache;
+    static std::unordered_map<int, std::string> cache;
 
-    string convertProperty(int key) {
+    std::string convertProperty(int key) {
         switch (key) {
             case MqttIp:
                 return "MqttIp";
@@ -74,9 +72,9 @@ public:
 
     explicit ProjectPreferences();
 
-    string get(PreferencesKey key, string defaultValue);
+    std::string get(PreferencesKey key, std::string defaultValue);
 
-    void set(PreferencesKey key, const string &value);
+    void set(PreferencesKey key, const std::string &value);
 
     void lockSystem();
 
@@ -84,11 +82,11 @@ public:
 
     bool systemIsLocked();
 
-    string getSecurityTimeout();
+    std::string getSecurityTimeout();
 
-    string getConnectionTimeout();
+    std::string getConnectionTimeout();
 
-    string getConnectionAttemptsBeforeRestart();
+    std::string getConnectionAttemptsBeforeRestart();
 };
 
 #endif

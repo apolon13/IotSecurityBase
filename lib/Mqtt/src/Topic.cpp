@@ -1,5 +1,7 @@
 #include "Topic.h"
 
+using namespace std;
+
 string Topic::getName() {
     return topicName;
 }

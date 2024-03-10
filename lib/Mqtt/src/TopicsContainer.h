@@ -14,9 +14,9 @@ public:
 
     void setPublishClient(PubSubDelegate *pubSubDelegate);
 
-    void handleSubscribeData(const string& topicName, const string& data);
+    void handleSubscribeData(const std::string& topicName, const std::string& data);
 
-    vector<string> getTopicNames();
+    std::vector<std::string> getTopicNames();
 };
 
 #endif //DISPLAY_TOPICSCONTAINER_H
