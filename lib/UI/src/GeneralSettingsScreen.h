@@ -5,6 +5,10 @@
 #ifndef DISPLAY_GENERALSETTINGSSCREEEN_H
 #define DISPLAY_GENERALSETTINGSSCREEEN_H
 
+enum class GeneralSettingsScreenEvent {
+    EventOnUpdateSettings
+};
+
 class GeneralSettingsScreen : public Screen {
 private:
     ProjectPreferences &projectPreferences;

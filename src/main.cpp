@@ -6,6 +6,7 @@
 #include "TopicsContainer.h"
 #include "FileProjectPreferences.h"
 #include "SimNetwork.h"
+#include "WiFiNetwork.h"
 
 ScreenFactory *screenFactory;
 
@@ -110,52 +111,60 @@ void loop() {
         &cmdTopic,
         &rcvTopic
     });
-    SimNetwork network(preferences, Serial1);
-    Dispatcher dispatcher(preferences, topicsContainer, network);
+
+    Network *network;
+    if (preferences.networkModeIsWifi()) {
+        network = new SimNetwork(preferences, Serial1);
+    } else {
+        network = new WiFiNetwork(preferences);
+    }
+
+    Dispatcher dispatcher(preferences, topicsContainer, *network);
     QueueTask queue;
     Security security(detect, control, preferences, cmdTopic, rcvTopic);
     screenFactory = new ScreenFactory(preferences, detect, queue, control);
     UiControl uiControl(stoi(preferences.getSecurityTimeout()) * 1000);
     uiControl.init();
-    auto lockScreen = screenFactory->getLockScreen();
-    auto mainScreen = screenFactory->getMainScreen();
 
     auto securityListenCb = [&security](int eventId) {
         security.listen();
     };
     screenFactory->getDetectSensorsScreen().onEvent((int) SensorScreenEvent::EventOnAfterRadioUse, securityListenCb);
     screenFactory->getControlSensorsScreen().onEvent((int) SensorScreenEvent::EventOnAfterRadioUse, securityListenCb);
-
-    lockScreen.onEvent((int) LockScreenEvent::EventOnLock, [&lockScreen, &security](int eventId) {
-        security.lockSystem(true);
-        lockScreen.goTo(false);
+    screenFactory->getGeneralSettingsScreen().onEvent((int) GeneralSettingsScreenEvent::EventOnUpdateSettings, [] (int eventId) {
+        ESP.restart();
     });
 
-    lockScreen.onEvent((int) LockScreenEvent::EventOnUnlock, [&mainScreen, &security](int eventId) {
+    screenFactory->getLockScreen().onEvent((int) LockScreenEvent::EventOnLock, [&security](int eventId) {
+        security.lockSystem(true);
+        screenFactory->getLockScreen().goTo(false);
+    });
+
+    screenFactory->getLockScreen().onEvent((int) LockScreenEvent::EventOnUnlock, [&security](int eventId) {
         security.unlockSystem(true);
-        mainScreen.goTo(false);
+        screenFactory->getMainScreen().goTo(false);
     });
 
     auto touchCb = [&uiControl](int eventId) {
         uiControl.hasTouch();
     };
-    security.onEvent((int) SecurityEvent::EventOnGuard, [&lockScreen, touchCb](int eventId) {
+    security.onEvent((int) SecurityEvent::EventOnGuard, [touchCb](int eventId) {
         touchCb(eventId);
-        lockScreen.goTo(true);
+        screenFactory->getLockScreen().goTo(true);
     });
 
-    security.onEvent((int) SecurityEvent::EventOnDisarm, [&mainScreen, touchCb, &security](int eventId) {
+    security.onEvent((int) SecurityEvent::EventOnDisarm, [touchCb, &security](int eventId) {
         touchCb(eventId);
         security.unlockSystem(true);
-        mainScreen.goTo(true);
+        screenFactory->getMainScreen().goTo(true);
     });
 
     security.onEvent((int) SecurityEvent::EventOnAlarm, touchCb);
     security.onEvent((int) SecurityEvent::EventOnMute, touchCb);
 
-    uiControl.onEvent((int) UiControlEvent::EventOnBacklightOff, [&lockScreen, &security](int eventId) {
+    uiControl.onEvent((int) UiControlEvent::EventOnBacklightOff, [&security](int eventId) {
         security.lockSystem(true);
-        lockScreen.goTo(false);
+        screenFactory->getLockScreen().goTo(false);
     });
 
     TaskScheduler taskScheduler;

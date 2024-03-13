@@ -5,162 +5,167 @@
 
 #include "../ui.h"
 
-void ui_mqttConfigScreen_screen_init(void) {
-    ui_mqttConfigScreen = lv_obj_create(NULL);
-    lv_obj_clear_flag(ui_mqttConfigScreen, LV_OBJ_FLAG_SCROLLABLE);    /// Flags
+void ui_mqttConfigScreen_screen_init(void)
+{
+ui_mqttConfigScreen = lv_obj_create(NULL);
+lv_obj_clear_flag( ui_mqttConfigScreen, LV_OBJ_FLAG_SCROLLABLE );    /// Flags
 
-    ui_TabView2 = lv_tabview_create(ui_mqttConfigScreen, LV_DIR_TOP, 50);
-    lv_obj_set_width(ui_TabView2, 800);
-    lv_obj_set_height(ui_TabView2, 480);
-    lv_obj_set_align(ui_TabView2, LV_ALIGN_CENTER);
-    lv_obj_clear_flag(ui_TabView2, LV_OBJ_FLAG_SCROLLABLE);    /// Flags
+ui_TabView2 = lv_tabview_create(ui_mqttConfigScreen, LV_DIR_TOP, 50);
+lv_obj_set_width( ui_TabView2, 800);
+lv_obj_set_height( ui_TabView2, 480);
+lv_obj_set_align( ui_TabView2, LV_ALIGN_CENTER );
+lv_obj_clear_flag( ui_TabView2, LV_OBJ_FLAG_SCROLLABLE );    /// Flags
 
-    lv_obj_set_style_bg_color(lv_tabview_get_tab_btns(ui_TabView2), lv_color_hex(0x2095F6),
-                              LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(lv_tabview_get_tab_btns(ui_TabView2), 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+lv_obj_set_style_bg_color(lv_tabview_get_tab_btns(ui_TabView2), lv_color_hex(0x2095F6),  LV_PART_MAIN | LV_STATE_DEFAULT );
+lv_obj_set_style_bg_opa(lv_tabview_get_tab_btns(ui_TabView2), 255,  LV_PART_MAIN| LV_STATE_DEFAULT);
 
-    ui_Label7 = lv_label_create(ui_mqttConfigScreen);
-    lv_obj_set_width(ui_Label7, LV_SIZE_CONTENT);  /// 1
-    lv_obj_set_height(ui_Label7, LV_SIZE_CONTENT);   /// 1
-    lv_label_set_text(ui_Label7, "MQTT Settings");
-    lv_obj_set_style_text_font(ui_Label7, &lv_font_montserrat_18, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_pad_left(ui_Label7, 20, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_pad_right(ui_Label7, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_pad_top(ui_Label7, 10, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_pad_bottom(ui_Label7, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+ui_Label7 = lv_label_create(ui_mqttConfigScreen);
+lv_obj_set_width( ui_Label7, LV_SIZE_CONTENT);  /// 1
+lv_obj_set_height( ui_Label7, LV_SIZE_CONTENT);   /// 1
+lv_label_set_text(ui_Label7,"MQTT Settings");
+lv_obj_set_style_text_font(ui_Label7, &lv_font_montserrat_18, LV_PART_MAIN| LV_STATE_DEFAULT);
+lv_obj_set_style_pad_left(ui_Label7, 20, LV_PART_MAIN| LV_STATE_DEFAULT);
+lv_obj_set_style_pad_right(ui_Label7, 0, LV_PART_MAIN| LV_STATE_DEFAULT);
+lv_obj_set_style_pad_top(ui_Label7, 10, LV_PART_MAIN| LV_STATE_DEFAULT);
+lv_obj_set_style_pad_bottom(ui_Label7, 0, LV_PART_MAIN| LV_STATE_DEFAULT);
 
-    ui_Container1 = lv_obj_create(ui_mqttConfigScreen);
-    lv_obj_remove_style_all(ui_Container1);
-    lv_obj_set_width(ui_Container1, 800);
-    lv_obj_set_height(ui_Container1, 480);
-    lv_obj_set_align(ui_Container1, LV_ALIGN_CENTER);
-    lv_obj_set_scrollbar_mode(ui_Container1, LV_SCROLLBAR_MODE_ON);
-    lv_obj_set_scroll_dir(ui_Container1, LV_DIR_BOTTOM);
-    lv_obj_set_style_pad_left(ui_Container1, 10, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_pad_right(ui_Container1, 10, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_pad_top(ui_Container1, 70, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_pad_bottom(ui_Container1, 10, LV_PART_MAIN | LV_STATE_DEFAULT);
+ui_Container1 = lv_obj_create(ui_mqttConfigScreen);
+lv_obj_remove_style_all(ui_Container1);
+lv_obj_set_width( ui_Container1, 800);
+lv_obj_set_height( ui_Container1, 480);
+lv_obj_set_align( ui_Container1, LV_ALIGN_CENTER );
+lv_obj_set_scrollbar_mode(ui_Container1, LV_SCROLLBAR_MODE_ON);
+lv_obj_set_scroll_dir(ui_Container1, LV_DIR_BOTTOM);
+lv_obj_set_style_pad_left(ui_Container1, 10, LV_PART_MAIN| LV_STATE_DEFAULT);
+lv_obj_set_style_pad_right(ui_Container1, 10, LV_PART_MAIN| LV_STATE_DEFAULT);
+lv_obj_set_style_pad_top(ui_Container1, 70, LV_PART_MAIN| LV_STATE_DEFAULT);
+lv_obj_set_style_pad_bottom(ui_Container1, 10, LV_PART_MAIN| LV_STATE_DEFAULT);
 
-    ui_Ip = lv_obj_create(ui_Container1);
-    lv_obj_set_height(ui_Ip, 120);
-    lv_obj_set_width(ui_Ip, lv_pct(32));
-    lv_obj_clear_flag(ui_Ip, LV_OBJ_FLAG_SCROLLABLE);    /// Flags
+ui_Ip = lv_obj_create(ui_Container1);
+lv_obj_set_height( ui_Ip, 120);
+lv_obj_set_width( ui_Ip, lv_pct(32));
+lv_obj_clear_flag( ui_Ip, LV_OBJ_FLAG_SCROLLABLE );    /// Flags
 
-    ui_BrokerIpInputLabel = lv_label_create(ui_Ip);
-    lv_obj_set_width(ui_BrokerIpInputLabel, LV_SIZE_CONTENT);  /// 1
-    lv_obj_set_height(ui_BrokerIpInputLabel, LV_SIZE_CONTENT);   /// 1
-    lv_label_set_text(ui_BrokerIpInputLabel, "Broker ip");
+ui_BrokerIpInputLabel = lv_label_create(ui_Ip);
+lv_obj_set_width( ui_BrokerIpInputLabel, LV_SIZE_CONTENT);  /// 1
+lv_obj_set_height( ui_BrokerIpInputLabel, LV_SIZE_CONTENT);   /// 1
+lv_label_set_text(ui_BrokerIpInputLabel,"Broker ip");
 
-    ui_mqttIp = lv_textarea_create(ui_Ip);
-    lv_obj_set_width(ui_mqttIp, lv_pct(100));
-    lv_obj_set_height(ui_mqttIp, LV_SIZE_CONTENT);   /// 70
-    lv_obj_set_align(ui_mqttIp, LV_ALIGN_BOTTOM_MID);
-    lv_textarea_set_placeholder_text(ui_mqttIp, "0.0.0.0");
-    lv_textarea_set_one_line(ui_mqttIp, true);
-
-
-    ui_Port = lv_obj_create(ui_Container1);
-    lv_obj_set_height(ui_Port, 120);
-    lv_obj_set_width(ui_Port, lv_pct(32));
-    lv_obj_set_align(ui_Port, LV_ALIGN_TOP_MID);
-    lv_obj_clear_flag(ui_Port, LV_OBJ_FLAG_SCROLLABLE);    /// Flags
-
-    ui_BrokerIpInputLabel1 = lv_label_create(ui_Port);
-    lv_obj_set_width(ui_BrokerIpInputLabel1, LV_SIZE_CONTENT);  /// 1
-    lv_obj_set_height(ui_BrokerIpInputLabel1, LV_SIZE_CONTENT);   /// 1
-    lv_label_set_text(ui_BrokerIpInputLabel1, "Broker port");
-
-    ui_mqttPort = lv_textarea_create(ui_Port);
-    lv_obj_set_width(ui_mqttPort, lv_pct(100));
-    lv_obj_set_height(ui_mqttPort, LV_SIZE_CONTENT);   /// 70
-    lv_obj_set_align(ui_mqttPort, LV_ALIGN_BOTTOM_MID);
-    lv_textarea_set_placeholder_text(ui_mqttPort, "1883 or 8883");
-    lv_textarea_set_one_line(ui_mqttPort, true);
+ui_mqttIp = lv_textarea_create(ui_Ip);
+lv_obj_set_width( ui_mqttIp, lv_pct(100));
+lv_obj_set_height( ui_mqttIp, LV_SIZE_CONTENT);   /// 70
+lv_obj_set_align( ui_mqttIp, LV_ALIGN_BOTTOM_MID );
+lv_textarea_set_placeholder_text(ui_mqttIp,"0.0.0.0");
+lv_textarea_set_one_line(ui_mqttIp,true);
 
 
-    ui_Credentials = lv_obj_create(ui_Container1);
-    lv_obj_set_height(ui_Credentials, 150);
-    lv_obj_set_width(ui_Credentials, lv_pct(66));
-    lv_obj_set_align(ui_Credentials, LV_ALIGN_LEFT_MID);
-    lv_obj_clear_flag(ui_Credentials, LV_OBJ_FLAG_SCROLLABLE);    /// Flags
 
-    ui_Label6 = lv_label_create(ui_Credentials);
-    lv_obj_set_width(ui_Label6, LV_SIZE_CONTENT);  /// 1
-    lv_obj_set_height(ui_Label6, LV_SIZE_CONTENT);   /// 1
-    lv_label_set_text(ui_Label6, "Credentials");
+ui_Port = lv_obj_create(ui_Container1);
+lv_obj_set_height( ui_Port, 120);
+lv_obj_set_width( ui_Port, lv_pct(32));
+lv_obj_set_align( ui_Port, LV_ALIGN_TOP_MID );
+lv_obj_clear_flag( ui_Port, LV_OBJ_FLAG_SCROLLABLE );    /// Flags
 
-    ui_mqttUsername = lv_textarea_create(ui_Credentials);
-    lv_obj_set_width(ui_mqttUsername, lv_pct(32));
-    lv_obj_set_height(ui_mqttUsername, LV_SIZE_CONTENT);   /// 70
-    lv_obj_set_align(ui_mqttUsername, LV_ALIGN_BOTTOM_LEFT);
-    lv_textarea_set_placeholder_text(ui_mqttUsername, "Username");
-    lv_textarea_set_one_line(ui_mqttUsername, true);
+ui_BrokerIpInputLabel1 = lv_label_create(ui_Port);
+lv_obj_set_width( ui_BrokerIpInputLabel1, LV_SIZE_CONTENT);  /// 1
+lv_obj_set_height( ui_BrokerIpInputLabel1, LV_SIZE_CONTENT);   /// 1
+lv_label_set_text(ui_BrokerIpInputLabel1,"Broker port");
 
-
-    ui_mqttPassword = lv_textarea_create(ui_Credentials);
-    lv_obj_set_width(ui_mqttPassword, lv_pct(32));
-    lv_obj_set_height(ui_mqttPassword, LV_SIZE_CONTENT);   /// 70
-    lv_obj_set_align(ui_mqttPassword, LV_ALIGN_BOTTOM_MID);
-    lv_textarea_set_placeholder_text(ui_mqttPassword, "Password");
-    lv_textarea_set_one_line(ui_mqttPassword, true);
-    lv_textarea_set_password_mode(ui_mqttPassword, true);
+ui_mqttPort = lv_textarea_create(ui_Port);
+lv_obj_set_width( ui_mqttPort, lv_pct(100));
+lv_obj_set_height( ui_mqttPort, LV_SIZE_CONTENT);   /// 70
+lv_obj_set_align( ui_mqttPort, LV_ALIGN_BOTTOM_MID );
+lv_textarea_set_placeholder_text(ui_mqttPort,"1883 or 8883");
+lv_textarea_set_one_line(ui_mqttPort,true);
 
 
-    ui_mqttEntityId = lv_textarea_create(ui_Credentials);
-    lv_obj_set_width(ui_mqttEntityId, lv_pct(32));
-    lv_obj_set_height(ui_mqttEntityId, LV_SIZE_CONTENT);   /// 70
-    lv_obj_set_align(ui_mqttEntityId, LV_ALIGN_BOTTOM_RIGHT);
-    lv_textarea_set_placeholder_text(ui_mqttEntityId, "ID");
-    lv_textarea_set_one_line(ui_mqttEntityId, true);
+
+ui_Credentials = lv_obj_create(ui_Container1);
+lv_obj_set_height( ui_Credentials, 150);
+lv_obj_set_width( ui_Credentials, lv_pct(66));
+lv_obj_set_align( ui_Credentials, LV_ALIGN_LEFT_MID );
+lv_obj_clear_flag( ui_Credentials, LV_OBJ_FLAG_SCROLLABLE );    /// Flags
+
+ui_Label6 = lv_label_create(ui_Credentials);
+lv_obj_set_width( ui_Label6, LV_SIZE_CONTENT);  /// 1
+lv_obj_set_height( ui_Label6, LV_SIZE_CONTENT);   /// 1
+lv_label_set_text(ui_Label6,"Credentials");
+
+ui_mqttUsername = lv_textarea_create(ui_Credentials);
+lv_obj_set_width( ui_mqttUsername, lv_pct(32));
+lv_obj_set_height( ui_mqttUsername, LV_SIZE_CONTENT);   /// 70
+lv_obj_set_align( ui_mqttUsername, LV_ALIGN_BOTTOM_LEFT );
+lv_textarea_set_placeholder_text(ui_mqttUsername,"Username");
+lv_textarea_set_one_line(ui_mqttUsername,true);
 
 
-    ui_saveMqttBtn = lv_btn_create(ui_Container1);
-    lv_obj_set_width(ui_saveMqttBtn, 100);
-    lv_obj_set_height(ui_saveMqttBtn, 50);
-    lv_obj_set_align(ui_saveMqttBtn, LV_ALIGN_BOTTOM_RIGHT);
-    lv_obj_add_flag(ui_saveMqttBtn, LV_OBJ_FLAG_SCROLL_ON_FOCUS);   /// Flags
-    lv_obj_clear_flag(ui_saveMqttBtn, LV_OBJ_FLAG_SCROLLABLE);    /// Flags
-    lv_obj_set_style_bg_color(ui_saveMqttBtn, lv_color_hex(0x1CD850), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(ui_saveMqttBtn, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    ui_Label4 = lv_label_create(ui_saveMqttBtn);
-    lv_obj_set_width(ui_Label4, LV_SIZE_CONTENT);  /// 1
-    lv_obj_set_height(ui_Label4, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_align(ui_Label4, LV_ALIGN_CENTER);
-    lv_label_set_text(ui_Label4, "Save");
+ui_mqttPassword = lv_textarea_create(ui_Credentials);
+lv_obj_set_width( ui_mqttPassword, lv_pct(32));
+lv_obj_set_height( ui_mqttPassword, LV_SIZE_CONTENT);   /// 70
+lv_obj_set_align( ui_mqttPassword, LV_ALIGN_BOTTOM_MID );
+lv_textarea_set_placeholder_text(ui_mqttPassword,"Password");
+lv_textarea_set_one_line(ui_mqttPassword,true);
+lv_textarea_set_password_mode(ui_mqttPassword, true);
 
-    ui_abortBtn = lv_btn_create(ui_Container1);
-    lv_obj_set_width(ui_abortBtn, 100);
-    lv_obj_set_height(ui_abortBtn, 50);
-    lv_obj_set_x(ui_abortBtn, -110);
-    lv_obj_set_y(ui_abortBtn, 0);
-    lv_obj_set_align(ui_abortBtn, LV_ALIGN_BOTTOM_RIGHT);
-    lv_obj_add_flag(ui_abortBtn, LV_OBJ_FLAG_SCROLL_ON_FOCUS);   /// Flags
-    lv_obj_clear_flag(ui_abortBtn, LV_OBJ_FLAG_SCROLLABLE);    /// Flags
-    lv_obj_set_style_bg_color(ui_abortBtn, lv_color_hex(0xEA235F), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(ui_abortBtn, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    ui_Label5 = lv_label_create(ui_abortBtn);
-    lv_obj_set_width(ui_Label5, LV_SIZE_CONTENT);  /// 1
-    lv_obj_set_height(ui_Label5, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_align(ui_Label5, LV_ALIGN_CENTER);
-    lv_label_set_text(ui_Label5, "Back");
 
-    ui_Keyboard = lv_keyboard_create(ui_mqttConfigScreen);
-    lv_obj_set_width(ui_Keyboard, lv_pct(100));
-    lv_obj_set_height(ui_Keyboard, lv_pct(50));
-    lv_obj_set_align(ui_Keyboard, LV_ALIGN_BOTTOM_MID);
-    lv_obj_add_flag(ui_Keyboard, LV_OBJ_FLAG_HIDDEN);   /// Flags
+ui_mqttEntityId = lv_textarea_create(ui_Credentials);
+lv_obj_set_width( ui_mqttEntityId, lv_pct(32));
+lv_obj_set_height( ui_mqttEntityId, LV_SIZE_CONTENT);   /// 70
+lv_obj_set_align( ui_mqttEntityId, LV_ALIGN_BOTTOM_RIGHT );
+lv_textarea_set_placeholder_text(ui_mqttEntityId,"ID");
+lv_textarea_set_one_line(ui_mqttEntityId,true);
 
-    lv_obj_add_event_cb(ui_mqttIp, ui_event_mqttIp, LV_EVENT_ALL, NULL);
-    lv_obj_add_event_cb(ui_mqttPort, ui_event_mqttPort, LV_EVENT_ALL, NULL);
-    lv_obj_add_event_cb(ui_mqttUsername, ui_event_mqttUsername, LV_EVENT_ALL, NULL);
-    lv_obj_add_event_cb(ui_mqttPassword, ui_event_mqttPassword, LV_EVENT_ALL, NULL);
-    lv_obj_add_event_cb(ui_mqttEntityId, ui_event_mqttEntityId, LV_EVENT_ALL, NULL);
-    lv_obj_add_event_cb(ui_Label4, ui_event_Label4, LV_EVENT_ALL, NULL);
-    lv_obj_add_event_cb(ui_saveMqttBtn, ui_event_saveMqttBtn, LV_EVENT_ALL, NULL);
-    lv_obj_add_event_cb(ui_abortBtn, ui_event_abortBtn, LV_EVENT_ALL, NULL);
-    lv_obj_add_event_cb(ui_Keyboard, ui_event_Keyboard, LV_EVENT_ALL, NULL);
-    lv_obj_add_event_cb(ui_mqttConfigScreen, ui_event_mqttConfigScreen, LV_EVENT_ALL, NULL);
+
+
+ui_saveMqttBtn = lv_btn_create(ui_Container1);
+lv_obj_set_width( ui_saveMqttBtn, 100);
+lv_obj_set_height( ui_saveMqttBtn, 50);
+lv_obj_set_align( ui_saveMqttBtn, LV_ALIGN_BOTTOM_RIGHT );
+lv_obj_add_flag( ui_saveMqttBtn, LV_OBJ_FLAG_SCROLL_ON_FOCUS );   /// Flags
+lv_obj_clear_flag( ui_saveMqttBtn, LV_OBJ_FLAG_SCROLLABLE );    /// Flags
+lv_obj_set_style_bg_color(ui_saveMqttBtn, lv_color_hex(0x1CD850), LV_PART_MAIN | LV_STATE_DEFAULT );
+lv_obj_set_style_bg_opa(ui_saveMqttBtn, 255, LV_PART_MAIN| LV_STATE_DEFAULT);
+
+ui_Label4 = lv_label_create(ui_saveMqttBtn);
+lv_obj_set_width( ui_Label4, LV_SIZE_CONTENT);  /// 1
+lv_obj_set_height( ui_Label4, LV_SIZE_CONTENT);   /// 1
+lv_obj_set_align( ui_Label4, LV_ALIGN_CENTER );
+lv_label_set_text(ui_Label4,"Save");
+
+ui_abortBtn = lv_btn_create(ui_Container1);
+lv_obj_set_width( ui_abortBtn, 100);
+lv_obj_set_height( ui_abortBtn, 50);
+lv_obj_set_x( ui_abortBtn, -110 );
+lv_obj_set_y( ui_abortBtn, 0 );
+lv_obj_set_align( ui_abortBtn, LV_ALIGN_BOTTOM_RIGHT );
+lv_obj_add_flag( ui_abortBtn, LV_OBJ_FLAG_SCROLL_ON_FOCUS );   /// Flags
+lv_obj_clear_flag( ui_abortBtn, LV_OBJ_FLAG_SCROLLABLE );    /// Flags
+lv_obj_set_style_bg_color(ui_abortBtn, lv_color_hex(0xEA235F), LV_PART_MAIN | LV_STATE_DEFAULT );
+lv_obj_set_style_bg_opa(ui_abortBtn, 255, LV_PART_MAIN| LV_STATE_DEFAULT);
+
+ui_Label5 = lv_label_create(ui_abortBtn);
+lv_obj_set_width( ui_Label5, LV_SIZE_CONTENT);  /// 1
+lv_obj_set_height( ui_Label5, LV_SIZE_CONTENT);   /// 1
+lv_obj_set_align( ui_Label5, LV_ALIGN_CENTER );
+lv_label_set_text(ui_Label5,"Back");
+
+ui_Keyboard = lv_keyboard_create(ui_mqttConfigScreen);
+lv_obj_set_width( ui_Keyboard, lv_pct(100));
+lv_obj_set_height( ui_Keyboard, lv_pct(50));
+lv_obj_set_align( ui_Keyboard, LV_ALIGN_BOTTOM_MID );
+lv_obj_add_flag( ui_Keyboard, LV_OBJ_FLAG_HIDDEN );   /// Flags
+
+lv_obj_add_event_cb(ui_mqttIp, ui_event_mqttIp, LV_EVENT_ALL, NULL);
+lv_obj_add_event_cb(ui_mqttPort, ui_event_mqttPort, LV_EVENT_ALL, NULL);
+lv_obj_add_event_cb(ui_mqttUsername, ui_event_mqttUsername, LV_EVENT_ALL, NULL);
+lv_obj_add_event_cb(ui_mqttPassword, ui_event_mqttPassword, LV_EVENT_ALL, NULL);
+lv_obj_add_event_cb(ui_mqttEntityId, ui_event_mqttEntityId, LV_EVENT_ALL, NULL);
+lv_obj_add_event_cb(ui_Label4, ui_event_Label4, LV_EVENT_ALL, NULL);
+lv_obj_add_event_cb(ui_saveMqttBtn, ui_event_saveMqttBtn, LV_EVENT_ALL, NULL);
+lv_obj_add_event_cb(ui_abortBtn, ui_event_abortBtn, LV_EVENT_ALL, NULL);
+lv_obj_add_event_cb(ui_Keyboard, ui_event_Keyboard, LV_EVENT_ALL, NULL);
+lv_obj_add_event_cb(ui_mqttConfigScreen, ui_event_mqttConfigScreen, LV_EVENT_ALL, NULL);
 
 }

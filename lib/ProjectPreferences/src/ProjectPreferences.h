@@ -4,8 +4,8 @@
 #ifndef DISPLAY_PROJECTPREFERENCES_H
 #define DISPLAY_PROJECTPREFERENCES_H
 
-#define SYSTEM_STATE_LOCK "1"
-#define SYSTEM_STATE_UNLOCK "0"
+#define ON "1"
+#define OFF "0"
 
 struct Property {
     std::string value;
@@ -53,6 +53,10 @@ protected:
                 return "ConnectionAttemptsBeforeRestart";
             case APN:
                 return "APN";
+            case WifiNetworkMode:
+                return "WifiNetworkMode";
+            case SimNetworkMode:
+                return "SimNetworkMode";
             default:
                 throw std::invalid_argument("Invalid property");
         }
@@ -80,7 +84,9 @@ public:
         SecurityTimeout,
         ConnectionTimeout,
         ConnectionAttemptsBeforeRestart,
-        APN
+        APN,
+        WifiNetworkMode,
+        SimNetworkMode
     };
 
     std::string get(PreferencesKey key, std::string defaultValue);
@@ -98,6 +104,10 @@ public:
     std::string getConnectionTimeout();
 
     std::string getConnectionAttemptsBeforeRestart();
+
+    bool networkModeIsWifi();
+
+    bool networkModeIsSim();
 };
 
 #endif

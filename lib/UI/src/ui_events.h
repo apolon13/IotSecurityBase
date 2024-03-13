@@ -10,24 +10,24 @@
 extern "C" {
 #endif
 
-void unlockSystem(lv_event_t *e);
-void loadDataInMain(lv_event_t *e);
-void lockSystem(lv_event_t *e);
-void loadMqttSettings(lv_event_t *e);
-void saveMqttSettings(lv_event_t *e);
-void loadFiWiSettings(lv_event_t *e);
-void saveWifiSettings(lv_event_t *e);
-void loadAllSensors(lv_event_t *e);
-void startScan(lv_event_t *e);
-void stopScan(lv_event_t *e);
-void loadSensor(lv_event_t *e);
-void saveSensorSettings(lv_event_t *e);
-void loadGeneralSettings(lv_event_t *e);
-void saveGeneralSettings(lv_event_t *e);
-void loadAllControls(lv_event_t *e);
-void addControl(lv_event_t *e);
-void addControlAction(lv_event_t *e);
-void deleteControl(lv_event_t *e);
+void unlockSystem(lv_event_t * e);
+void loadDataInMain(lv_event_t * e);
+void lockSystem(lv_event_t * e);
+void loadMqttSettings(lv_event_t * e);
+void saveMqttSettings(lv_event_t * e);
+void loadFiWiSettings(lv_event_t * e);
+void saveWifiSettings(lv_event_t * e);
+void loadAllSensors(lv_event_t * e);
+void startScan(lv_event_t * e);
+void stopScan(lv_event_t * e);
+void loadSensor(lv_event_t * e);
+void saveSensorSettings(lv_event_t * e);
+void loadGeneralSettings(lv_event_t * e);
+void saveGeneralSettings(lv_event_t * e);
+void loadAllControls(lv_event_t * e);
+void addControl(lv_event_t * e);
+void addControlAction(lv_event_t * e);
+void deleteControl(lv_event_t * e);
 
 #ifdef __cplusplus
 } /*extern "C"*/

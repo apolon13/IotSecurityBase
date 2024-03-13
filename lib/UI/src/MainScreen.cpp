@@ -4,13 +4,17 @@
 using namespace std;
 
 void MainScreen::showSuccessNetworkIcon() {
-    lv_obj_add_flag(ui_connectionStatusOff, LV_OBJ_FLAG_HIDDEN);
-    lv_obj_clear_flag(ui_connectionStatusOn, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(ui_connectionStatusWifiOff, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(ui_connectionStatusSimOff, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(ui_connectionStatusWifiOn, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(ui_connectionStatusSimOn, LV_OBJ_FLAG_HIDDEN);
 }
 
 void MainScreen::showFailedNetworkIcon() {
-    lv_obj_clear_flag(ui_connectionStatusOff, LV_OBJ_FLAG_HIDDEN);
-    lv_obj_add_flag(ui_connectionStatusOn, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(ui_connectionStatusWifiOff, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(ui_connectionStatusSimOff, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(ui_connectionStatusWifiOn, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(ui_connectionStatusSimOn, LV_OBJ_FLAG_HIDDEN);
 }
 
 void MainScreen::successMqttConnection() {
@@ -43,8 +47,18 @@ void MainScreen::loadDataInMain(lv_event_t *e) {
     string credentials = mqttUsername + ":" + mqttEntityId;
     lv_label_set_text(ui_mqttAddrLabel, addr.c_str());
     lv_label_set_text(ui_mqttCredentialsLabel, credentials.c_str());
-    lv_label_set_text(ui_wifiSsidLabel, wifiSsid.c_str());
     lv_label_set_text(ui_sensorsQty, sensorsCount.c_str());
+
+    if (projectPreferences.networkModeIsWifi()) {
+        lv_obj_clear_flag(ui_wifiHome, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(ui_simHome, LV_OBJ_FLAG_HIDDEN);
+        lv_label_set_text(ui_wifiSsidLabel, wifiSsid.c_str());
+    }
+
+    if (projectPreferences.networkModeIsSim()) {
+        lv_obj_clear_flag(ui_simHome, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(ui_wifiHome, LV_OBJ_FLAG_HIDDEN);
+    }
 }
 
 void MainScreen::handleConnections(bool cloudIsConnected, bool networkIsConnected) {

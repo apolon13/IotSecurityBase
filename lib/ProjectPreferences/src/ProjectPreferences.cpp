@@ -23,15 +23,15 @@ string ProjectPreferences::get(ProjectPreferences::PreferencesKey property, stri
 }
 
 void ProjectPreferences::lockSystem() {
-    set(SystemState, SYSTEM_STATE_LOCK);
+    set(SystemState, ON);
 }
 
 void ProjectPreferences::unlockSystem() {
-    set(SystemState, SYSTEM_STATE_UNLOCK);
+    set(SystemState, OFF);
 }
 
 bool ProjectPreferences::systemIsLocked() {
-    return get(SystemState, SYSTEM_STATE_UNLOCK) == SYSTEM_STATE_LOCK;
+    return get(SystemState, OFF) == ON;
 }
 
 string ProjectPreferences::getSecurityTimeout() {
@@ -44,4 +44,12 @@ string ProjectPreferences::getConnectionTimeout() {
 
 string ProjectPreferences::getConnectionAttemptsBeforeRestart() {
     return get(ConnectionAttemptsBeforeRestart, "10");
+}
+
+bool ProjectPreferences::networkModeIsWifi() {
+    return !networkModeIsSim() && get(WifiNetworkMode, "1") == "1";
+}
+
+bool ProjectPreferences::networkModeIsSim() {
+    return get(SimNetworkMode, "0") == "1";
 }

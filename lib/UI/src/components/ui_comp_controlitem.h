@@ -31,18 +31,12 @@ extern "C" {
 #define UI_COMP_CONTROLITEM_CONTROLPANEL_DELETECONTROLBTN 15
 #define UI_COMP_CONTROLITEM_CONTROLPANEL_DELETECONTROLBTN_LABEL32 16
 #define _UI_COMP_CONTROLITEM_NUM 17
-
 lv_obj_t *ui_ControlItem_create(lv_obj_t *comp_parent);
-
-void ui_event_comp_ControlItem_GuardPanel(lv_event_t *e);
-
-void ui_event_comp_ControlItem_DisarmPanel(lv_event_t *e);
-
-void ui_event_comp_ControlItem_MutePanel(lv_event_t *e);
-
-void ui_event_comp_ControlItem_AlarmPanel(lv_event_t *e);
-
-void ui_event_comp_ControlItem_DeleteControlBtn(lv_event_t *e);
+void ui_event_comp_ControlItem_GuardPanel( lv_event_t * e);
+void ui_event_comp_ControlItem_DisarmPanel( lv_event_t * e);
+void ui_event_comp_ControlItem_MutePanel( lv_event_t * e);
+void ui_event_comp_ControlItem_AlarmPanel( lv_event_t * e);
+void ui_event_comp_ControlItem_DeleteControlBtn( lv_event_t * e);
 
 #ifdef __cplusplus
 } /*extern "C"*/

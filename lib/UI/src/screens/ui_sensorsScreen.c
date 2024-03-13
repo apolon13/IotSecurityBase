@@ -5,101 +5,101 @@
 
 #include "../ui.h"
 
-void ui_sensorsScreen_screen_init(void) {
-    ui_sensorsScreen = lv_obj_create(NULL);
-    lv_obj_clear_flag(ui_sensorsScreen, LV_OBJ_FLAG_SCROLLABLE);    /// Flags
+void ui_sensorsScreen_screen_init(void)
+{
+ui_sensorsScreen = lv_obj_create(NULL);
+lv_obj_clear_flag( ui_sensorsScreen, LV_OBJ_FLAG_SCROLLABLE );    /// Flags
 
-    ui_TabView4 = lv_tabview_create(ui_sensorsScreen, LV_DIR_TOP, 50);
-    lv_obj_set_width(ui_TabView4, 800);
-    lv_obj_set_height(ui_TabView4, 480);
-    lv_obj_set_align(ui_TabView4, LV_ALIGN_CENTER);
-    lv_obj_clear_flag(ui_TabView4, LV_OBJ_FLAG_SCROLLABLE);    /// Flags
+ui_TabView4 = lv_tabview_create(ui_sensorsScreen, LV_DIR_TOP, 50);
+lv_obj_set_width( ui_TabView4, 800);
+lv_obj_set_height( ui_TabView4, 480);
+lv_obj_set_align( ui_TabView4, LV_ALIGN_CENTER );
+lv_obj_clear_flag( ui_TabView4, LV_OBJ_FLAG_SCROLLABLE );    /// Flags
 
-    lv_obj_set_style_bg_color(lv_tabview_get_tab_btns(ui_TabView4), lv_color_hex(0x2095F6),
-                              LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(lv_tabview_get_tab_btns(ui_TabView4), 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+lv_obj_set_style_bg_color(lv_tabview_get_tab_btns(ui_TabView4), lv_color_hex(0x2095F6),  LV_PART_MAIN | LV_STATE_DEFAULT );
+lv_obj_set_style_bg_opa(lv_tabview_get_tab_btns(ui_TabView4), 255,  LV_PART_MAIN| LV_STATE_DEFAULT);
 
-    ui_Label14 = lv_label_create(ui_sensorsScreen);
-    lv_obj_set_width(ui_Label14, LV_SIZE_CONTENT);  /// 1
-    lv_obj_set_height(ui_Label14, LV_SIZE_CONTENT);   /// 1
-    lv_label_set_text(ui_Label14, "Sensors");
-    lv_obj_set_style_text_font(ui_Label14, &lv_font_montserrat_18, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_pad_left(ui_Label14, 20, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_pad_right(ui_Label14, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_pad_top(ui_Label14, 10, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_pad_bottom(ui_Label14, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+ui_Label14 = lv_label_create(ui_sensorsScreen);
+lv_obj_set_width( ui_Label14, LV_SIZE_CONTENT);  /// 1
+lv_obj_set_height( ui_Label14, LV_SIZE_CONTENT);   /// 1
+lv_label_set_text(ui_Label14,"Sensors");
+lv_obj_set_style_text_font(ui_Label14, &lv_font_montserrat_18, LV_PART_MAIN| LV_STATE_DEFAULT);
+lv_obj_set_style_pad_left(ui_Label14, 20, LV_PART_MAIN| LV_STATE_DEFAULT);
+lv_obj_set_style_pad_right(ui_Label14, 0, LV_PART_MAIN| LV_STATE_DEFAULT);
+lv_obj_set_style_pad_top(ui_Label14, 10, LV_PART_MAIN| LV_STATE_DEFAULT);
+lv_obj_set_style_pad_bottom(ui_Label14, 0, LV_PART_MAIN| LV_STATE_DEFAULT);
 
-    ui_Sensors = lv_obj_create(ui_sensorsScreen);
-    lv_obj_remove_style_all(ui_Sensors);
-    lv_obj_set_height(ui_Sensors, 360);
-    lv_obj_set_width(ui_Sensors, lv_pct(100));
-    lv_obj_set_x(ui_Sensors, 0);
-    lv_obj_set_y(ui_Sensors, 55);
-    lv_obj_set_align(ui_Sensors, LV_ALIGN_TOP_MID);
-    lv_obj_set_flex_flow(ui_Sensors, LV_FLEX_FLOW_ROW_WRAP_REVERSE);
-    lv_obj_set_flex_align(ui_Sensors, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_START);
-    lv_obj_set_scrollbar_mode(ui_Sensors, LV_SCROLLBAR_MODE_ON);
-    lv_obj_set_style_pad_left(ui_Sensors, 10, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_pad_right(ui_Sensors, 10, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_pad_top(ui_Sensors, 10, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_pad_bottom(ui_Sensors, 10, LV_PART_MAIN | LV_STATE_DEFAULT);
+ui_Sensors = lv_obj_create(ui_sensorsScreen);
+lv_obj_remove_style_all(ui_Sensors);
+lv_obj_set_height( ui_Sensors, 360);
+lv_obj_set_width( ui_Sensors, lv_pct(100));
+lv_obj_set_x( ui_Sensors, 0 );
+lv_obj_set_y( ui_Sensors, 55 );
+lv_obj_set_align( ui_Sensors, LV_ALIGN_TOP_MID );
+lv_obj_set_flex_flow(ui_Sensors,LV_FLEX_FLOW_ROW_WRAP_REVERSE);
+lv_obj_set_flex_align(ui_Sensors, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_START);
+lv_obj_set_scrollbar_mode(ui_Sensors, LV_SCROLLBAR_MODE_ON);
+lv_obj_set_style_pad_left(ui_Sensors, 10, LV_PART_MAIN| LV_STATE_DEFAULT);
+lv_obj_set_style_pad_right(ui_Sensors, 10, LV_PART_MAIN| LV_STATE_DEFAULT);
+lv_obj_set_style_pad_top(ui_Sensors, 10, LV_PART_MAIN| LV_STATE_DEFAULT);
+lv_obj_set_style_pad_bottom(ui_Sensors, 10, LV_PART_MAIN| LV_STATE_DEFAULT);
 
-    ui_sensorActionsContainer = lv_obj_create(ui_sensorsScreen);
-    lv_obj_remove_style_all(ui_sensorActionsContainer);
-    lv_obj_set_height(ui_sensorActionsContainer, 60);
-    lv_obj_set_width(ui_sensorActionsContainer, lv_pct(100));
-    lv_obj_set_align(ui_sensorActionsContainer, LV_ALIGN_BOTTOM_MID);
-    lv_obj_clear_flag(ui_sensorActionsContainer, LV_OBJ_FLAG_SCROLLABLE);    /// Flags
-    lv_obj_set_style_pad_left(ui_sensorActionsContainer, 10, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_pad_right(ui_sensorActionsContainer, 10, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_pad_top(ui_sensorActionsContainer, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_pad_bottom(ui_sensorActionsContainer, 10, LV_PART_MAIN | LV_STATE_DEFAULT);
+ui_sensorActionsContainer = lv_obj_create(ui_sensorsScreen);
+lv_obj_remove_style_all(ui_sensorActionsContainer);
+lv_obj_set_height( ui_sensorActionsContainer, 60);
+lv_obj_set_width( ui_sensorActionsContainer, lv_pct(100));
+lv_obj_set_align( ui_sensorActionsContainer, LV_ALIGN_BOTTOM_MID );
+lv_obj_clear_flag( ui_sensorActionsContainer, LV_OBJ_FLAG_SCROLLABLE );    /// Flags
+lv_obj_set_style_pad_left(ui_sensorActionsContainer, 10, LV_PART_MAIN| LV_STATE_DEFAULT);
+lv_obj_set_style_pad_right(ui_sensorActionsContainer, 10, LV_PART_MAIN| LV_STATE_DEFAULT);
+lv_obj_set_style_pad_top(ui_sensorActionsContainer, 0, LV_PART_MAIN| LV_STATE_DEFAULT);
+lv_obj_set_style_pad_bottom(ui_sensorActionsContainer, 10, LV_PART_MAIN| LV_STATE_DEFAULT);
 
-    ui_abortBtn2 = lv_btn_create(ui_sensorActionsContainer);
-    lv_obj_set_width(ui_abortBtn2, 100);
-    lv_obj_set_height(ui_abortBtn2, 50);
-    lv_obj_set_align(ui_abortBtn2, LV_ALIGN_BOTTOM_RIGHT);
-    lv_obj_add_flag(ui_abortBtn2, LV_OBJ_FLAG_SCROLL_ON_FOCUS);   /// Flags
-    lv_obj_clear_flag(ui_abortBtn2, LV_OBJ_FLAG_SCROLLABLE);    /// Flags
-    lv_obj_set_style_bg_color(ui_abortBtn2, lv_color_hex(0xEA235F), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(ui_abortBtn2, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+ui_abortBtn2 = lv_btn_create(ui_sensorActionsContainer);
+lv_obj_set_width( ui_abortBtn2, 100);
+lv_obj_set_height( ui_abortBtn2, 50);
+lv_obj_set_align( ui_abortBtn2, LV_ALIGN_BOTTOM_RIGHT );
+lv_obj_add_flag( ui_abortBtn2, LV_OBJ_FLAG_SCROLL_ON_FOCUS );   /// Flags
+lv_obj_clear_flag( ui_abortBtn2, LV_OBJ_FLAG_SCROLLABLE );    /// Flags
+lv_obj_set_style_bg_color(ui_abortBtn2, lv_color_hex(0xEA235F), LV_PART_MAIN | LV_STATE_DEFAULT );
+lv_obj_set_style_bg_opa(ui_abortBtn2, 255, LV_PART_MAIN| LV_STATE_DEFAULT);
 
-    ui_Label16 = lv_label_create(ui_abortBtn2);
-    lv_obj_set_width(ui_Label16, LV_SIZE_CONTENT);  /// 1
-    lv_obj_set_height(ui_Label16, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_align(ui_Label16, LV_ALIGN_CENTER);
-    lv_label_set_text(ui_Label16, "Back");
+ui_Label16 = lv_label_create(ui_abortBtn2);
+lv_obj_set_width( ui_Label16, LV_SIZE_CONTENT);  /// 1
+lv_obj_set_height( ui_Label16, LV_SIZE_CONTENT);   /// 1
+lv_obj_set_align( ui_Label16, LV_ALIGN_CENTER );
+lv_label_set_text(ui_Label16,"Back");
 
-    ui_startScanBtn = lv_btn_create(ui_sensorActionsContainer);
-    lv_obj_set_width(ui_startScanBtn, 100);
-    lv_obj_set_height(ui_startScanBtn, 50);
-    lv_obj_set_align(ui_startScanBtn, LV_ALIGN_LEFT_MID);
-    lv_obj_add_flag(ui_startScanBtn, LV_OBJ_FLAG_SCROLL_ON_FOCUS);   /// Flags
-    lv_obj_clear_flag(ui_startScanBtn, LV_OBJ_FLAG_SCROLLABLE);    /// Flags
+ui_startScanBtn = lv_btn_create(ui_sensorActionsContainer);
+lv_obj_set_width( ui_startScanBtn, 100);
+lv_obj_set_height( ui_startScanBtn, 50);
+lv_obj_set_align( ui_startScanBtn, LV_ALIGN_LEFT_MID );
+lv_obj_add_flag( ui_startScanBtn, LV_OBJ_FLAG_SCROLL_ON_FOCUS );   /// Flags
+lv_obj_clear_flag( ui_startScanBtn, LV_OBJ_FLAG_SCROLLABLE );    /// Flags
 
-    ui_ScanLabel = lv_label_create(ui_startScanBtn);
-    lv_obj_set_width(ui_ScanLabel, LV_SIZE_CONTENT);  /// 1
-    lv_obj_set_height(ui_ScanLabel, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_align(ui_ScanLabel, LV_ALIGN_CENTER);
-    lv_label_set_text(ui_ScanLabel, "Start scan");
+ui_ScanLabel = lv_label_create(ui_startScanBtn);
+lv_obj_set_width( ui_ScanLabel, LV_SIZE_CONTENT);  /// 1
+lv_obj_set_height( ui_ScanLabel, LV_SIZE_CONTENT);   /// 1
+lv_obj_set_align( ui_ScanLabel, LV_ALIGN_CENTER );
+lv_label_set_text(ui_ScanLabel,"Start scan");
 
-    ui_stopScanBtn = lv_btn_create(ui_sensorActionsContainer);
-    lv_obj_set_width(ui_stopScanBtn, 100);
-    lv_obj_set_height(ui_stopScanBtn, 50);
-    lv_obj_set_align(ui_stopScanBtn, LV_ALIGN_LEFT_MID);
-    lv_obj_add_flag(ui_stopScanBtn, LV_OBJ_FLAG_HIDDEN | LV_OBJ_FLAG_SCROLL_ON_FOCUS);   /// Flags
-    lv_obj_clear_flag(ui_stopScanBtn, LV_OBJ_FLAG_SCROLLABLE);    /// Flags
+ui_stopScanBtn = lv_btn_create(ui_sensorActionsContainer);
+lv_obj_set_width( ui_stopScanBtn, 100);
+lv_obj_set_height( ui_stopScanBtn, 50);
+lv_obj_set_align( ui_stopScanBtn, LV_ALIGN_LEFT_MID );
+lv_obj_add_flag( ui_stopScanBtn, LV_OBJ_FLAG_HIDDEN | LV_OBJ_FLAG_SCROLL_ON_FOCUS );   /// Flags
+lv_obj_clear_flag( ui_stopScanBtn, LV_OBJ_FLAG_SCROLLABLE );    /// Flags
 
-    ui_Label18 = lv_label_create(ui_stopScanBtn);
-    lv_obj_set_width(ui_Label18, LV_SIZE_CONTENT);  /// 1
-    lv_obj_set_height(ui_Label18, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_align(ui_Label18, LV_ALIGN_CENTER);
-    lv_label_set_text(ui_Label18, "Stop scan");
+ui_Label18 = lv_label_create(ui_stopScanBtn);
+lv_obj_set_width( ui_Label18, LV_SIZE_CONTENT);  /// 1
+lv_obj_set_height( ui_Label18, LV_SIZE_CONTENT);   /// 1
+lv_obj_set_align( ui_Label18, LV_ALIGN_CENTER );
+lv_label_set_text(ui_Label18,"Stop scan");
 
-    lv_obj_add_event_cb(ui_abortBtn2, ui_event_abortBtn2, LV_EVENT_ALL, NULL);
-    lv_obj_add_event_cb(ui_startScanBtn, ui_event_startScanBtn, LV_EVENT_ALL, NULL);
-    lv_obj_add_event_cb(ui_stopScanBtn, ui_event_stopScanBtn, LV_EVENT_ALL, NULL);
-    lv_obj_add_event_cb(ui_sensorActionsContainer, ui_event_sensorActionsContainer, LV_EVENT_ALL, NULL);
-    lv_obj_add_event_cb(ui_sensorsScreen, ui_event_sensorsScreen, LV_EVENT_ALL, NULL);
+lv_obj_add_event_cb(ui_abortBtn2, ui_event_abortBtn2, LV_EVENT_ALL, NULL);
+lv_obj_add_event_cb(ui_startScanBtn, ui_event_startScanBtn, LV_EVENT_ALL, NULL);
+lv_obj_add_event_cb(ui_stopScanBtn, ui_event_stopScanBtn, LV_EVENT_ALL, NULL);
+lv_obj_add_event_cb(ui_sensorActionsContainer, ui_event_sensorActionsContainer, LV_EVENT_ALL, NULL);
+lv_obj_add_event_cb(ui_sensorsScreen, ui_event_sensorsScreen, LV_EVENT_ALL, NULL);
 
 }
