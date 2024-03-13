@@ -1,20 +1,16 @@
 #include "Dispatcher.h"
 #include "WiFiGeneric.h"
 #include <PubSubClient.h>
-#include <ESP32Ping.h>
 #include "PubSubDelegate.h"
-
-WiFiClient espClient;
-PubSubClient pubSub(espClient);
 
 using namespace std;
 
-Dispatcher::Dispatcher(ProjectPreferences &p, TopicsContainer &t) : projectPreferences(p), topicsContainer(t) {
-    WiFi.persistent(false);
-    WiFi.mode(WIFI_MODE_APSTA);
-    pubSubDelegate = new PubSubDelegate(pubSub);
+Dispatcher::Dispatcher(ProjectPreferences &p, TopicsContainer &t, Network &n) : projectPreferences(p),
+                                                                                topicsContainer(t), network(n) {
+    pubSubClient = new PubSubClient(network.getClient());
+    pubSubDelegate = new PubSubDelegate(*pubSubClient);
     topicsContainer.setPublishClient(pubSubDelegate);
-    pubSub.setCallback([this](char *topic, uint8_t *payload, unsigned int length) {
+    pubSubClient->setCallback([this](char *topic, uint8_t *payload, unsigned int length) {
         string data;
         for (int i = 0; i < length; i++) {
             data.push_back((char) payload[i]);
@@ -23,34 +19,26 @@ Dispatcher::Dispatcher(ProjectPreferences &p, TopicsContainer &t) : projectPrefe
     });
 }
 
-void Dispatcher::connectToNetwork() {
-    connectToWiFi();
-}
-
 bool Dispatcher::cloudIsConnected() {
-    return pubSub.connected();
+    return pubSubClient->connected();
 }
 
 bool Dispatcher::networkIsConnected() {
-    bool connected = WiFi.isConnected();
-    return connected;
+    return network.isConnected();
 }
 
-void Dispatcher::connectToWiFi() {
+void Dispatcher::connectToNetwork() {
     if (networkConnectionInProcess) {
         return;
     }
     networkConnectionInProcess = true;
-    string ssid = projectPreferences.get(ProjectPreferences::WifiSsid, "");
-    string password = projectPreferences.get(ProjectPreferences::WifiPassword, "");
-    WiFi.begin(ssid.c_str(), password.c_str());
-    WiFi.printDiag(Serial);
+    network.connect();
     networkConnectionAttempts++;
     networkConnectionInProcess = false;
 }
 
 void Dispatcher::loop() {
-    pubSub.loop();
+    pubSubClient->loop();
 }
 
 void Dispatcher::connectToMqtt() {
@@ -65,29 +53,22 @@ void Dispatcher::connectToMqtt() {
     string mqttServer = projectPreferences.get(ProjectPreferences::MqttIp, defaultValue);
     string mqttPort = projectPreferences.get(ProjectPreferences::MqttPort, defaultValue);
     if (!mqttServer.empty() && !mqttPort.empty()) {
-        Serial.println("MQTT connecting ...");
-        pubSub.disconnect();
+        //Serial.println("MQTT connecting ...");
+        pubSubClient->disconnect();
         string debugInfo = "MQTT server - ";
         debugInfo.append((string) mqttServer + ":" + mqttPort + "\n");
         debugInfo.append("MQTT credentials - ");
         debugInfo.append((string) username + " " + pass + "\n");
         debugInfo.append("MQTT id - " + id);
-        Serial.println(debugInfo.c_str());
-        pubSub.setServer(mqttServer.c_str(), stoi(mqttPort));
-        if (pubSub.connect(id.c_str(), username.c_str(), pass.c_str())) {
-            Serial.println("MQTT connected");
+        //Serial.println(debugInfo.c_str());
+        pubSubClient->setServer(mqttServer.c_str(), stoi(mqttPort));
+        if (pubSubClient->connect(id.c_str(), username.c_str(), pass.c_str())) {
+            //Serial.println("MQTT connected");
             for (const auto &name: topicsContainer.getTopicNames()) {
-                pubSub.subscribe(name.c_str());
+                pubSubClient->subscribe(name.c_str());
             }
         } else {
-            IPAddress dns(8, 8, 8, 8);
-            Serial.println("MQTT failed");
-            if (!Ping.ping(dns, 3)) {
-                Serial.println("Reconnect to network, ping failed");
-                connectToWiFi();
-            } else {
-                Serial.println("Ethernet available");
-            }
+            connectToNetwork();
         }
     }
     cloudConnectionInProcess = false;

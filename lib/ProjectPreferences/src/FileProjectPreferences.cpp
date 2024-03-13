@@ -9,11 +9,11 @@ using namespace std;
 FileProjectPreferences::FileProjectPreferences(std::string fn): filename(std::move(fn)) {
     if (ProjectPreferencesMutex::take()) {
         if (!sdFat.begin()) {
-            Serial.println("SD card init error");
+            //Serial.println("SD card init error");
         }
         if (!sdFat.exists(filename.c_str())) {
             auto file = sdFat.open(filename.c_str(), O_CREAT);
-            Serial.println("Create new settings file");
+            //Serial.println("Create new settings file");
             file.close();
         }
         ProjectPreferencesMutex::give();

@@ -18,4 +18,4 @@ public:
     explicit FileProjectPreferences(std::string fn);
 };
 
-#endif //DISPLAY_FILEPROJECTPREFERENCES_H
+#endif

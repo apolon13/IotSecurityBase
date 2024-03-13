@@ -51,6 +51,8 @@ protected:
                 return "ConnectionTimeout";
             case ConnectionAttemptsBeforeRestart:
                 return "ConnectionAttemptsBeforeRestart";
+            case APN:
+                return "APN";
             default:
                 throw std::invalid_argument("Invalid property");
         }
@@ -78,6 +80,7 @@ public:
         SecurityTimeout,
         ConnectionTimeout,
         ConnectionAttemptsBeforeRestart,
+        APN
     };
 
     std::string get(PreferencesKey key, std::string defaultValue);

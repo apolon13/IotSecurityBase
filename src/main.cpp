@@ -5,6 +5,7 @@
 #include "Security.h"
 #include "TopicsContainer.h"
 #include "FileProjectPreferences.h"
+#include "SimNetwork.h"
 
 ScreenFactory *screenFactory;
 
@@ -98,6 +99,7 @@ void setup() {
 }
 
 void loop() {
+    Serial1.begin(115200, SERIAL_8N1, GPIO_NUM_18, GPIO_NUM_17);
     Serial.begin(115200);
     FileProjectPreferences preferences("/project.txt");
     IoTRadioDetect detect(preferences);
@@ -108,7 +110,8 @@ void loop() {
         &cmdTopic,
         &rcvTopic
     });
-    Dispatcher dispatcher(preferences, topicsContainer);
+    SimNetwork network(preferences, Serial1);
+    Dispatcher dispatcher(preferences, topicsContainer, network);
     QueueTask queue;
     Security security(detect, control, preferences, cmdTopic, rcvTopic);
     screenFactory = new ScreenFactory(preferences, detect, queue, control);
@@ -162,13 +165,7 @@ void loop() {
     taskScheduler.addTask({"loopDisplay", loopDisplay, TaskPriority::Low, 5000, (void *) &uiParameters});
     taskScheduler.addTask({"loopMqtt", loopMqtt, TaskPriority::Low, 5000, (void *) &mqttParameters});
     taskScheduler.addTask({"loopQueue", loopQueue, TaskPriority::Low, 3000, (void *) &queueParameters});
-
-
-    try {
-        taskScheduler.schedule();
-    } catch (std::runtime_error error) {
-        Serial.println(error.what());
-    }
+    taskScheduler.schedule();
 
     while (true);
 }
