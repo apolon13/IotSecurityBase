@@ -7,6 +7,7 @@
 class WiFiNetwork: public Network {
 protected:
     ProjectPreferences &projectPreferences;
+    WiFiClient wifiClient;
 public:
     WiFiNetwork(ProjectPreferences &preferences);
 
