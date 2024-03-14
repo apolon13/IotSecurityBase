@@ -21,8 +21,10 @@ private:
     long timeWithoutTouch = 0;
     bool backlightIsOn = false;
     int backlightTimeout;
-
-    void toggleBacklight();
+    lv_disp_draw_buf_t drawBuffer;
+    lv_color_t *buffer = new lv_color_t[800 * 480 / 10];
+    lv_disp_drv_t displayDriver;
+    lv_indev_drv_t indevDriver;
 
 public:
     explicit UiControl(int bcklTimeout);
@@ -34,6 +36,8 @@ public:
     void backlightOn();
 
     void backlightOff();
+
+    void toggleBacklight();
 
     void withoutTouch();
 

@@ -1,9 +1,5 @@
 #include "UiControl.h"
 #include "LGFX.h"
-
-static lv_disp_draw_buf_t drawBuf;
-static lv_color_t buf[800 * 480 / 10];
-static lv_disp_drv_t dispDrv;
 UiControl *selfUiControl;
 
 #define TFT_BL 2
@@ -67,19 +63,18 @@ UiControl::UiControl(int bcklTimeout) : backlightTimeout(bcklTimeout) {
     uint32_t screenHeight;
     screenWidth = lcd.width();
     screenHeight = lcd.height();
-    lv_disp_draw_buf_init(&drawBuf, buf, nullptr, screenWidth * screenHeight / 10);
-    lv_disp_drv_init(&dispDrv);
-    dispDrv.hor_res = screenWidth;
-    dispDrv.ver_res = screenHeight;
-    dispDrv.flush_cb = flushDisplay;
-    dispDrv.draw_buf = &drawBuf;
-    dispDrv.full_refresh = 1;
-    lv_disp_drv_register(&dispDrv);
-    static lv_indev_drv_t indevDrv;
-    lv_indev_drv_init(&indevDrv);
-    indevDrv.type = LV_INDEV_TYPE_POINTER;
-    indevDrv.read_cb = readTouchpad;
-    lv_indev_drv_register(&indevDrv);
+    lv_disp_draw_buf_init(&drawBuffer, buffer, nullptr, screenWidth * screenHeight / 10);
+    lv_disp_drv_init(&displayDriver);
+    displayDriver.hor_res = screenWidth;
+    displayDriver.ver_res = screenHeight;
+    displayDriver.flush_cb = flushDisplay;
+    displayDriver.draw_buf = &drawBuffer;
+    displayDriver.full_refresh = 1;
+    lv_disp_drv_register(&displayDriver);
+    lv_indev_drv_init(&indevDriver);
+    indevDriver.type = LV_INDEV_TYPE_POINTER;
+    indevDriver.read_cb = readTouchpad;
+    lv_indev_drv_register(&indevDriver);
     selfUiControl = this;
 }
 
