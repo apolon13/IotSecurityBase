@@ -57,7 +57,6 @@ void UiControl::backlightOff() {
 
 UiControl::UiControl(int bcklTimeout) : backlightTimeout(bcklTimeout) {
     lcd.begin();
-    lcd.fillScreen(lcd.color565(255,255,255));
     lcd.setTextSize(2);
     delay(200);
     pinMode(TFT_BL, OUTPUT);
