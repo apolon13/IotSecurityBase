@@ -1,4 +1,5 @@
 #include "UiControl.h"
+#include "LGFX.h"
 
 static lv_disp_draw_buf_t drawBuf;
 static lv_color_t buf[800 * 480 / 10];
@@ -6,21 +7,6 @@ static lv_disp_drv_t dispDrv;
 UiControl *selfUiControl;
 
 #define TFT_BL 2
-Arduino_ESP32RGBPanel *bus = new Arduino_ESP32RGBPanel(
-        GFX_NOT_DEFINED /* CS */, GFX_NOT_DEFINED /* SCK */, GFX_NOT_DEFINED /* SDA */,
-        40 /* DE */, 41 /* VSYNC */, 39 /* HSYNC */, 0 /* PCLK */,
-        45 /* R0 */, 48 /* R1 */, 47 /* R2 */, 21 /* R3 */, 14 /* R4 */,
-        5 /* G0 */, 6 /* G1 */, 7 /* G2 */, 15 /* G3 */, 16 /* G4 */, 4 /* G5 */,
-        8 /* B0 */, 3 /* B1 */, 46 /* B2 */, 9 /* B3 */, 1 /* B4 */
-);
-
-Arduino_RPi_DPI_RGBPanel *gfx = new Arduino_RPi_DPI_RGBPanel(
-        bus,
-        800 /* width */, 0 /* hsync_polarity */, 8 /* hsync_front_porch */, 8 /* hsync_pulse_width */,
-        43 /* hsync_back_porch */,
-        480 /* height */, 0 /* vsync_polarity */, 8 /* vsync_front_porch */, 8 /* vsync_pulse_width */,
-        12 /* vsync_back_porch */,
-        1 /* pclk_active_neg */, 12000000 /* prefer_speed */, true /* auto_flush */);
 
 #include "touch.h"
 
@@ -45,9 +31,10 @@ void flushDisplay(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color_
     uint32_t w = (area->x2 - area->x1 + 1);
     uint32_t h = (area->y2 - area->y1 + 1);
 #if (LV_COLOR_16_SWAP != 0)
-    lcd->draw16bitBeRGBBitmap(area->x1, area->y1, (uint16_t *)&color_p->full, w, h);
+    lcd.pushImageDMA(area->x1, area->y1, w, h, (lgfx::rgb565_t*) &color_p->full);
 #else
-    gfx->draw16bitRGBBitmap(area->x1, area->y1, (uint16_t *) &color_p->full, w, h);
+
+    lcd.pushImageDMA(area->x1, area->y1, w, h, (lgfx::rgb565_t*) &color_p->full);
 #endif
     lv_disp_flush_ready(disp);
 }
@@ -69,9 +56,9 @@ void UiControl::backlightOff() {
 }
 
 UiControl::UiControl(int bcklTimeout) : backlightTimeout(bcklTimeout) {
-    gfx->begin();
-    gfx->fillScreen(BLACK);
-    gfx->setTextSize(2);
+    lcd.begin();
+    lcd.fillScreen(lcd.color565(255,255,255));
+    lcd.setTextSize(2);
     delay(200);
     pinMode(TFT_BL, OUTPUT);
     backlightOn();
@@ -79,8 +66,8 @@ UiControl::UiControl(int bcklTimeout) : backlightTimeout(bcklTimeout) {
     touch_init();
     uint32_t screenWidth;
     uint32_t screenHeight;
-    screenWidth = gfx->width();
-    screenHeight = gfx->height();
+    screenWidth = lcd.width();
+    screenHeight = lcd.height();
     lv_disp_draw_buf_init(&drawBuf, buf, nullptr, screenWidth * screenHeight / 10);
     lv_disp_drv_init(&dispDrv);
     dispDrv.hor_res = screenWidth;
@@ -94,7 +81,6 @@ UiControl::UiControl(int bcklTimeout) : backlightTimeout(bcklTimeout) {
     indevDrv.type = LV_INDEV_TYPE_POINTER;
     indevDrv.read_cb = readTouchpad;
     lv_indev_drv_register(&indevDrv);
-    gfx->fillScreen(BLACK);
     selfUiControl = this;
 }
 

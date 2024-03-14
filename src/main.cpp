@@ -21,6 +21,7 @@ typedef struct {
 typedef struct {
     ProjectPreferences &preferences;
     Dispatcher &dispatcher;
+    UiControl &uiControl;
 } MQTTParameters;
 
 
@@ -37,6 +38,7 @@ void loopMqtt(void *data) {
         long now = millis();
 
         if (dispatcher.getNetworkConnectionAttempts() >= maxConnectionAttemptsBeforeRestart) {
+            parameters->uiControl.backlightOff();
             ESP.restart();
         }
 
@@ -131,7 +133,8 @@ void loop() {
     };
     screenFactory->getDetectSensorsScreen().onEvent((int) SensorScreenEvent::EventOnAfterRadioUse, securityListenCb);
     screenFactory->getControlSensorsScreen().onEvent((int) SensorScreenEvent::EventOnAfterRadioUse, securityListenCb);
-    screenFactory->getGeneralSettingsScreen().onEvent((int) GeneralSettingsScreenEvent::EventOnUpdateSettings, [] (int eventId) {
+    screenFactory->getGeneralSettingsScreen().onEvent((int) GeneralSettingsScreenEvent::EventOnUpdateSettings, [&uiControl] (int eventId) {
+        uiControl.backlightOff();
         ESP.restart();
     });
 
@@ -168,7 +171,7 @@ void loop() {
     });
 
     TaskScheduler taskScheduler;
-    MQTTParameters mqttParameters = {preferences, dispatcher};
+    MQTTParameters mqttParameters = {preferences, dispatcher, uiControl};
     UiParameters uiParameters = {uiControl};
     QueueParameters queueParameters = {queue};
     taskScheduler.addTask({"loopDisplay", loopDisplay, TaskPriority::Low, 5000, (void *) &uiParameters});

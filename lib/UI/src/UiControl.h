@@ -1,7 +1,7 @@
 #include "lvgl.h"
 #include <SPI.h>
 #include "map"
-#include "Arduino_GFX_Library.h"
+#include "LovyanGFX.h"
 #include "Wire.h"
 #include "TAMC_GT911.h"
 #include "ScreenFactory.h"
@@ -24,16 +24,16 @@ private:
 
     void toggleBacklight();
 
-    void backlightOn();
-
-    void backlightOff();
-
 public:
     explicit UiControl(int bcklTimeout);
 
     void render();
 
     void init();
+
+    void backlightOn();
+
+    void backlightOff();
 
     void withoutTouch();
 
