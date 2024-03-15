@@ -73,8 +73,8 @@ Sensor IoTRadio::buildSensorByConfigString(string configString) {
     return sensor;
 }
 
-IoTRadio::IoTRadio(ProjectPreferences &p) : projectPreferences(p) {
-
+IoTRadio::IoTRadio(ProjectPreferences &p, Logger &l) : projectPreferences(p) {
+    gLogger = &l;
 }
 
 void IoTRadio::startScan() {
@@ -163,12 +163,20 @@ vector<Sensor> IoTRadio::getCurrentSensors() {
 void IoTRadio::addRecvHandler(esp_now_recv_cb_t recvCb) {
     auto resp = esp_now_register_recv_cb(recvCb);
     if (resp != ESP_OK) {
-        //gLogger->debug("addRecvHandler error" + to_string(resp));
+        gLogger->debug("addRecvHandler error");
+        gLogger->debug(resp);
         return;
     }
     addSendHandler([](const uint8_t *mac_addr, esp_now_send_status_t status) {
-        //  gLogger->debug("\r\nLast Packet Send Status:\t");
-        // gLogger->debug(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
+        gLogger->debug("Last Packet Send Status:");
+        gLogger->debug(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
+        if (status == ESP_NOW_SEND_FAIL) {
+            if (IoTRadio::receiverExist(Peer.peer_addr)) {
+                gLogger->debug("Peer exit");
+            } else {
+                gLogger->debug("Peer empty");
+            }
+        }
     });
 }
 

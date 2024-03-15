@@ -70,7 +70,7 @@ void loopMqtt(void *data) {
             dispatcher.loop();
         }
 
-        Serial.println(ESP.getFreeHeap());
+        //Serial.println(ESP.getFreeHeap());
         screenFactory->getMainScreen().handleConnections(
                 dispatcher.cloudIsConnected(),
                 dispatcher.networkIsConnected()
@@ -110,9 +110,10 @@ void setup() {
 void loop() {
     Serial1.begin(115200, SERIAL_8N1, GPIO_NUM_18, GPIO_NUM_17);
     Serial.begin(115200);
+    Logger logger(Serial);
     FileProjectPreferences preferences("/project.txt");
-    IoTRadioDetect detect(preferences);
-    IotRadioControl control(preferences);
+    IoTRadioDetect detect(preferences, logger);
+    IotRadioControl control(preferences, logger);
     Topic cmdTopic("/security/command");
     Topic rcvTopic("/security/receive");
     TopicsContainer topicsContainer({

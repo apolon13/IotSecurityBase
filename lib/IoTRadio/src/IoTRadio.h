@@ -57,7 +57,7 @@ protected:
     Sensor *getSensorByPredicate(std::function<bool(const Sensor &s)> predicate);
 
 public:
-    IoTRadio(ProjectPreferences &p);
+    IoTRadio(ProjectPreferences &p, Logger &l);
 
     void forget(const std::string &signal);
 

@@ -8,7 +8,7 @@ class Logger {
 protected:
     Stream *stream;
 public:
-    explicit Logger(Stream *s) : stream(s) {};
+    explicit Logger(Stream &s) : stream(&s) {};
 
     Logger() : stream(nullptr) {}
 

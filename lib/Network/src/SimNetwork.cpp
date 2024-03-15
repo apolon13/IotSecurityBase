@@ -1,5 +1,7 @@
 #include "SimNetwork.h"
 #include "WiFi.h"
+//#include "StreamDebugger.h"
+//StreamDebugger debug(Serial, Serial1);
 
 SimNetwork::SimNetwork(ProjectPreferences &preferences, Stream &stream) : projectPreferences(preferences) {
     WiFi.mode(WIFI_MODE_STA);
