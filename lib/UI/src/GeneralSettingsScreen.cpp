@@ -14,9 +14,7 @@ void GeneralSettingsScreen::saveGeneralSettings(lv_event_t *e) {
     projectPreferences.set(ProjectPreferences::ConnectionTimeout, newConnectionTimeout);
     projectPreferences.set(ProjectPreferences::SecurityTimeout, newSecurityTimeout);
     projectPreferences.set(ProjectPreferences::ConnectionAttemptsBeforeRestart, newConnectionAttemptsBeforeRestart);
-    projectPreferences.set(ProjectPreferences::SimNetworkMode, networkModeIsSim ? ON : OFF);
-    projectPreferences.set(ProjectPreferences::WifiNetworkMode, networkModeIsWifi || !networkModeIsSim ? ON : OFF);
-
+    projectPreferences.setNetworkMode((networkModeIsWifi || !networkModeIsSim) ? ProjectPreferences::WifiNetworkMode : ProjectPreferences::SimNetworkMode);
     triggerEvent((int)GeneralSettingsScreenEvent::EventOnUpdateSettings);
 }
 

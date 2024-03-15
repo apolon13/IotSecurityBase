@@ -5,8 +5,8 @@
 #include "Security.h"
 #include "TopicsContainer.h"
 #include "FileProjectPreferences.h"
-#include "SimNetwork.h"
-#include "WiFiNetwork.h"
+#include "ScreenFactory.h"
+#include "NetworkFactory.h"
 
 ScreenFactory *screenFactory;
 
@@ -38,6 +38,12 @@ void loopMqtt(void *data) {
         long now = millis();
 
         if (dispatcher.getNetworkConnectionAttempts() >= maxConnectionAttemptsBeforeRestart) {
+            if (parameters->preferences.networkModeIsSim()) {
+                parameters->preferences.setNetworkMode(ProjectPreferences::WifiNetworkMode);
+            }
+            if (parameters->preferences.networkModeIsWifi()) {
+                parameters->preferences.setNetworkMode(ProjectPreferences::SimNetworkMode);
+            }
             parameters->uiControl.backlightOff();
             ESP.restart();
         }
@@ -64,7 +70,7 @@ void loopMqtt(void *data) {
             dispatcher.loop();
         }
 
-       // Serial.println(ESP.getFreeHeap());
+        Serial.println(ESP.getFreeHeap());
         screenFactory->getMainScreen().handleConnections(
                 dispatcher.cloudIsConnected(),
                 dispatcher.networkIsConnected()
@@ -113,14 +119,8 @@ void loop() {
         &cmdTopic,
         &rcvTopic
     });
-
-    Network *network;
-    if (preferences.networkModeIsWifi()) {
-        network = new SimNetwork(preferences, Serial1);
-    } else {
-        network = new WiFiNetwork(preferences);
-    }
-
+    NetworkFactory factory(preferences, Serial1);
+    auto network = factory.createNetwork();
     Dispatcher dispatcher(preferences, topicsContainer, *network);
     QueueTask queue;
     Security security(detect, control, preferences, cmdTopic, rcvTopic);

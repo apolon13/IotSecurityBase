@@ -108,6 +108,8 @@ public:
     bool networkModeIsWifi();
 
     bool networkModeIsSim();
+
+    void setNetworkMode(PreferencesKey mode);
 };
 
 #endif

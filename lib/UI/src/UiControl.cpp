@@ -1,10 +1,16 @@
 #include "UiControl.h"
 #include "LGFX.h"
-UiControl *selfUiControl;
+#include "touch.h"
+#include "UiMutex.h"
+#include "ui.h"
 
 #define TFT_BL 2
 
-#include "touch.h"
+static lv_disp_draw_buf_t drawBuffer;
+static lv_color_t buffer[800 * 480 / 10];
+static lv_disp_drv_t displayDriver;
+static lv_indev_drv_t indevDriver;
+UiControl *selfUiControl;
 
 void readTouchpad(lv_indev_drv_t *indev_driver, lv_indev_data_t *data) {
     if (touch_has_signal()) {
@@ -59,10 +65,8 @@ UiControl::UiControl(int bcklTimeout) : backlightTimeout(bcklTimeout) {
     backlightOn();
     lv_init();
     touch_init();
-    uint32_t screenWidth;
-    uint32_t screenHeight;
-    screenWidth = lcd.width();
-    screenHeight = lcd.height();
+    uint32_t screenWidth = lcd.width();
+    uint32_t screenHeight = lcd.height();
     lv_disp_draw_buf_init(&drawBuffer, buffer, nullptr, screenWidth * screenHeight / 10);
     lv_disp_drv_init(&displayDriver);
     displayDriver.hor_res = screenWidth;

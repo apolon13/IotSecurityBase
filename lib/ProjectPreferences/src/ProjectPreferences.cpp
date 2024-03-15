@@ -53,3 +53,17 @@ bool ProjectPreferences::networkModeIsWifi() {
 bool ProjectPreferences::networkModeIsSim() {
     return get(SimNetworkMode, "0") == "1";
 }
+
+void ProjectPreferences::setNetworkMode(ProjectPreferences::PreferencesKey mode) {
+    if (mode == PreferencesKey::SimNetworkMode) {
+        set(ProjectPreferences::SimNetworkMode, ON);
+        set(ProjectPreferences::WifiNetworkMode, OFF);
+    }
+
+    if (mode == PreferencesKey::WifiNetworkMode) {
+        set(ProjectPreferences::SimNetworkMode, OFF);
+        set(ProjectPreferences::WifiNetworkMode, ON);
+    }
+}
+
+

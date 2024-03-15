@@ -12,13 +12,8 @@ bool SimNetwork::isConnected() {
 }
 
 void SimNetwork::connect() {
-    modem->init();
-    while (modem->getRegistrationStatus() == -1) {
-        delay(200);
-    }
     auto apn = projectPreferences.get(ProjectPreferences::APN, "");
     modem->gprsConnect(apn.c_str(), "", "");
-    modem->waitForNetwork();
 }
 
 Client &SimNetwork::getClient() {

@@ -1,5 +1,6 @@
 #include "ui.h"
 #include "UiControl.h"
+#include "ScreenFactory.h"
 
 extern ScreenFactory *screenFactory;
 
