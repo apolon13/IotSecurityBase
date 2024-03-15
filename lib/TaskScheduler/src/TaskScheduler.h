@@ -16,6 +16,8 @@ struct TaskToSchedule {
     TaskPriority priority;
     int stackDepth;
     void *parameters;
+    int core = -1;
+    bool disableWatchDog = false;
 };
 
 class TaskScheduler {
@@ -23,6 +25,10 @@ protected:
     std::vector<TaskToSchedule> tasksToSchedule;
     std::vector<std::string> tasksToDelete;
     std::vector<std::string> inRunning;
+
+    void disableWatchDog(TaskHandle_t taskHandle);
+
+    TaskHandle_t getTaskHandle(const std::string& taskName);
 
 public:
     explicit TaskScheduler();

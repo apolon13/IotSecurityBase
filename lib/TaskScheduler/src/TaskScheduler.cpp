@@ -1,4 +1,5 @@
 #include "TaskScheduler.h"
+#include <esp_task_wdt.h>
 
 using namespace std;
 
@@ -21,21 +22,41 @@ TaskScheduler::TaskScheduler() {
 
 void TaskScheduler::schedule() {
     for (auto task: tasksToSchedule) {
-        auto handle = xTaskGetHandle(task.name.c_str());
+        TaskHandle_t handle = getTaskHandle(task.name);
         if (handle == nullptr) {
-            auto code = xTaskCreate(
-                    task.func,
-                    task.name.c_str(),
-                    task.stackDepth,
-                    task.parameters,
-                    (int) task.priority,
-                    nullptr
-            );
+            int code;
+            if (task.core != -1) {
+                code = xTaskCreatePinnedToCore(
+                        task.func,
+                        task.name.c_str(),
+                        task.stackDepth,
+                        task.parameters,
+                        (int) task.priority,
+                        nullptr,
+                        task.core
+                );
+            } else {
+                code = xTaskCreate(
+                        task.func,
+                        task.name.c_str(),
+                        task.stackDepth,
+                        task.parameters,
+                        (int) task.priority,
+                        nullptr
+                );
+            }
             if (code != pdPASS) {
                 throw std::runtime_error("Create task error " + to_string(code));
             }
+            TaskHandle_t newHandle = getTaskHandle(task.name);
+            if (task.disableWatchDog) {
+                disableWatchDog(newHandle);
+            }
         } else {
             vTaskResume(handle);
+            if (task.disableWatchDog) {
+                disableWatchDog(handle);
+            }
         }
         inRunning.push_back(task.name);
     }
@@ -59,4 +80,14 @@ void TaskScheduler::deleteTask(const string &name) {
             break;
         }
     }
+}
+
+void TaskScheduler::disableWatchDog(TaskHandle_t taskHandle) {
+    if (taskHandle != nullptr) {
+        esp_task_wdt_delete(taskHandle);
+    }
+}
+
+TaskHandle_t TaskScheduler::getTaskHandle(const std::string& taskName) {
+    return xTaskGetHandle(taskName.c_str());
 }

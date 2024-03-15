@@ -175,10 +175,32 @@ void loop() {
     MQTTParameters mqttParameters = {preferences, dispatcher, uiControl};
     UiParameters uiParameters = {uiControl};
     QueueParameters queueParameters = {queue};
-    taskScheduler.addTask({"loopDisplay", loopDisplay, TaskPriority::Low, 5000, (void *) &uiParameters});
-    taskScheduler.addTask({"loopMqtt", loopMqtt, TaskPriority::Low, 5000, (void *) &mqttParameters});
-    taskScheduler.addTask({"loopQueue", loopQueue, TaskPriority::Low, 3000, (void *) &queueParameters});
-    taskScheduler.schedule();
+    taskScheduler.addTask({
+        "loopDisplay",
+        loopDisplay,
+        TaskPriority::Low,
+        5000,
+        (void *) &uiParameters,
+        0
+    });
+    taskScheduler.addTask({
+        "loopMqtt",
+        loopMqtt,
+        TaskPriority::Low,
+        5000,
+        (void *) &mqttParameters,
+        1,
+        true
+    });
+    taskScheduler.addTask({
+        "loopQueue",
+        loopQueue,
+        TaskPriority::Low,
+        3000,
+        (void *) &queueParameters,
+        0
+    });
 
+    taskScheduler.schedule();
     while (true);
 }
