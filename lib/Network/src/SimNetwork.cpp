@@ -4,7 +4,9 @@
 //StreamDebugger debug(Serial, Serial1);
 
 SimNetwork::SimNetwork(ProjectPreferences &preferences, Stream &stream) : projectPreferences(preferences) {
+    WiFi.persistent(false);
     WiFi.mode(WIFI_MODE_STA);
+    WiFi.setSleep(false);
     modem = new TinyGsm(stream);
     client.init(modem);
 }

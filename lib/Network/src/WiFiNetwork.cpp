@@ -15,7 +15,8 @@ bool WiFiNetwork::isConnected() {
 void WiFiNetwork::connect() {
     auto ssid = projectPreferences.get(ProjectPreferences::WifiSsid, "");
     auto pass = projectPreferences.get(ProjectPreferences::WifiPassword, "");
-    WiFi.begin(ssid.c_str(), pass.c_str(), 1);
+    WiFi.disconnect(true);
+    WiFi.begin(ssid.c_str(), pass.c_str(), 1, nullptr, true);
 }
 
 Client &WiFiNetwork::getClient() {
