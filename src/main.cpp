@@ -34,7 +34,8 @@ void loopMqtt(void *data) {
     auto maxConnectionAttemptsBeforeRestart = stoi(parameters->preferences.getConnectionAttemptsBeforeRestart());
     auto dispatcher = parameters->dispatcher;
     while (true) {
-        //logger.debug("stack size mqtt - " + to_string(uxTaskGetStackHighWaterMark(nullptr)));
+        //Serial.print("stack size mqtt - ");
+        //Serial.println(std::to_string(uxTaskGetStackHighWaterMark(nullptr)).c_str());
         long now = millis();
 
         if (dispatcher.getNetworkConnectionAttempts() >= maxConnectionAttemptsBeforeRestart) {
@@ -70,7 +71,7 @@ void loopMqtt(void *data) {
             dispatcher.loop();
         }
 
-        Serial.println(ESP.getFreeHeap());
+        //Serial.println(ESP.getFreeHeap());
         screenFactory->getMainScreen().handleConnections(
                 dispatcher.cloudIsConnected(),
                 dispatcher.networkIsConnected()

@@ -80,7 +80,7 @@ void Security::handleDetect(const string &signal) {
     auto detectSensor = selfSecurity->ioTRadioDetect.getSensorBySignal(signal);
     if (projectPreferences.systemIsLocked() && detectSensor->isActive) {
         if ((now - lastAlarmEventTime) > 5000) {
-            string msg = "Alarm sensor - ";
+            string msg = "Сработал датчик - ";
             msg.append(detectSensor->name);
             alarmTopic.publish(msg);
             receiveCmdTopic.publish(ALARM);

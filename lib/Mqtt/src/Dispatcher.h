@@ -11,7 +11,7 @@ class Dispatcher {
 
 protected:
     ProjectPreferences &projectPreferences;
-    PubSubClient pubSubClient;
+    PubSubClient &pubSubClient;
     Network &network;
     bool cloudConnectionInProcess = false;
     bool networkConnectionInProcess = false;

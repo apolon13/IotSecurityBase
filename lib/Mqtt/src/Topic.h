@@ -13,9 +13,9 @@ class Topic {
 private:
     std::string topicName;
     std::vector<std::function<void(std::string payload)>> handlers;
-    PubSubClient client;
+    PubSubClient &pubSubClient;
 public:
-    Topic(std::string n, PubSubClient &pubSubClient) : topicName(std::move(n)), client(pubSubClient) {};
+    Topic(std::string n, PubSubClient &ps) : topicName(std::move(n)), pubSubClient(ps) {};
 
     std::string getName();
 

@@ -4,8 +4,12 @@
 
 using namespace std;
 
-Dispatcher::Dispatcher(ProjectPreferences &p, TopicsContainer &t, Network &n, PubSubClient &psc) : projectPreferences(p),
-                                                                                topicsContainer(t), network(n), pubSubClient(psc) {
+Dispatcher::Dispatcher(ProjectPreferences &p, TopicsContainer &t, Network &n, PubSubClient &psc):
+        projectPreferences(p),
+        topicsContainer(t),
+        network(n),
+        pubSubClient(psc) {
+
     pubSubClient.setCallback([this](char *topic, uint8_t *payload, unsigned int length) {
         string data;
         for (int i = 0; i < length; i++) {

@@ -21,5 +21,5 @@ void Topic::refreshHandlers() {
 }
 
 void Topic::publish(const string &payload) {
-    client.publish(topicName.c_str(), payload.c_str());
+    pubSubClient.publish(topicName.c_str(), payload.c_str());
 }
