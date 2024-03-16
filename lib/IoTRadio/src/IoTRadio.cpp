@@ -9,6 +9,9 @@ Logger *gLogger;
 
 using namespace std;
 
+esp_now_recv_cb_t IoTRadio::currentRcvCallback = nullptr;
+PeerMessage IoTRadio::lastMessage = {};
+
 string IoTRadio::getSensorsConfig() {
     return projectPreferences.get(getPreferencesConfigKey(), "");
 }
@@ -88,6 +91,7 @@ void IoTRadio::stopScan() {
 }
 
 void IoTRadio::sendMessageToPeer(PeerMessage msg) {
+    lastMessage = msg;
     esp_now_send(Peer.peer_addr, (uint8_t *) &msg, sizeof(msg));
 }
 
@@ -161,46 +165,37 @@ vector<Sensor> IoTRadio::getCurrentSensors() {
 }
 
 void IoTRadio::addRecvHandler(esp_now_recv_cb_t recvCb) {
+    currentRcvCallback = recvCb;
     auto resp = esp_now_register_recv_cb(recvCb);
     if (resp != ESP_OK) {
-        gLogger->debug("addRecvHandler error");
-        gLogger->debug(resp);
         return;
     }
-    addSendHandler([](const uint8_t *mac_addr, esp_now_send_status_t status) {
-        gLogger->debug("Last Packet Send Status:");
-        gLogger->debug(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
+    esp_now_register_send_cb([](const uint8_t *mac_addr, esp_now_send_status_t status) {
         if (status == ESP_NOW_SEND_FAIL) {
-            if (IoTRadio::receiverExist(Peer.peer_addr)) {
-                gLogger->debug("Peer exit");
-            } else {
-                gLogger->debug("Peer empty");
-            }
+            /** reconnect attempt **/
+            esp_now_del_peer(Peer.peer_addr);
+            IoTRadio::addReceiver(Peer.peer_addr);
+            IoTRadio::addRecvHandler(currentRcvCallback);
+            /** ping **/
+            IoTRadio::sendMessageToPeer(lastMessage);
         }
     });
 }
 
 void IoTRadio::addReceiver(const uint8_t macAddress[]) {
+    esp_now_deinit();
     if (esp_now_init() != ESP_OK) {
-        gLogger->debug("Error esp_now init");
         return;
     }
-
-    if (receiverExist(macAddress)) {
-        gLogger->debug("Peer exist");
+    if (esp_now_is_peer_exist(macAddress)) {
         return;
     }
     memcpy(Peer.peer_addr, macAddress, 6);
     Peer.encrypt = false;
     Peer.channel = 0;
     if (esp_now_add_peer(&Peer) != ESP_OK) {
-        gLogger->debug("Error add esp_now peer");
         return;
     }
-}
-
-void IoTRadio::addSendHandler(esp_now_send_cb_t sendCb) {
-    esp_now_register_send_cb(sendCb);
 }
 
 bool IoTRadio::exist(const string &signal) {
@@ -230,8 +225,4 @@ Sensor *IoTRadio::getSensorBySignal(const string &signal) {
 Sensor *IoTRadio::getSensorByPredicate(std::function<bool(const Sensor &s)> predicate) {
     auto iterator = std::find_if(currentSensors.begin(), currentSensors.end(), std::move(predicate));
     return iterator == currentSensors.end() ? nullptr : iterator.operator->();
-}
-
-bool IoTRadio::receiverExist(const uint8_t *macAddress) {
-    return esp_now_is_peer_exist(macAddress);
 }

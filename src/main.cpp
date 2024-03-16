@@ -180,25 +180,21 @@ void loop() {
         loopDisplay,
         TaskPriority::Low,
         5000,
-        (void *) &uiParameters,
-        0
+        (void *) &uiParameters
     });
     taskScheduler.addTask({
         "loopMqtt",
         loopMqtt,
         TaskPriority::Low,
         5000,
-        (void *) &mqttParameters,
-        1,
-        true
+        (void *) &mqttParameters
     });
     taskScheduler.addTask({
         "loopQueue",
         loopQueue,
         TaskPriority::Low,
         3000,
-        (void *) &queueParameters,
-        0
+        (void *) &queueParameters
     });
 
     taskScheduler.schedule();

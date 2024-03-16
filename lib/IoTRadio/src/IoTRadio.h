@@ -35,6 +35,8 @@ class IoTRadio {
 protected:
     std::vector<Sensor> currentSensors;
     ProjectPreferences &projectPreferences;
+    static esp_now_recv_cb_t currentRcvCallback;
+    static PeerMessage lastMessage;
 
     std::vector<std::string> getSignals();
 
@@ -57,6 +59,7 @@ protected:
     Sensor *getSensorByPredicate(std::function<bool(const Sensor &s)> predicate);
 
 public:
+
     IoTRadio(ProjectPreferences &p, Logger &l);
 
     void forget(const std::string &signal);
@@ -73,11 +76,7 @@ public:
 
     static void addReceiver(const uint8_t macAddress[]);
 
-    static bool receiverExist(const uint8_t macAddress[]);
-
     static void addRecvHandler(esp_now_recv_cb_t recvCb);
-
-    static void addSendHandler(esp_now_send_cb_t sendCb);
 
     static void startScan();
 
