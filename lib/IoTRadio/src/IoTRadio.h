@@ -3,6 +3,7 @@
 #include <esp_now.h>
 #include <esp_wifi_types.h>
 #include <vector>
+#include "TaskScheduler.h"
 
 #ifndef DISPLAY_IOTRADIO_H
 #define DISPLAY_IOTRADIO_H
@@ -60,7 +61,7 @@ protected:
 
 public:
 
-    IoTRadio(ProjectPreferences &p, Logger &l);
+    IoTRadio(ProjectPreferences &p, TaskScheduler &scheduler);
 
     void forget(const std::string &signal);
 

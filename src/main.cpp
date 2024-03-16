@@ -112,8 +112,9 @@ void loop() {
     Serial.begin(115200);
     Logger logger(Serial);
     FileProjectPreferences preferences("/project.txt");
-    IoTRadioDetect detect(preferences, logger);
-    IotRadioControl control(preferences, logger);
+    TaskScheduler taskScheduler;
+    IoTRadioDetect detect(preferences, taskScheduler);
+    IotRadioControl control(preferences, taskScheduler);
     Topic cmdTopic("/security/command");
     Topic rcvTopic("/security/receive");
     TopicsContainer topicsContainer({
@@ -171,7 +172,6 @@ void loop() {
         screenFactory->getLockScreen().goTo(false);
     });
 
-    TaskScheduler taskScheduler;
     MQTTParameters mqttParameters = {preferences, dispatcher, uiControl};
     UiParameters uiParameters = {uiControl};
     QueueParameters queueParameters = {queue};

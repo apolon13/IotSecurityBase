@@ -9,7 +9,7 @@ protected:
     ProjectPreferences::PreferencesKey getPreferencesConfigKey() override;
 
 public:
-    IotRadioControl(ProjectPreferences &p, Logger &l) : IoTRadio(p, l) {
+    IotRadioControl(ProjectPreferences &p, TaskScheduler &sc) : IoTRadio(p, sc) {
         loadCurrentSensors();
     };
 

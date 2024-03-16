@@ -5,12 +5,20 @@
 #define ATTRIBUTE_DELIMITER ','
 
 esp_now_peer_info_t Peer;
-Logger *gLogger;
+TaskScheduler *taskScheduler;
 
 using namespace std;
 
 esp_now_recv_cb_t IoTRadio::currentRcvCallback = nullptr;
-PeerMessage IoTRadio::lastMessage = {};
+PeerMessage IoTRadio::lastMessage = {true};
+
+void ping(void *parameters) {
+    auto lastMessage = (PeerMessage *) parameters;
+    while (true) {
+        IoTRadio::sendMessageToPeer(*lastMessage);
+        vTaskDelay(1000);
+    }
+}
 
 string IoTRadio::getSensorsConfig() {
     return projectPreferences.get(getPreferencesConfigKey(), "");
@@ -76,8 +84,8 @@ Sensor IoTRadio::buildSensorByConfigString(string configString) {
     return sensor;
 }
 
-IoTRadio::IoTRadio(ProjectPreferences &p, Logger &l) : projectPreferences(p) {
-    gLogger = &l;
+IoTRadio::IoTRadio(ProjectPreferences &p, TaskScheduler &sc) : projectPreferences(p) {
+    taskScheduler = &sc;
 }
 
 void IoTRadio::startScan() {
@@ -176,8 +184,6 @@ void IoTRadio::addRecvHandler(esp_now_recv_cb_t recvCb) {
             esp_now_del_peer(Peer.peer_addr);
             IoTRadio::addReceiver(Peer.peer_addr);
             IoTRadio::addRecvHandler(currentRcvCallback);
-            /** ping **/
-            IoTRadio::sendMessageToPeer(lastMessage);
         }
     });
 }
@@ -196,6 +202,15 @@ void IoTRadio::addReceiver(const uint8_t macAddress[]) {
     if (esp_now_add_peer(&Peer) != ESP_OK) {
         return;
     }
+    /** ping **/
+    taskScheduler->addTask({
+           "ping",
+           ping,
+           TaskPriority::Low,
+           3000,
+           (void *) &lastMessage
+    });
+    taskScheduler->schedule();
 }
 
 bool IoTRadio::exist(const string &signal) {
