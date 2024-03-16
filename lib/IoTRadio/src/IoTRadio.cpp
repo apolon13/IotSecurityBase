@@ -203,7 +203,6 @@ void IoTRadio::addReceiver(const uint8_t macAddress[]) {
     if (esp_now_add_peer(&Peer) != ESP_OK) {
         return;
     }
-    /** ping **/
     taskScheduler->addTask({
            "ping",
            ping,

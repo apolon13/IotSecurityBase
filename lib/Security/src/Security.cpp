@@ -42,15 +42,15 @@ void Security::listenRadioCommands() {
 }
 
 
-void Security::handleControl(const string &name, bool needTriggerEvent) {
+void Security::handleControl(const string &cmd, bool needTriggerEvent) {
     auto eventId = SecurityEvent::UnknownEvent;
-    if (name == GUARD) {
+    if (cmd == GUARD) {
         guard();
         projectPreferences.lockSystem();
         eventId = SecurityEvent::EventOnGuard;
     }
 
-    if (name == DISARM) {
+    if (cmd == DISARM) {
         disarm();
         if (projectPreferences.systemIsLocked()) {
             projectPreferences.unlockSystem();
@@ -58,12 +58,12 @@ void Security::handleControl(const string &name, bool needTriggerEvent) {
         }
     }
 
-    if (name == MUTE) {
+    if (cmd == MUTE) {
         mute();
         eventId = SecurityEvent::EventOnMute;
     }
 
-    if (name == ALARM) {
+    if (cmd == ALARM) {
         alarm();
         eventId = SecurityEvent::EventOnAlarm;
     }
@@ -72,7 +72,10 @@ void Security::handleControl(const string &name, bool needTriggerEvent) {
         triggerEvent((int) eventId);
     }
 
-    receiveCmdTopic.publish(name);
+    if (previousCmd != cmd) {
+        previousCmd = cmd;
+        receiveCmdTopic.publish(cmd);
+    }
 }
 
 void Security::handleDetect(const string &signal) {

@@ -25,6 +25,7 @@ protected:
     Topic &receiveCmdTopic;
     Topic &alarmTopic;
     long lastAlarmEventTime = 0;
+    std::string previousCmd;
 
     void listenRadioCommands();
 
@@ -32,7 +33,7 @@ protected:
 
     void handleDetect(const std::string &signal);
 
-    void handleControl(const std::string &signal, bool needTriggerEvent = true);
+    void handleControl(const std::string &cmd, bool needTriggerEvent = true);
 
     void guard();
 
