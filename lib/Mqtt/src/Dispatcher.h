@@ -11,8 +11,7 @@ class Dispatcher {
 
 protected:
     ProjectPreferences &projectPreferences;
-    PubSubDelegate *pubSubDelegate;
-    PubSubClient *pubSubClient;
+    PubSubClient pubSubClient;
     Network &network;
     bool cloudConnectionInProcess = false;
     bool networkConnectionInProcess = false;
@@ -22,7 +21,7 @@ protected:
     void connectToMqtt();
 
 public:
-    Dispatcher(ProjectPreferences &p, TopicsContainer &t, Network &n);
+    Dispatcher(ProjectPreferences &p, TopicsContainer &t, Network &n, PubSubClient &psc);
 
     void connectToNetwork();
 

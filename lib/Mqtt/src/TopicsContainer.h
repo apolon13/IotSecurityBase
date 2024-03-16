@@ -1,4 +1,5 @@
 #include <utility>
+#include "PubSubClient.h"
 
 #include "vector"
 #include "Topic.h"
@@ -11,8 +12,6 @@ protected:
     std::vector<Topic *> topics;
 public:
     explicit TopicsContainer(std::vector<Topic *> tp) : topics(std::move(tp)) {};
-
-    void setPublishClient(PubSubDelegate *pubSubDelegate);
 
     void handleSubscribeData(const std::string& topicName, const std::string& data);
 

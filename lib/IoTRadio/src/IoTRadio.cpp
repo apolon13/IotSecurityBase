@@ -16,6 +16,8 @@ void ping(void *parameters) {
     auto lastMessage = (PeerMessage *) parameters;
     while (true) {
         IoTRadio::sendMessageToPeer(*lastMessage);
+        Serial.println("active scan");
+        Serial.println(to_string(lastMessage->activateScan).c_str());
         vTaskDelay(1000);
     }
 }
@@ -176,10 +178,19 @@ void IoTRadio::addRecvHandler(esp_now_recv_cb_t recvCb) {
     currentRcvCallback = recvCb;
     auto resp = esp_now_register_recv_cb(recvCb);
     if (resp != ESP_OK) {
+        Serial.println("addRecvHandler error");
+        Serial.println(resp);
         return;
     }
     esp_now_register_send_cb([](const uint8_t *mac_addr, esp_now_send_status_t status) {
+        Serial.println("Last Packet Send Status:");
+        Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
         if (status == ESP_NOW_SEND_FAIL) {
+            if (esp_now_is_peer_exist(Peer.peer_addr)) {
+                Serial.println("Peer exit");
+            } else {
+                Serial.println("Peer empty");
+            }
             /** reconnect attempt **/
             esp_now_del_peer(Peer.peer_addr);
             IoTRadio::addReceiver(Peer.peer_addr);
@@ -191,17 +202,22 @@ void IoTRadio::addRecvHandler(esp_now_recv_cb_t recvCb) {
 void IoTRadio::addReceiver(const uint8_t macAddress[]) {
     esp_now_deinit();
     if (esp_now_init() != ESP_OK) {
+        Serial.println("Error esp_now init");
         return;
     }
+    Serial.println("Esp now init");
     if (esp_now_is_peer_exist(macAddress)) {
+        Serial.println("Peer exist");
         return;
     }
     memcpy(Peer.peer_addr, macAddress, 6);
     Peer.encrypt = false;
     Peer.channel = 0;
     if (esp_now_add_peer(&Peer) != ESP_OK) {
+        Serial.println("Error add esp_now peer");
         return;
     }
+    Serial.println("Add peer");
     /** ping **/
     taskScheduler->addTask({
            "ping",

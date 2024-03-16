@@ -70,7 +70,7 @@ void loopMqtt(void *data) {
             dispatcher.loop();
         }
 
-        //Serial.println(ESP.getFreeHeap());
+        Serial.println(ESP.getFreeHeap());
         screenFactory->getMainScreen().handleConnections(
                 dispatcher.cloudIsConnected(),
                 dispatcher.networkIsConnected()
@@ -115,15 +115,16 @@ void loop() {
     TaskScheduler taskScheduler;
     IoTRadioDetect detect(preferences, taskScheduler);
     IotRadioControl control(preferences, taskScheduler);
-    Topic cmdTopic("/security/command");
-    Topic rcvTopic("/security/receive");
-    TopicsContainer topicsContainer({
-        &cmdTopic,
-        &rcvTopic
-    });
     NetworkFactory factory(preferences, Serial1);
     auto network = factory.createNetwork();
-    Dispatcher dispatcher(preferences, topicsContainer, *network);
+    PubSubClient pubSubClient(network->getClient());
+    Topic cmdTopic("/security/command", pubSubClient);
+    Topic rcvTopic("/security/receive", pubSubClient);
+    TopicsContainer topicsContainer({
+            &cmdTopic,
+            &rcvTopic
+    });
+    Dispatcher dispatcher(preferences, topicsContainer, *network, pubSubClient);
     QueueTask queue;
     Security security(detect, control, preferences, cmdTopic, rcvTopic);
     screenFactory = new ScreenFactory(preferences, detect, queue, control);

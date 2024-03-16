@@ -2,12 +2,6 @@
 
 using namespace std;
 
-void TopicsContainer::setPublishClient(PubSubDelegate *pubSubDelegate) {
-    for (auto topic : topics) {
-        topic->withPubSub(pubSubDelegate);
-    }
-}
-
 vector<string> TopicsContainer::getTopicNames() {
     vector<string> names;
     for (auto topic : topics) {

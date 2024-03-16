@@ -21,9 +21,5 @@ void Topic::refreshHandlers() {
 }
 
 void Topic::publish(const string &payload) {
-    client->publish(topicName, payload);
-}
-
-void Topic::withPubSub(PubSubDelegate *c) {
-    client = c;
+    client.publish(topicName.c_str(), payload.c_str());
 }
