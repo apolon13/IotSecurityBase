@@ -80,6 +80,9 @@ void Security::handleDetect(const string &signal) {
     auto detectSensor = selfSecurity->ioTRadioDetect.getSensorBySignal(signal);
     if (projectPreferences.systemIsLocked() && detectSensor->isActive) {
         if ((now - lastAlarmEventTime) > 5000) {
+            string msg = "Alarm sensor - ";
+            msg.append(detectSensor->name);
+            alarmTopic.publish(msg);
             receiveCmdTopic.publish(ALARM);
             lastAlarmEventTime = now;
         }
@@ -87,12 +90,13 @@ void Security::handleDetect(const string &signal) {
     }
 }
 
-Security::Security(IoTRadioDetect &d, IotRadioControl &c, ProjectPreferences &p, Topic &cmd, Topic &rcv)
+Security::Security(IoTRadioDetect &d, IotRadioControl &c, ProjectPreferences &p, Topic &cmd, Topic &rcv, Topic &al)
         : ioTRadioDetect(d),
           iotRadioControl(c),
           projectPreferences(p),
           securityCmdTopic(cmd),
-          receiveCmdTopic(rcv) {
+          receiveCmdTopic(rcv),
+          alarmTopic(al) {
     selfSecurity = this;
     projectPreferences.lockSystem();
     IoTRadio::addReceiver(receiverAddress);

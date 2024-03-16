@@ -120,13 +120,14 @@ void loop() {
     PubSubClient pubSubClient(network->getClient());
     Topic cmdTopic("/security/command", pubSubClient);
     Topic rcvTopic("/security/receive", pubSubClient);
+    Topic alarmTopic("/security/alarm", pubSubClient);
     TopicsContainer topicsContainer({
             &cmdTopic,
             &rcvTopic
     });
     Dispatcher dispatcher(preferences, topicsContainer, *network, pubSubClient);
     QueueTask queue;
-    Security security(detect, control, preferences, cmdTopic, rcvTopic);
+    Security security(detect, control, preferences, cmdTopic, rcvTopic, alarmTopic);
     screenFactory = new ScreenFactory(preferences, detect, queue, control);
     UiControl uiControl(stoi(preferences.getSecurityTimeout()) * 1000);
     uiControl.init();

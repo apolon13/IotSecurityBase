@@ -23,6 +23,7 @@ protected:
     ProjectPreferences &projectPreferences;
     Topic &securityCmdTopic;
     Topic &receiveCmdTopic;
+    Topic &alarmTopic;
     long lastAlarmEventTime = 0;
 
     void listenRadioCommands();
@@ -42,7 +43,7 @@ protected:
     void mute();
 
 public:
-    explicit Security(IoTRadioDetect &d, IotRadioControl &c, ProjectPreferences &p, Topic &cmd, Topic &rcv);
+    explicit Security(IoTRadioDetect &d, IotRadioControl &c, ProjectPreferences &p, Topic &cmd, Topic &rcv, Topic &al);
 
     void listen();
 
