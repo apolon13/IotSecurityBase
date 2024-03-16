@@ -18,7 +18,7 @@ void readTouchpad(lv_indev_drv_t *indev_driver, lv_indev_data_t *data) {
             data->state = LV_INDEV_STATE_PR;
             data->point.x = touch_last_x;
             data->point.y = touch_last_y;
-            selfUiControl->hasTouch();
+            selfUiControl->simulateTouch();
         } else if (touch_released()) {
             data->state = LV_INDEV_STATE_REL;
             selfUiControl->withoutTouch();
@@ -100,7 +100,7 @@ void UiControl::withoutTouch() {
     }
 }
 
-void UiControl::hasTouch() {
+void UiControl::simulateTouch() {
     timeWithoutTouch = 0;
 }
 

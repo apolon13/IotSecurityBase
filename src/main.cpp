@@ -154,7 +154,7 @@ void loop() {
     });
 
     auto touchCb = [&uiControl](int eventId) {
-        uiControl.hasTouch();
+        uiControl.simulateTouch();
     };
     security.onEvent((int) SecurityEvent::EventOnGuard, [touchCb](int eventId) {
         touchCb(eventId);

@@ -29,7 +29,7 @@ public:
 
     void withoutTouch();
 
-    void hasTouch();
+    void simulateTouch();
 };
 
 #endif
