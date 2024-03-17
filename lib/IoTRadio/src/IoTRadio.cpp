@@ -1,6 +1,7 @@
 #include "IoTRadio.h"
 #include <utility>
 #include "WiFi.h"
+#include "esp_wifi.h"
 
 #define SENSORS_DELIMITER '_'
 #define ATTRIBUTE_DELIMITER ','
@@ -199,7 +200,6 @@ void IoTRadio::addReceiver(const uint8_t macAddress[]) {
     }
     memcpy(Peer.peer_addr, macAddress, 6);
     Peer.encrypt = false;
-    Peer.channel = 0;
     if (esp_now_add_peer(&Peer) != ESP_OK) {
         return;
     }
