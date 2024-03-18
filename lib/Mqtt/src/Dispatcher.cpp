@@ -24,7 +24,11 @@ bool Dispatcher::cloudIsConnected() {
 }
 
 bool Dispatcher::networkIsConnected() {
-    return network.isConnected();
+    auto connected = network.isConnected();
+    if (connected) {
+        networkConnectionAttempts = 0;
+    }
+    return connected;
 }
 
 void Dispatcher::connectToNetwork() {
