@@ -7,6 +7,9 @@
 #include "FileProjectPreferences.h"
 #include "ScreenFactory.h"
 #include "NetworkFactory.h"
+#include "WiFiConfigurator.h"
+
+#define SETTINGS_FILENAME "/project.txt"
 
 ScreenFactory *screenFactory;
 
@@ -24,7 +27,6 @@ typedef struct {
     UiControl &uiControl;
 } MQTTParameters;
 
-
 long timeWithoutNetworkConnection;
 long lastAttemptNetworkConnection;
 
@@ -34,8 +36,7 @@ void loopMqtt(void *data) {
     auto maxConnectionAttemptsBeforeRestart = stoi(parameters->preferences.getConnectionAttemptsBeforeRestart());
     auto dispatcher = parameters->dispatcher;
     while (true) {
-        //Serial.print("stack size mqtt - ");
-        //Serial.println(std::to_string(uxTaskGetStackHighWaterMark(nullptr)).c_str());
+        //Serial.println(uxTaskGetStackHighWaterMark(nullptr));
         long now = millis();
 
         if (dispatcher.getNetworkConnectionAttempts() >= maxConnectionAttemptsBeforeRestart) {
@@ -87,7 +88,7 @@ void loopDisplay(void *data) {
     while (true) {
         long currentMs = millis();
         if ((currentMs - lastDisplayLoop) >= 1000) {
-            //logger.debug("stack size display - " + to_string(uxTaskGetStackHighWaterMark(nullptr)));
+            //Serial.println(uxTaskGetStackHighWaterMark(nullptr));
             lastDisplayLoop = currentMs;
         }
         parameters->uiControl.render();
@@ -98,6 +99,7 @@ void loopDisplay(void *data) {
 void loopQueue(void *data) {
     auto parameters = (QueueParameters *) data;
     while (true) {
+        //Serial.println(uxTaskGetStackHighWaterMark(nullptr));
         parameters->queue.run();
         vTaskDelay(5);
     }
@@ -112,12 +114,14 @@ void loop() {
     Serial1.begin(115200, SERIAL_8N1, GPIO_NUM_18, GPIO_NUM_17);
     Serial.begin(115200);
     Logger logger(Serial);
-    FileProjectPreferences preferences("/project.txt");
+    FileProjectPreferences preferences(SETTINGS_FILENAME);
     TaskScheduler taskScheduler;
     IoTRadioDetect detect(preferences, taskScheduler);
     IotRadioControl control(preferences, taskScheduler);
     NetworkFactory factory(preferences, Serial1);
     auto network = factory.createNetwork();
+    WiFiConfigurator configurator;
+    configurator.configure(network->getType());
     PubSubClient pubSubClient(network->getClient());
     Topic cmdTopic("/security/command", pubSubClient);
     Topic rcvTopic("/security/receive", pubSubClient);
@@ -182,21 +186,21 @@ void loop() {
         "loopDisplay",
         loopDisplay,
         TaskPriority::Low,
-        5000,
+        3500,
         (void *) &uiParameters
     });
     taskScheduler.addTask({
         "loopMqtt",
         loopMqtt,
         TaskPriority::Low,
-        5000,
+        3000,
         (void *) &mqttParameters
     });
     taskScheduler.addTask({
         "loopQueue",
         loopQueue,
         TaskPriority::Low,
-        3000,
+        1500,
         (void *) &queueParameters
     });
 

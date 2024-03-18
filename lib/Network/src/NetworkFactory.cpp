@@ -1,11 +1,17 @@
-#include "SimNetwork.h"
-#include "WiFiNetwork.h"
 #include "NetworkFactory.h"
 
 std::unique_ptr<Network> NetworkFactory::createNetwork() {
-    if (!projectPreferences.networkModeIsWifi()) {
-        return std::make_unique<SimNetwork>(projectPreferences, Serial1);
+    if (projectPreferences.networkModeIsSim()) {
+        return createSimNetwork();
     } else {
-        return std::make_unique<WiFiNetwork>(projectPreferences);
+        return createWifiNetwork();
     }
+}
+
+std::unique_ptr<SimNetwork> NetworkFactory::createSimNetwork() {
+    return std::make_unique<SimNetwork>(projectPreferences, stream);
+}
+
+std::unique_ptr<WiFiNetwork> NetworkFactory::createWifiNetwork() {
+    return std::make_unique<WiFiNetwork>(projectPreferences);
 }

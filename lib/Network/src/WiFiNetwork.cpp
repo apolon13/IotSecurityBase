@@ -1,11 +1,7 @@
 #include "WiFiNetwork.h"
 
 WiFiNetwork::WiFiNetwork(ProjectPreferences &preferences) : projectPreferences(preferences) {
-    WiFi.persistent(false);
-    WiFi.mode(WIFI_MODE_APSTA);
-    WiFi.setAutoReconnect(false);
-    WiFi.setSleep(false);
-    WiFi.setScanMethod(WIFI_FAST_SCAN);
+
 }
 
 bool WiFiNetwork::isConnected() {
@@ -21,4 +17,8 @@ void WiFiNetwork::connect() {
 
 Client &WiFiNetwork::getClient() {
     return wifiClient;
+}
+
+NetworkType WiFiNetwork::getType() {
+    return NetworkType::WiFi;
 }

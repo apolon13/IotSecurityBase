@@ -9,12 +9,14 @@ protected:
     ProjectPreferences &projectPreferences;
     WiFiClient wifiClient;
 public:
-    WiFiNetwork(ProjectPreferences &preferences);
+    explicit WiFiNetwork(ProjectPreferences &preferences);
 
     bool isConnected() override;
 
     void connect() override;
 
     Client &getClient() override;
+
+    NetworkType getType() override;
 };
 #endif

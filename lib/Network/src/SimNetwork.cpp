@@ -1,13 +1,10 @@
 #include "SimNetwork.h"
 #include "WiFi.h"
 //#include "StreamDebugger.h"
-//StreamDebugger debug(Serial, Serial1);
+//StreamDebugger debug(Serial1, Serial);
 
 SimNetwork::SimNetwork(ProjectPreferences &preferences, Stream &stream) : projectPreferences(preferences) {
-    WiFi.persistent(false);
-    WiFi.mode(WIFI_MODE_STA);
-    WiFi.setSleep(false);
-    modem = new TinyGsm(stream);
+    modem = new TinyGsmSim7670(stream);
     client.init(modem);
 }
 
@@ -22,4 +19,12 @@ void SimNetwork::connect() {
 
 Client &SimNetwork::getClient() {
     return client;
+}
+
+TinyGsmSim7670 &SimNetwork::getModem() {
+    return *modem;
+}
+
+NetworkType SimNetwork::getType() {
+    return NetworkType::Sim;
 }
