@@ -23,7 +23,7 @@ public:
 
     void backlightOn();
 
-    void backlightOff();
+    void backlightOff(bool triggerEvent = true);
 
     void toggleBacklight();
 

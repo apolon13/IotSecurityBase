@@ -17,6 +17,7 @@ protected:
     bool networkConnectionInProcess = false;
     TopicsContainer &topicsContainer;
     int networkConnectionAttempts = 0;
+    int cloudConnectionAttempts = 0;
 
     void connectToMqtt();
 
@@ -34,6 +35,8 @@ public:
     void connectToCloud();
 
     int getNetworkConnectionAttempts() const;
+
+    int getCloudConnectionAttempts() const;
 };
 
 #endif

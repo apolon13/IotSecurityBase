@@ -48,9 +48,11 @@ void UiControl::backlightOn() {
     }
 }
 
-void UiControl::backlightOff() {
+void UiControl::backlightOff(bool needTriggerEvent) {
     if (backlightIsOn) {
-        triggerEvent((int) UiControlEvent::EventOnBacklightOff);
+        if (needTriggerEvent) {
+            triggerEvent((int) UiControlEvent::EventOnBacklightOff);
+        }
         backlightIsOn = false;
         digitalWrite(TFT_BL, LOW);
     }

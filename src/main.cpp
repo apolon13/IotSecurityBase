@@ -29,6 +29,7 @@ typedef struct {
 
 typedef struct {
     NetworkFactory &factory;
+    UiControl &uiControl;
 } AnswerResetParameters;
 
 
@@ -44,14 +45,16 @@ void loopMqtt(void *data) {
         //Serial.println(uxTaskGetStackHighWaterMark(nullptr));
         long now = millis();
 
-        if (dispatcher.getNetworkConnectionAttempts() >= maxConnectionAttemptsBeforeRestart) {
-            if (parameters->preferences.networkModeIsSim()) {
+        if (dispatcher.getNetworkConnectionAttempts() >= maxConnectionAttemptsBeforeRestart
+        || dispatcher.getCloudConnectionAttempts() >= maxConnectionAttemptsBeforeRestart) {
+            auto currentModeIsWifi = parameters->preferences.networkModeIsWifi();
+            if (!currentModeIsWifi) {
                 parameters->preferences.setNetworkMode(ProjectPreferences::WifiNetworkMode);
             }
-            if (parameters->preferences.networkModeIsWifi()) {
+            if (currentModeIsWifi) {
                 parameters->preferences.setNetworkMode(ProjectPreferences::SimNetworkMode);
             }
-            parameters->uiControl.backlightOff();
+            parameters->uiControl.backlightOff(false);
             ESP.restart();
         }
 
@@ -91,6 +94,8 @@ void loopAnswerReset(void *data) {
     std::unique_ptr<SimNetwork> simNetwork = parameters->factory.createSimNetwork();
     while(true) {
         if (simNetwork->getModem().callAnswer()) {
+            Serial.println("restart");
+            parameters->uiControl.backlightOff(false);
             ESP.restart();
         }
         vTaskDelay(5000);
@@ -159,7 +164,7 @@ void loop() {
     screenFactory->getDetectSensorsScreen().onEvent((int) SensorScreenEvent::EventOnAfterRadioUse, securityListenCb);
     screenFactory->getControlSensorsScreen().onEvent((int) SensorScreenEvent::EventOnAfterRadioUse, securityListenCb);
     screenFactory->getGeneralSettingsScreen().onEvent((int) GeneralSettingsScreenEvent::EventOnUpdateSettings, [&uiControl] (int eventId) {
-        uiControl.backlightOff();
+        uiControl.backlightOff(false);
         ESP.restart();
     });
 
@@ -198,7 +203,7 @@ void loop() {
     MQTTParameters mqttParameters = {preferences, dispatcher, uiControl};
     UiParameters uiParameters = {uiControl};
     QueueParameters queueParameters = {queue};
-    AnswerResetParameters answerParameters = {factory};
+    AnswerResetParameters answerParameters = {factory, uiControl};
     taskScheduler.addTask({
         "loopDisplay",
         loopDisplay,

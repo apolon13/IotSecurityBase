@@ -737,8 +737,8 @@ public:
                         GsmConstStr r3 = NULL, GsmConstStr r4 = NULL,
 #endif
                         GsmConstStr r5 = NULL) {
-        if (timeout_ms > 100) {
-            timeout_ms = 100;
+        if (timeout_ms > 500) {
+            timeout_ms = 500;
         }
         /*String r1s(r1); r1s.trim();
         String r2s(r2); r2s.trim();

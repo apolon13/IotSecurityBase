@@ -20,7 +20,11 @@ Dispatcher::Dispatcher(ProjectPreferences &p, TopicsContainer &t, Network &n, Pu
 }
 
 bool Dispatcher::cloudIsConnected() {
-    return pubSubClient.connected();
+    auto connected = pubSubClient.connected();
+    if (connected) {
+        cloudConnectionAttempts = 0;
+    }
+    return connected;
 }
 
 bool Dispatcher::networkIsConnected() {
@@ -50,6 +54,7 @@ void Dispatcher::connectToMqtt() {
         return;
     }
     cloudConnectionInProcess = true;
+    cloudConnectionAttempts++;
     string defaultValue;
     string id = projectPreferences.get(ProjectPreferences::MqttEntityId, defaultValue);
     string username = projectPreferences.get(ProjectPreferences::MqttUsername, defaultValue);
@@ -84,5 +89,9 @@ void Dispatcher::connectToCloud() {
 
 int Dispatcher::getNetworkConnectionAttempts() const {
     return networkConnectionAttempts;
+}
+
+int Dispatcher::getCloudConnectionAttempts() const {
+    return cloudConnectionAttempts;
 }
 
