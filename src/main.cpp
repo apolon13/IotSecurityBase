@@ -27,6 +27,11 @@ typedef struct {
     UiControl &uiControl;
 } MQTTParameters;
 
+typedef struct {
+    NetworkFactory &factory;
+} AnswerResetParameters;
+
+
 long timeWithoutNetworkConnection;
 long lastAttemptNetworkConnection;
 
@@ -78,6 +83,17 @@ void loopMqtt(void *data) {
                 dispatcher.networkIsConnected()
         );
         vTaskDelay(1000);
+    }
+}
+
+void loopAnswerReset(void *data) {
+    auto parameters = (AnswerResetParameters *) data;
+    std::unique_ptr<SimNetwork> simNetwork = parameters->factory.createSimNetwork();
+    while(true) {
+        if (simNetwork->getModem().callAnswer()) {
+            ESP.restart();
+        }
+        vTaskDelay(5000);
     }
 }
 
@@ -182,6 +198,7 @@ void loop() {
     MQTTParameters mqttParameters = {preferences, dispatcher, uiControl};
     UiParameters uiParameters = {uiControl};
     QueueParameters queueParameters = {queue};
+    AnswerResetParameters answerParameters = {factory};
     taskScheduler.addTask({
         "loopDisplay",
         loopDisplay,
@@ -202,6 +219,13 @@ void loop() {
         TaskPriority::Low,
         1500,
         (void *) &queueParameters
+    });
+    taskScheduler.addTask({
+        "loopAnswerReset",
+        loopAnswerReset,
+        TaskPriority::Low,
+        1500,
+        (void *) &answerParameters
     });
 
     taskScheduler.schedule();
