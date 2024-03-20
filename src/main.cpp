@@ -196,7 +196,6 @@ void loop() {
     security.onEvent((int) SecurityEvent::EventOnMute, touchCb);
 
     uiControl.onEvent((int) UiControlEvent::EventOnBacklightOff, [&security](int eventId) {
-        security.lockSystem(true);
         screenFactory->getLockScreen().goTo(false);
     });
 
@@ -222,7 +221,7 @@ void loop() {
         "loopQueue",
         loopQueue,
         TaskPriority::Low,
-        1500,
+        3000,
         (void *) &queueParameters
     });
     taskScheduler.addTask({
