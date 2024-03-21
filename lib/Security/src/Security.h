@@ -37,6 +37,7 @@ protected:
     long lastAlarmEventTime = 0;
     std::string previousCmd;
     int lastSmsIndex = 1;
+    bool muteMode = false;
 
     void listenRadioCommands();
 

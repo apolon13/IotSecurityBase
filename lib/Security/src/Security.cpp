@@ -20,7 +20,7 @@ void Security::disarm() {
 }
 
 void Security::alarm() {
-    IoTRadio::sendMessageToPeer({true, true});
+    IoTRadio::sendMessageToPeer({true, !muteMode});
 }
 
 void Security::mute() {
@@ -46,12 +46,14 @@ void Security::listenRadioCommands() {
 void Security::handleControl(const string &cmd, bool needTriggerEvent) {
     auto eventId = SecurityEvent::UnknownEvent;
     if (cmd == GUARD) {
+        muteMode = false;
         guard();
         projectPreferences.lockSystem();
         eventId = SecurityEvent::EventOnGuard;
     }
 
     if (cmd == DISARM) {
+        muteMode = false;
         disarm();
         if (projectPreferences.systemIsLocked()) {
             projectPreferences.unlockSystem();
@@ -60,18 +62,20 @@ void Security::handleControl(const string &cmd, bool needTriggerEvent) {
     }
 
     if (cmd == MUTE) {
+        muteMode = true;
         mute();
         eventId = SecurityEvent::EventOnMute;
     }
 
     if (cmd == ALARM) {
+        muteMode = false;
         alarm();
         eventId = SecurityEvent::EventOnAlarm;
     }
 
     if (cmd == RESTART) {
+        muteMode = false;
         eventId = SecurityEvent::EventOnRestart;
-        restart();
     }
 
     if (needTriggerEvent && eventId != SecurityEvent::UnknownEvent) {
@@ -81,6 +85,10 @@ void Security::handleControl(const string &cmd, bool needTriggerEvent) {
     if (previousCmd != cmd) {
         previousCmd = cmd;
         receiveCmdTopic.publish(cmd);
+    }
+
+    if (cmd == RESTART) {
+        restart();
     }
 }
 
@@ -190,7 +198,7 @@ void Security::runCommand(SecurityCommand command) {
             handleControl(ALARM);
             break;
         case SecurityCommand::Mute:
-            handleControl(MUTE);
+            handleControl(RESTART);
             break;
     }
 }
