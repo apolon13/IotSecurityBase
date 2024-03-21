@@ -164,7 +164,7 @@ public:
         std::string at = "+CMGRD=";
         at.append(std::to_string(index));
         sendAT(at.c_str());
-        int response = waitResponse(500, cmd1, cmd2, cmd3, cmd4, GF("OK"));
+        int response = waitResponse(cmd1, cmd2, cmd3, cmd4, GF("OK"));
         switch (response) {
             case 5:
                 return -1;

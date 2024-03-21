@@ -137,7 +137,6 @@ void Security::listenSmsCommands(TinyGsmSim7670 &modem) {
         lastSmsIndex++;
     }
 
-    Serial.println(response);
     switch (response) {
         case 1:
             handleControl(GUARD);
