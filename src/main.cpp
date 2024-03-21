@@ -53,8 +53,7 @@ void loopMqtt(void *data) {
             if (currentModeIsWifi) {
                 parameters->preferences.setNetworkMode(ProjectPreferences::SimNetworkMode);
             }
-            parameters->uiControl.backlightOff(false);
-            ESP.restart();
+            parameters->security.runCommand(SecurityCommand::Restart);
         }
 
         if (!dispatcher.networkIsConnected() && !timeWithoutNetworkConnection) {
@@ -147,23 +146,6 @@ void loop() {
     auto securityListenCb = [&security](int eventId) {
         security.listen();
     };
-    screenFactory->getDetectSensorsScreen().onEvent((int) SensorScreenEvent::EventOnAfterRadioUse, securityListenCb);
-    screenFactory->getControlSensorsScreen().onEvent((int) SensorScreenEvent::EventOnAfterRadioUse, securityListenCb);
-    screenFactory->getGeneralSettingsScreen().onEvent((int) GeneralSettingsScreenEvent::EventOnUpdateSettings, [&uiControl] (int eventId) {
-        uiControl.backlightOff(false);
-        ESP.restart();
-    });
-
-    screenFactory->getLockScreen().onEvent((int) LockScreenEvent::EventOnLock, [&security](int eventId) {
-        security.lockSystem(true);
-        screenFactory->getLockScreen().goTo(false);
-    });
-
-    screenFactory->getLockScreen().onEvent((int) LockScreenEvent::EventOnUnlock, [&security](int eventId) {
-        security.unlockSystem(true);
-        screenFactory->getMainScreen().goTo(false);
-    });
-
     auto touchCb = [&uiControl](int eventId) {
         uiControl.simulateTouch();
     };
@@ -180,8 +162,23 @@ void loop() {
 
     security.onEvent((int) SecurityEvent::EventOnAlarm, touchCb);
     security.onEvent((int) SecurityEvent::EventOnMute, touchCb);
-
-    uiControl.onEvent((int) UiControlEvent::EventOnBacklightOff, [&security](int eventId) {
+    security.onEvent((int) SecurityEvent::EventOnRestart, [&uiControl] (int eventId) {
+        uiControl.backlightOff(false);
+    });
+    screenFactory->getDetectSensorsScreen().onEvent((int) SensorScreenEvent::EventOnAfterRadioUse, securityListenCb);
+    screenFactory->getControlSensorsScreen().onEvent((int) SensorScreenEvent::EventOnAfterRadioUse, securityListenCb);
+    screenFactory->getGeneralSettingsScreen().onEvent((int) GeneralSettingsScreenEvent::EventOnUpdateSettings, [&security] (int eventId) {
+        security.runCommand(SecurityCommand::Restart);
+    });
+    screenFactory->getLockScreen().onEvent((int) LockScreenEvent::EventOnLock, [&security](int eventId) {
+        security.lockSystem(true);
+        screenFactory->getLockScreen().goTo(false);
+    });
+    screenFactory->getLockScreen().onEvent((int) LockScreenEvent::EventOnUnlock, [&security](int eventId) {
+        security.unlockSystem(true);
+        screenFactory->getMainScreen().goTo(false);
+    });
+    uiControl.onEvent((int) UiControlEvent::EventOnBacklightOff, [](int eventId) {
         screenFactory->getLockScreen().goTo(false);
     });
 

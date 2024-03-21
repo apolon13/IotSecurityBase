@@ -14,7 +14,16 @@ enum class SecurityEvent {
     EventOnDisarm,
     EventOnAlarm,
     EventOnMute,
+    EventOnRestart,
     UnknownEvent
+};
+
+enum class SecurityCommand {
+    Guard,
+    Disarm,
+    Alarm,
+    Restart,
+    Mute
 };
 
 class Security : public EventableObject {
@@ -45,6 +54,8 @@ protected:
 
     void mute();
 
+    void restart();
+
 public:
     explicit Security(IoTRadioDetect &d, IotRadioControl &c, ProjectPreferences &p, Topic &cmd, Topic &rcv, Topic &al);
 
@@ -55,6 +66,8 @@ public:
     void lockSystem(bool silent);
 
     void unlockSystem(bool silent);
+
+    void runCommand(SecurityCommand command);
 };
 
 #endif

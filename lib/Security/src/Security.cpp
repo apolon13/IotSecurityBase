@@ -6,6 +6,7 @@ Security *selfSecurity;
 #define DISARM "Disarm"
 #define MUTE "Mute"
 #define ALARM "Alarm"
+#define RESTART "Restart"
 
 uint8_t receiverAddress[] = {0x08, 0xD1, 0xF9, 0xEB, 0x02, 0x58};
 using namespace std;
@@ -68,6 +69,11 @@ void Security::handleControl(const string &cmd, bool needTriggerEvent) {
         eventId = SecurityEvent::EventOnAlarm;
     }
 
+    if (cmd == RESTART) {
+        eventId = SecurityEvent::EventOnRestart;
+        restart();
+    }
+
     if (needTriggerEvent && eventId != SecurityEvent::UnknownEvent) {
         triggerEvent((int) eventId);
     }
@@ -127,7 +133,19 @@ void Security::unlockSystem(bool silent) {
 }
 
 void Security::listenSmsCommands(TinyGsmSim7670 &modem) {
-    auto response = modem.readSmsByIndex(lastSmsIndex, GUARD, DISARM, MUTE, ALARM);
+    string pin = projectPreferences.get(ProjectPreferences::PreferencesKey::SystemPin, "");
+    string guard = GUARD  + (" " + pin);
+    string disarm = DISARM + (" " + pin);
+    string alarm = ALARM + (" " + pin);
+    string restart = RESTART + (" " + pin);
+
+    auto response = modem.readSmsByIndex(
+        lastSmsIndex,
+        guard.c_str(),
+        disarm.c_str(),
+        restart.c_str(),
+        alarm.c_str()
+    );
 
     if (response == 0) {
         lastSmsIndex = lastSmsIndex > 1 ? lastSmsIndex - 1 : 1;
@@ -145,10 +163,34 @@ void Security::listenSmsCommands(TinyGsmSim7670 &modem) {
             handleControl(DISARM);
             break;
         case 3:
-            handleControl(MUTE);
+            handleControl(RESTART);
             break;
         case 4:
             handleControl(ALARM);
+            break;
+    }
+}
+
+void Security::restart() {
+    ESP.restart();
+}
+
+void Security::runCommand(SecurityCommand command) {
+    switch (command) {
+        case SecurityCommand::Restart:
+            handleControl(RESTART);
+            break;
+        case SecurityCommand::Guard:
+            handleControl(GUARD);
+            break;
+        case SecurityCommand::Disarm:
+            handleControl(DISARM);
+            break;
+        case SecurityCommand::Alarm:
+            handleControl(ALARM);
+            break;
+        case SecurityCommand::Mute:
+            handleControl(MUTE);
             break;
     }
 }
