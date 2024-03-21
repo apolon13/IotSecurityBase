@@ -155,6 +155,24 @@ public:
         memset(sockets, 0, sizeof(sockets));
     }
 
+    bool setSmsTextMode() {
+        sendAT(GF("+CMGF=1"));
+        return waitResponse() == 1;
+    }
+
+    int readSmsByIndex(int index, GsmConstStr cmd1, GsmConstStr cmd2, GsmConstStr cmd3, GsmConstStr cmd4) {
+        std::string at = "+CMGRD=";
+        at.append(std::to_string(index));
+        sendAT(at.c_str());
+        int response = waitResponse(500, cmd1, cmd2, cmd3, cmd4, GF("OK"));
+        switch (response) {
+            case 5:
+                return -1;
+            default:
+                return response;
+        }
+    }
+
     /*
      * Basic functions
      */
@@ -212,8 +230,9 @@ protected:
         return name;
     }
 
-    bool factoryDefaultImpl() {  // these commands aren't supported
-        return false;
+    bool factoryDefaultImpl() {
+        sendAT("&F");
+        return waitResponse() == 1;
     }
 
     /*
@@ -750,9 +769,7 @@ public:
         uint8_t  index       = 0;
         uint32_t startMillis = millis();
         do {
-            TINY_GSM_YIELD();
             while (stream.available() > 0) {
-                TINY_GSM_YIELD();
                 int8_t a = stream.read();
                 if (a <= 0) continue;  // Skip 0x00 bytes, just in case
                 data += static_cast<char>(a);

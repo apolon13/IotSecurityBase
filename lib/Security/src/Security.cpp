@@ -125,3 +125,31 @@ void Security::lockSystem(bool silent) {
 void Security::unlockSystem(bool silent) {
     handleControl(DISARM, !silent);
 }
+
+void Security::listenSmsCommands(TinyGsmSim7670 &modem) {
+    auto response = modem.readSmsByIndex(lastSmsIndex, GUARD, DISARM, MUTE, ALARM);
+
+    if (response == 0) {
+        lastSmsIndex = lastSmsIndex > 1 ? lastSmsIndex - 1 : 1;
+    }
+
+    if (response == -1) {
+        lastSmsIndex++;
+    }
+
+    Serial.println(response);
+    switch (response) {
+        case 1:
+            handleControl(GUARD);
+            break;
+        case 2:
+            handleControl(DISARM);
+            break;
+        case 3:
+            handleControl(MUTE);
+            break;
+        case 4:
+            handleControl(ALARM);
+            break;
+    }
+}

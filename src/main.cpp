@@ -25,13 +25,9 @@ typedef struct {
     ProjectPreferences &preferences;
     Dispatcher &dispatcher;
     UiControl &uiControl;
-} MQTTParameters;
-
-typedef struct {
     NetworkFactory &factory;
-    UiControl &uiControl;
-} AnswerResetParameters;
-
+    Security &security;
+} MQTTParameters;
 
 long timeWithoutNetworkConnection;
 long lastAttemptNetworkConnection;
@@ -41,12 +37,15 @@ void loopMqtt(void *data) {
     auto connectionTimeout = stoi(parameters->preferences.getConnectionTimeout()) * 1000;
     auto maxConnectionAttemptsBeforeRestart = stoi(parameters->preferences.getConnectionAttemptsBeforeRestart());
     auto dispatcher = parameters->dispatcher;
+    auto simNetwork = parameters->factory.createSimNetwork();
     while (true) {
         //Serial.println(uxTaskGetStackHighWaterMark(nullptr));
         long now = millis();
 
+        parameters->security.listenSmsCommands(simNetwork->getModem());
+
         if (dispatcher.getNetworkConnectionAttempts() >= maxConnectionAttemptsBeforeRestart
-        || dispatcher.getCloudConnectionAttempts() >= maxConnectionAttemptsBeforeRestart) {
+            || dispatcher.getCloudConnectionAttempts() >= maxConnectionAttemptsBeforeRestart) {
             auto currentModeIsWifi = parameters->preferences.networkModeIsWifi();
             if (!currentModeIsWifi) {
                 parameters->preferences.setNetworkMode(ProjectPreferences::WifiNetworkMode);
@@ -86,19 +85,6 @@ void loopMqtt(void *data) {
                 dispatcher.networkIsConnected()
         );
         vTaskDelay(1000);
-    }
-}
-
-void loopAnswerReset(void *data) {
-    auto parameters = (AnswerResetParameters *) data;
-    std::unique_ptr<SimNetwork> simNetwork = parameters->factory.createSimNetwork();
-    while(true) {
-        if (simNetwork->getModem().callAnswer()) {
-            Serial.println("restart");
-            parameters->uiControl.backlightOff(false);
-            ESP.restart();
-        }
-        vTaskDelay(5000);
     }
 }
 
@@ -199,10 +185,9 @@ void loop() {
         screenFactory->getLockScreen().goTo(false);
     });
 
-    MQTTParameters mqttParameters = {preferences, dispatcher, uiControl};
+    MQTTParameters mqttParameters = {preferences, dispatcher, uiControl, factory, security};
     UiParameters uiParameters = {uiControl};
     QueueParameters queueParameters = {queue};
-    AnswerResetParameters answerParameters = {factory, uiControl};
     taskScheduler.addTask({
         "loopDisplay",
         loopDisplay,
@@ -214,7 +199,7 @@ void loop() {
         "loopMqtt",
         loopMqtt,
         TaskPriority::Low,
-        3000,
+        4000,
         (void *) &mqttParameters
     });
     taskScheduler.addTask({
@@ -223,13 +208,6 @@ void loop() {
         TaskPriority::Low,
         3000,
         (void *) &queueParameters
-    });
-    taskScheduler.addTask({
-        "loopAnswerReset",
-        loopAnswerReset,
-        TaskPriority::Low,
-        1500,
-        (void *) &answerParameters
     });
 
     taskScheduler.schedule();

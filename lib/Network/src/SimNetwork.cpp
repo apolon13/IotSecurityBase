@@ -14,6 +14,8 @@ bool SimNetwork::isConnected() {
 
 void SimNetwork::connect() {
     auto apn = projectPreferences.get(ProjectPreferences::APN, "");
+    modem->setNetworkMode(38); // LTE only
+    modem->setSmsTextMode();
     modem->gprsConnect(apn.c_str(), "", "");
 }
 
