@@ -163,6 +163,11 @@ void Security::listenSmsCommands(TinyGsmSim7670 &modem) {
         lastSmsIndex++;
     }
 
+    if (response > 0) {
+        auto phone = projectPreferences.get(ProjectPreferences::Phone, "");
+        modem.sendSMS(phone.c_str(), "ok");
+    }
+
     switch (response) {
         case 1:
             handleControl(GUARD);

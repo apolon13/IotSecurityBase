@@ -57,6 +57,8 @@ protected:
                 return "WifiNetworkMode";
             case SimNetworkMode:
                 return "SimNetworkMode";
+            case Phone:
+                return "Phone";
             default:
                 throw std::invalid_argument("Invalid property");
         }
@@ -86,7 +88,8 @@ public:
         ConnectionAttemptsBeforeRestart,
         APN,
         WifiNetworkMode,
-        SimNetworkMode
+        SimNetworkMode,
+        Phone
     };
 
     std::string get(PreferencesKey key, std::string defaultValue);
