@@ -48,15 +48,8 @@ void TaskScheduler::schedule() {
             if (code != pdPASS) {
                 throw std::runtime_error("Create task error " + to_string(code));
             }
-            TaskHandle_t newHandle = getTaskHandle(task.name);
-            if (task.disableWatchDog) {
-                disableWatchDog(newHandle);
-            }
         } else {
             vTaskResume(handle);
-            if (task.disableWatchDog) {
-                disableWatchDog(handle);
-            }
         }
         inRunning.push_back(task.name);
     }

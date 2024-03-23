@@ -17,7 +17,6 @@ struct TaskToSchedule {
     int stackDepth;
     void *parameters;
     int core = -1;
-    bool disableWatchDog = false;
 };
 
 class TaskScheduler {

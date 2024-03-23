@@ -74,8 +74,6 @@ public:
         }
         _panel_instance.setBus(&_bus_instance);
         setPanel(&_panel_instance);
-
-
     }
 };
 

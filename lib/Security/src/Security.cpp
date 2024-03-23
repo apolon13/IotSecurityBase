@@ -55,9 +55,9 @@ void Security::handleControl(const string &cmd, bool needTriggerEvent) {
     if (cmd == DISARM) {
         muteMode = false;
         disarm();
+        eventId = SecurityEvent::EventOnDisarm;
         if (projectPreferences.systemIsLocked()) {
             projectPreferences.unlockSystem();
-            eventId = SecurityEvent::EventOnDisarm;
         }
     }
 

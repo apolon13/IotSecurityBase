@@ -8,6 +8,7 @@
 #include "ScreenFactory.h"
 #include "NetworkFactory.h"
 #include "WiFiConfigurator.h"
+#include <esp_task_wdt.h>
 
 #define SETTINGS_FILENAME "/project.txt"
 
@@ -43,7 +44,6 @@ void loopMqtt(void *data) {
         long now = millis();
 
         parameters->security.listenSmsCommands(simNetwork->getModem());
-
         if (dispatcher.getNetworkConnectionAttempts() >= maxConnectionAttemptsBeforeRestart
             || dispatcher.getCloudConnectionAttempts() >= maxConnectionAttemptsBeforeRestart) {
             auto currentModeIsWifi = parameters->preferences.networkModeIsWifi();
@@ -83,6 +83,7 @@ void loopMqtt(void *data) {
                 dispatcher.cloudIsConnected(),
                 dispatcher.networkIsConnected()
         );
+        //Serial.println(temperatureRead());
         vTaskDelay(1000);
     }
 }
@@ -113,10 +114,9 @@ void loopQueue(void *data) {
 
 
 void setup() {
-
-}
-
-void loop() {
+    disableCore0WDT();
+    disableCore1WDT();
+    esp_task_wdt_deinit();
     Serial1.begin(115200, SERIAL_8N1, GPIO_NUM_18, GPIO_NUM_17);
     Serial.begin(115200);
     Logger logger(Serial);
@@ -133,9 +133,9 @@ void loop() {
     Topic rcvTopic("/security/receive", pubSubClient);
     Topic alarmTopic("/security/alarm", pubSubClient);
     TopicsContainer topicsContainer({
-            &cmdTopic,
-            &rcvTopic
-    });
+                                            &cmdTopic,
+                                            &rcvTopic
+                                    });
     Dispatcher dispatcher(preferences, topicsContainer, *network, pubSubClient);
     QueueTask queue;
     Security security(detect, control, preferences, cmdTopic, rcvTopic, alarmTopic);
@@ -156,7 +156,6 @@ void loop() {
 
     security.onEvent((int) SecurityEvent::EventOnDisarm, [touchCb, &security](int eventId) {
         touchCb(eventId);
-        security.unlockSystem(true);
         screenFactory->getMainScreen().goTo(true);
     });
 
@@ -186,27 +185,31 @@ void loop() {
     UiParameters uiParameters = {uiControl};
     QueueParameters queueParameters = {queue};
     taskScheduler.addTask({
-        "loopDisplay",
-        loopDisplay,
-        TaskPriority::Low,
-        3500,
-        (void *) &uiParameters
+          "loopDisplay",
+          loopDisplay,
+          TaskPriority::Low,
+          3500,
+          (void *) &uiParameters
     });
     taskScheduler.addTask({
-        "loopMqtt",
-        loopMqtt,
-        TaskPriority::Low,
-        4000,
-        (void *) &mqttParameters
+          "loopMqtt",
+          loopMqtt,
+          TaskPriority::Low,
+          4000,
+          (void *) &mqttParameters
     });
     taskScheduler.addTask({
-        "loopQueue",
-        loopQueue,
-        TaskPriority::Low,
-        3000,
-        (void *) &queueParameters
+          "loopQueue",
+          loopQueue,
+          TaskPriority::Low,
+          3000,
+          (void *) &queueParameters
     });
 
     taskScheduler.schedule();
     while (true);
+}
+
+void loop() {
+
 }

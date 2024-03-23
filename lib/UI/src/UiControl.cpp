@@ -7,7 +7,7 @@
 #define TFT_BL 2
 
 static lv_disp_draw_buf_t drawBuffer;
-static lv_color_t buffer[800 * 480 / 10];
+static lv_color_t buffer1[800 * 480 / 10];
 static lv_disp_drv_t displayDriver;
 static lv_indev_drv_t indevDriver;
 UiControl *selfUiControl;
@@ -69,7 +69,7 @@ UiControl::UiControl(int bcklTimeout) : backlightTimeout(bcklTimeout) {
     touch_init();
     uint32_t screenWidth = lcd.width();
     uint32_t screenHeight = lcd.height();
-    lv_disp_draw_buf_init(&drawBuffer, buffer, nullptr, screenWidth * screenHeight / 10);
+    lv_disp_draw_buf_init(&drawBuffer, buffer1, nullptr, screenWidth * screenHeight / 10);
     lv_disp_drv_init(&displayDriver);
     displayDriver.hor_res = screenWidth;
     displayDriver.ver_res = screenHeight;
