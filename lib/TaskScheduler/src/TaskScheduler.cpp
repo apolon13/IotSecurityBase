@@ -1,5 +1,4 @@
 #include "TaskScheduler.h"
-#include <esp_task_wdt.h>
 
 using namespace std;
 
@@ -72,12 +71,6 @@ void TaskScheduler::deleteTask(const string &name) {
             tasksToDelete.push_back(task);
             break;
         }
-    }
-}
-
-void TaskScheduler::disableWatchDog(TaskHandle_t taskHandle) {
-    if (taskHandle != nullptr) {
-        esp_task_wdt_delete(taskHandle);
     }
 }
 

@@ -25,8 +25,6 @@ protected:
     std::vector<std::string> tasksToDelete;
     std::vector<std::string> inRunning;
 
-    void disableWatchDog(TaskHandle_t taskHandle);
-
     TaskHandle_t getTaskHandle(const std::string& taskName);
 
 public:

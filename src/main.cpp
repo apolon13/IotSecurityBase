@@ -8,7 +8,6 @@
 #include "ScreenFactory.h"
 #include "NetworkFactory.h"
 #include "WiFiConfigurator.h"
-#include <esp_task_wdt.h>
 
 #define SETTINGS_FILENAME "/project.txt"
 
@@ -116,7 +115,6 @@ void loopQueue(void *data) {
 void setup() {
     disableCore0WDT();
     disableCore1WDT();
-    esp_task_wdt_deinit();
     Serial1.begin(115200, SERIAL_8N1, GPIO_NUM_18, GPIO_NUM_17);
     Serial.begin(115200);
     Logger logger(Serial);
