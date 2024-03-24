@@ -23,3 +23,7 @@ void Topic::refreshHandlers() {
 void Topic::publish(const string &payload) {
     pubSubClient.publish(topicName.c_str(), payload.c_str());
 }
+
+void Topic::publish(const function<std::string()> &payload) {
+    pubSubClient.publish(topicName.c_str(), payload().c_str());
+}

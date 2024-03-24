@@ -23,6 +23,8 @@ public:
 
     void publish(const std::string &payload);
 
+    void publish(const std::function<std::string()> &payload);
+
     void refreshHandlers();
 
     void handleData(const std::string &payload);

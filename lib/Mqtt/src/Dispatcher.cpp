@@ -4,7 +4,7 @@
 
 using namespace std;
 
-Dispatcher::Dispatcher(ProjectPreferences &p, TopicsContainer &t, Network &n, PubSubClient &psc):
+Dispatcher::Dispatcher(ProjectPreferences &p, TopicsContainer &t, Network &n, PubSubClient &psc) :
         projectPreferences(p),
         topicsContainer(t),
         network(n),
@@ -93,5 +93,9 @@ int Dispatcher::getNetworkConnectionAttempts() const {
 
 int Dispatcher::getCloudConnectionAttempts() const {
     return cloudConnectionAttempts;
+}
+
+PubSubClient &Dispatcher::getPubSubClient() {
+    return pubSubClient;
 }
 

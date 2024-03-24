@@ -1,4 +1,3 @@
-#include "Logger.h"
 #include "UiControl.h"
 #include "QueueTask.h"
 #include "IotRadioControl.h"
@@ -8,6 +7,7 @@
 #include "ScreenFactory.h"
 #include "NetworkFactory.h"
 #include "WiFiConfigurator.h"
+#include "TelemetryTopics.h"
 
 #define SETTINGS_FILENAME "/project.txt"
 
@@ -72,6 +72,8 @@ void loopMqtt(void *data) {
         }
 
         if (dispatcher.cloudIsConnected()) {
+            TelemetryTopics topics(dispatcher.getPubSubClient());
+            topics.sendTelemetry(*simNetwork);
             dispatcher.loop();
         }
 
@@ -80,7 +82,6 @@ void loopMqtt(void *data) {
                 dispatcher.cloudIsConnected(),
                 dispatcher.networkIsConnected()
         );
-        //Serial.println(temperatureRead());
         vTaskDelay(1000);
     }
 }
@@ -107,7 +108,6 @@ void setup() {
     disableCore1WDT();
     Serial1.begin(115200, SERIAL_8N1, GPIO_NUM_18, GPIO_NUM_17);
     Serial.begin(115200);
-    Logger logger(Serial);
     FileProjectPreferences preferences(SETTINGS_FILENAME);
     TaskScheduler taskScheduler;
     IoTRadioDetect detect(preferences, taskScheduler);
