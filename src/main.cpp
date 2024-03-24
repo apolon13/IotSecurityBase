@@ -77,7 +77,7 @@ void loopMqtt(void *data) {
             if ((now - lastTelemetrySendTime) >= 120000) {
                 TelemetryTopics topics(dispatcher.getPubSubClient());
                 topics.sendTelemetry(*simNetwork);
-                lastAttemptNetworkConnection = now;
+                lastTelemetrySendTime = now;
             }
             dispatcher.loop();
         }
