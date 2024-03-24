@@ -1,3 +1,4 @@
+#include <WiFi.h>
 #include "TelemetryTopics.h"
 
 using namespace std;
@@ -9,6 +10,7 @@ void TelemetryTopics::sendTelemetry(SimNetwork &network) {
     Topic chipTemperature("/security/telemetry/chip-temperature", pubSubClient);
     Topic freeHeap("/security/telemetry/free-heap", pubSubClient);
     Topic freePsram("/security/telemetry/free-psram", pubSubClient);
+    Topic wifiChannel("/security/telemetry/wifi-channel", pubSubClient);
 
     auto temperature = (int)network.getModem().getTemperature();
     if (temperature > 0) {
@@ -19,4 +21,5 @@ void TelemetryTopics::sendTelemetry(SimNetwork &network) {
     chipTemperature.publish(to_string(temperatureRead()));
     freeHeap.publish(to_string(ESP.getFreeHeap()));
     freePsram.publish(to_string(ESP.getFreePsram()));
+    wifiChannel.publish(to_string(WiFi.channel()));
 }

@@ -77,7 +77,6 @@ void loopMqtt(void *data) {
             dispatcher.loop();
         }
 
-        Serial.println(ESP.getFreeHeap());
         screenFactory->getMainScreen().handleConnections(
                 dispatcher.cloudIsConnected(),
                 dispatcher.networkIsConnected()
