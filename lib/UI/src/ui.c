@@ -168,9 +168,6 @@ lv_obj_t *ui_Panel2;
 void ui_event_sensorName( lv_event_t * e);
 lv_obj_t *ui_sensorName;
 lv_obj_t *ui_sensorIsActive;
-lv_obj_t *ui_Container5;
-lv_obj_t *ui_sensorSensitivity;
-lv_obj_t *ui_Label17;
 void ui_event_Keyboard3( lv_event_t * e);
 lv_obj_t *ui_Keyboard3;
 
@@ -477,6 +474,7 @@ void ui_event_abortBtn2( lv_event_t * e) {
     lv_event_code_t event_code = lv_event_get_code(e);lv_obj_t * target = lv_event_get_target(e);
 if ( event_code == LV_EVENT_CLICKED) {
       _ui_screen_change( &ui_home, LV_SCR_LOAD_ANIM_NONE, 200, 0, &ui_home_screen_init);
+      clearSensorsScreen( e );
 }
 }
 void ui_event_startScanBtn( lv_event_t * e) {
@@ -651,6 +649,7 @@ void ui_event_abortBtn4( lv_event_t * e) {
     lv_event_code_t event_code = lv_event_get_code(e);lv_obj_t * target = lv_event_get_target(e);
 if ( event_code == LV_EVENT_CLICKED) {
       _ui_screen_change( &ui_home, LV_SCR_LOAD_ANIM_NONE, 200, 0, &ui_home_screen_init);
+      clearControlsScreen( e );
 }
 }
 void ui_event_addControlBtn( lv_event_t * e) {

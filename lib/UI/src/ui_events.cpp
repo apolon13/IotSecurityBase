@@ -83,3 +83,13 @@ void addControlAction(lv_event_t *e) {
 void deleteControl(lv_event_t *e) {
     screenFactory->getControlSensorsScreen().deleteControl(e);
 }
+
+void clearSensorsScreen(lv_event_t * e)
+{
+    screenFactory->getControlSensorsScreen().clear();
+}
+
+void clearControlsScreen(lv_event_t * e)
+{
+    screenFactory->getDetectSensorsScreen().clear();
+}

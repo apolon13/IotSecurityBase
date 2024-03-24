@@ -55,6 +55,7 @@ ui_wifiSsid = lv_textarea_create(ui_ssid);
 lv_obj_set_width( ui_wifiSsid, lv_pct(100));
 lv_obj_set_height( ui_wifiSsid, LV_SIZE_CONTENT);   /// 70
 lv_obj_set_align( ui_wifiSsid, LV_ALIGN_BOTTOM_MID );
+lv_textarea_set_max_length(ui_wifiSsid,30);
 lv_textarea_set_placeholder_text(ui_wifiSsid,"ssid");
 lv_textarea_set_one_line(ui_wifiSsid,true);
 
@@ -75,6 +76,7 @@ ui_wifiPassword = lv_textarea_create(ui_Port1);
 lv_obj_set_width( ui_wifiPassword, lv_pct(100));
 lv_obj_set_height( ui_wifiPassword, LV_SIZE_CONTENT);   /// 70
 lv_obj_set_align( ui_wifiPassword, LV_ALIGN_BOTTOM_MID );
+lv_textarea_set_max_length(ui_wifiPassword,30);
 lv_textarea_set_placeholder_text(ui_wifiPassword,"password");
 lv_textarea_set_one_line(ui_wifiPassword,true);
 lv_textarea_set_password_mode(ui_wifiPassword, true);

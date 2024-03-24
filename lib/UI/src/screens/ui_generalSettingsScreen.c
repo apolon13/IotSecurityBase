@@ -44,6 +44,10 @@ lv_obj_set_flex_flow(ui_Container6,LV_FLEX_FLOW_ROW_WRAP);
 lv_obj_set_flex_align(ui_Container6, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_START);
 lv_obj_set_scrollbar_mode(ui_Container6, LV_SCROLLBAR_MODE_ON);
 lv_obj_set_scroll_dir(ui_Container6, LV_DIR_BOTTOM);
+lv_obj_set_style_pad_left(ui_Container6, 10, LV_PART_MAIN| LV_STATE_DEFAULT);
+lv_obj_set_style_pad_right(ui_Container6, 10, LV_PART_MAIN| LV_STATE_DEFAULT);
+lv_obj_set_style_pad_top(ui_Container6, 0, LV_PART_MAIN| LV_STATE_DEFAULT);
+lv_obj_set_style_pad_bottom(ui_Container6, 10, LV_PART_MAIN| LV_STATE_DEFAULT);
 
 ui_Container7 = lv_obj_create(ui_Container6);
 lv_obj_remove_style_all(ui_Container7);
@@ -70,6 +74,7 @@ ui_settingsPincodeInput = lv_textarea_create(ui_settingsPincode);
 lv_obj_set_width( ui_settingsPincodeInput, lv_pct(100));
 lv_obj_set_height( ui_settingsPincodeInput, LV_SIZE_CONTENT);   /// 70
 lv_obj_set_align( ui_settingsPincodeInput, LV_ALIGN_BOTTOM_MID );
+lv_textarea_set_max_length(ui_settingsPincodeInput,10);
 lv_textarea_set_placeholder_text(ui_settingsPincodeInput,"1234");
 lv_textarea_set_one_line(ui_settingsPincodeInput,true);
 lv_textarea_set_password_mode(ui_settingsPincodeInput, true);
@@ -133,6 +138,9 @@ ui_settingsTimeoutInput = lv_textarea_create(ui_settingsTimeout);
 lv_obj_set_width( ui_settingsTimeoutInput, lv_pct(100));
 lv_obj_set_height( ui_settingsTimeoutInput, LV_SIZE_CONTENT);   /// 70
 lv_obj_set_align( ui_settingsTimeoutInput, LV_ALIGN_BOTTOM_MID );
+if ("0123456789"=="") lv_textarea_set_accepted_chars(ui_settingsTimeoutInput, NULL);
+else lv_textarea_set_accepted_chars(ui_settingsTimeoutInput, "0123456789");
+lv_textarea_set_max_length(ui_settingsTimeoutInput,10);
 lv_textarea_set_placeholder_text(ui_settingsTimeoutInput,"30");
 lv_textarea_set_one_line(ui_settingsTimeoutInput,true);
 
@@ -163,6 +171,9 @@ ui_settingsConnectionTimeoutInput = lv_textarea_create(ui_settingsConnectionTime
 lv_obj_set_width( ui_settingsConnectionTimeoutInput, lv_pct(100));
 lv_obj_set_height( ui_settingsConnectionTimeoutInput, LV_SIZE_CONTENT);   /// 70
 lv_obj_set_align( ui_settingsConnectionTimeoutInput, LV_ALIGN_BOTTOM_MID );
+if ("0123456789"=="") lv_textarea_set_accepted_chars(ui_settingsConnectionTimeoutInput, NULL);
+else lv_textarea_set_accepted_chars(ui_settingsConnectionTimeoutInput, "0123456789");
+lv_textarea_set_max_length(ui_settingsConnectionTimeoutInput,10);
 lv_textarea_set_placeholder_text(ui_settingsConnectionTimeoutInput,"3");
 lv_textarea_set_one_line(ui_settingsConnectionTimeoutInput,true);
 
@@ -193,6 +204,9 @@ ui_settingsMaxAttemptsInput = lv_textarea_create(ui_settingsMaxAttempts);
 lv_obj_set_width( ui_settingsMaxAttemptsInput, lv_pct(100));
 lv_obj_set_height( ui_settingsMaxAttemptsInput, LV_SIZE_CONTENT);   /// 70
 lv_obj_set_align( ui_settingsMaxAttemptsInput, LV_ALIGN_BOTTOM_MID );
+if ("0123456789"=="") lv_textarea_set_accepted_chars(ui_settingsMaxAttemptsInput, NULL);
+else lv_textarea_set_accepted_chars(ui_settingsMaxAttemptsInput, "0123456789");
+lv_textarea_set_max_length(ui_settingsMaxAttemptsInput,10);
 lv_textarea_set_placeholder_text(ui_settingsMaxAttemptsInput,"10");
 lv_textarea_set_one_line(ui_settingsMaxAttemptsInput,true);
 
@@ -267,6 +281,9 @@ ui_settingsPhoneInput = lv_textarea_create(ui_phone);
 lv_obj_set_width( ui_settingsPhoneInput, lv_pct(100));
 lv_obj_set_height( ui_settingsPhoneInput, LV_SIZE_CONTENT);   /// 70
 lv_obj_set_align( ui_settingsPhoneInput, LV_ALIGN_BOTTOM_MID );
+if ("0123456789+"=="") lv_textarea_set_accepted_chars(ui_settingsPhoneInput, NULL);
+else lv_textarea_set_accepted_chars(ui_settingsPhoneInput, "0123456789+");
+lv_textarea_set_max_length(ui_settingsPhoneInput,15);
 lv_textarea_set_placeholder_text(ui_settingsPhoneInput,"Phone");
 lv_textarea_set_one_line(ui_settingsPhoneInput,true);
 

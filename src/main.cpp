@@ -39,9 +39,7 @@ void loopMqtt(void *data) {
     auto dispatcher = parameters->dispatcher;
     auto simNetwork = parameters->factory.createSimNetwork();
     while (true) {
-        //Serial.println(uxTaskGetStackHighWaterMark(nullptr));
         long now = millis();
-
         parameters->security.listenSmsCommands(simNetwork->getModem());
         if (dispatcher.getNetworkConnectionAttempts() >= maxConnectionAttemptsBeforeRestart
             || dispatcher.getCloudConnectionAttempts() >= maxConnectionAttemptsBeforeRestart) {
@@ -77,7 +75,7 @@ void loopMqtt(void *data) {
             dispatcher.loop();
         }
 
-        //Serial.println(ESP.getFreeHeap());
+        Serial.println(ESP.getFreeHeap());
         screenFactory->getMainScreen().handleConnections(
                 dispatcher.cloudIsConnected(),
                 dispatcher.networkIsConnected()
@@ -87,16 +85,9 @@ void loopMqtt(void *data) {
     }
 }
 
-long lastDisplayLoop;
-
 void loopDisplay(void *data) {
     auto parameters = (UiParameters *) data;
     while (true) {
-        long currentMs = millis();
-        if ((currentMs - lastDisplayLoop) >= 1000) {
-            //Serial.println(uxTaskGetStackHighWaterMark(nullptr));
-            lastDisplayLoop = currentMs;
-        }
         parameters->uiControl.render();
         vTaskDelay(5);
     }
@@ -105,7 +96,6 @@ void loopDisplay(void *data) {
 void loopQueue(void *data) {
     auto parameters = (QueueParameters *) data;
     while (true) {
-        //Serial.println(uxTaskGetStackHighWaterMark(nullptr));
         parameters->queue.run();
         vTaskDelay(5);
     }

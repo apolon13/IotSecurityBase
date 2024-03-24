@@ -33,6 +33,8 @@ public:
     void addControlAction(lv_event_t *e);
 
     void deleteControl(lv_event_t *e);
+
+    void clear();
 };
 
 #endif

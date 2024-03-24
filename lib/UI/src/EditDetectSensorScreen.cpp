@@ -8,7 +8,6 @@ void EditDetectSensorScreen::loadSensor(lv_event_t *e) {
         if (sensor->isActive) {
             lv_obj_add_state(ui_sensorIsActive, LV_STATE_CHECKED);
         }
-        lv_slider_set_value(ui_sensorSensitivity, sensor->sensitivity, LV_ANIM_OFF);
     }
 }
 
@@ -21,7 +20,7 @@ void EditDetectSensorScreen::saveSensorSettings(lv_event_t *e) {
                 lv_textarea_get_text(ui_sensorName),
                 sensor->signal,
                 static_cast<bool>(lv_obj_get_state(ui_sensorIsActive) & LV_STATE_CHECKED),
-                lv_slider_get_value(ui_sensorSensitivity)
+                100
         };
         ioTRadioDetect.save(&s);
         projectPreferences.set(ProjectPreferences::EditableDetectSensor, "");

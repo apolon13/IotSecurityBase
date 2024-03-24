@@ -176,9 +176,6 @@ extern lv_obj_t *ui_Panel2;
 void ui_event_sensorName( lv_event_t * e);
 extern lv_obj_t *ui_sensorName;
 extern lv_obj_t *ui_sensorIsActive;
-extern lv_obj_t *ui_Container5;
-extern lv_obj_t *ui_sensorSensitivity;
-extern lv_obj_t *ui_Label17;
 void ui_event_Keyboard3( lv_event_t * e);
 extern lv_obj_t *ui_Keyboard3;
 // SCREEN: ui_generalSettingsScreen

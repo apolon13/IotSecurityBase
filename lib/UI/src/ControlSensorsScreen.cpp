@@ -26,7 +26,7 @@ void ControlSensorsScreen::loadAllControls(lv_event_t *e) {
             UI_COMP_CONTROLITEM_CONTROLPANEL_MUTEPANEL,
             UI_COMP_CONTROLITEM_CONTROLPANEL_ALARMPANEL
     };
-    lv_obj_clean(ui_Controls);
+    clear();
     for (const auto &sensor: sensors) {
         string group = iotRadioControl.extractGroup(sensor.signal);
         if (groupedSensors.find(group) != groupedSensors.end()) {
@@ -140,4 +140,8 @@ ControlSensorsScreen::ControlSensorsScreen(IoTRadioDetect &d, IotRadioControl &c
                                                                                                   ioTRadioDetect(d),
                                                                                                   queueTask(q) {
     selfControlSensorsScreen = this;
+}
+
+void ControlSensorsScreen::clear() {
+    lv_obj_clean(ui_Controls);
 }

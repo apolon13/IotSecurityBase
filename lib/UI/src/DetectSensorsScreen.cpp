@@ -21,7 +21,7 @@ void DetectSensorsScreen::saveNewSensor(void *) {
 
 void DetectSensorsScreen::loadAllSensors(lv_event_t *e) {
     std::vector<Sensor> sensors = ioTRadioDetect.getCurrentSensors();
-    lv_obj_clean(ui_Sensors);
+    clear();
     for (Sensor sensor: sensors) {
         lv_obj_t *component = ui_SensorItem_create(ui_Sensors);
         lv_obj_t *label = ui_comp_get_child(component, UI_COMP_SENSORITEM_SENSORITEMPANEL_SENSORID);
@@ -86,4 +86,8 @@ void DetectSensorsScreen::deleteSensor(lv_event_t *e) {
     string text = lv_label_get_text(label);
     ioTRadioDetect.forget(ioTRadioDetect.getSensorByName(text)->signal);
     lv_obj_del(component);
+}
+
+void DetectSensorsScreen::clear() {
+    lv_obj_clean(ui_Sensors);
 }

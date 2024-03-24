@@ -89,6 +89,7 @@ ui_sensorName = lv_textarea_create(ui_Panel2);
 lv_obj_set_width( ui_sensorName, lv_pct(32));
 lv_obj_set_height( ui_sensorName, LV_SIZE_CONTENT);   /// 70
 lv_obj_set_align( ui_sensorName, LV_ALIGN_BOTTOM_LEFT );
+lv_textarea_set_max_length(ui_sensorName,20);
 lv_textarea_set_placeholder_text(ui_sensorName,"Sensor name");
 lv_textarea_set_one_line(ui_sensorName,true);
 
@@ -100,35 +101,6 @@ lv_obj_set_width( ui_sensorIsActive, LV_SIZE_CONTENT);  /// 1
 lv_obj_set_height( ui_sensorIsActive, LV_SIZE_CONTENT);   /// 1
 lv_obj_set_align( ui_sensorIsActive, LV_ALIGN_CENTER );
 lv_obj_add_flag( ui_sensorIsActive, LV_OBJ_FLAG_SCROLL_ON_FOCUS );   /// Flags
-
-ui_Container5 = lv_obj_create(ui_Panel2);
-lv_obj_remove_style_all(ui_Container5);
-lv_obj_set_width( ui_Container5, 263);
-lv_obj_set_height( ui_Container5, 50);
-lv_obj_set_align( ui_Container5, LV_ALIGN_CENTER );
-lv_obj_clear_flag( ui_Container5, LV_OBJ_FLAG_SCROLLABLE );    /// Flags
-
-ui_sensorSensitivity = lv_slider_create(ui_Container5);
-lv_slider_set_value( ui_sensorSensitivity, 0, LV_ANIM_OFF);
-if (lv_slider_get_mode(ui_sensorSensitivity)==LV_SLIDER_MODE_RANGE ) lv_slider_set_left_value( ui_sensorSensitivity, 0, LV_ANIM_OFF);
-lv_obj_set_width( ui_sensorSensitivity, 150);
-lv_obj_set_height( ui_sensorSensitivity, 10);
-lv_obj_set_x( ui_sensorSensitivity, 3 );
-lv_obj_set_y( ui_sensorSensitivity, -13 );
-lv_obj_set_align( ui_sensorSensitivity, LV_ALIGN_BOTTOM_MID );
-lv_obj_set_style_bg_color(ui_sensorSensitivity, lv_color_hex(0x296D4B), LV_PART_MAIN | LV_STATE_DEFAULT );
-lv_obj_set_style_bg_opa(ui_sensorSensitivity, 255, LV_PART_MAIN| LV_STATE_DEFAULT);
-
-lv_obj_set_style_bg_color(ui_sensorSensitivity, lv_color_hex(0xCA3838), LV_PART_INDICATOR | LV_STATE_DEFAULT );
-lv_obj_set_style_bg_opa(ui_sensorSensitivity, 255, LV_PART_INDICATOR| LV_STATE_DEFAULT);
-
-ui_Label17 = lv_label_create(ui_Container5);
-lv_obj_set_width( ui_Label17, LV_SIZE_CONTENT);  /// 1
-lv_obj_set_height( ui_Label17, LV_SIZE_CONTENT);   /// 1
-lv_obj_set_x( ui_Label17, -5 );
-lv_obj_set_y( ui_Label17, 0 );
-lv_obj_set_align( ui_Label17, LV_ALIGN_TOP_MID );
-lv_label_set_text(ui_Label17,"Sensivity");
 
 ui_Keyboard3 = lv_keyboard_create(ui_edittSensorScreen);
 lv_obj_set_width( ui_Keyboard3, lv_pct(100));

@@ -32,6 +32,8 @@ public:
     void goToEditSensor(lv_event_t *e);
 
     void deleteSensor(lv_event_t *e);
+
+    void clear();
 };
 
 #endif

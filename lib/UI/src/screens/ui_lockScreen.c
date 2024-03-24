@@ -55,6 +55,7 @@ ui_pincode = lv_textarea_create(ui_Panel3);
 lv_obj_set_width( ui_pincode, 250);
 lv_obj_set_height( ui_pincode, LV_SIZE_CONTENT);   /// 140
 lv_obj_set_align( ui_pincode, LV_ALIGN_TOP_MID );
+lv_textarea_set_max_length(ui_pincode,10);
 lv_textarea_set_placeholder_text(ui_pincode,"PIN");
 lv_textarea_set_one_line(ui_pincode,true);
 lv_textarea_set_password_mode(ui_pincode, true);

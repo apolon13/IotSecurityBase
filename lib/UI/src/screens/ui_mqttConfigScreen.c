@@ -55,6 +55,9 @@ ui_mqttIp = lv_textarea_create(ui_Ip);
 lv_obj_set_width( ui_mqttIp, lv_pct(100));
 lv_obj_set_height( ui_mqttIp, LV_SIZE_CONTENT);   /// 70
 lv_obj_set_align( ui_mqttIp, LV_ALIGN_BOTTOM_MID );
+if ("0123456789."=="") lv_textarea_set_accepted_chars(ui_mqttIp, NULL);
+else lv_textarea_set_accepted_chars(ui_mqttIp, "0123456789.");
+lv_textarea_set_max_length(ui_mqttIp,10);
 lv_textarea_set_placeholder_text(ui_mqttIp,"0.0.0.0");
 lv_textarea_set_one_line(ui_mqttIp,true);
 
@@ -75,6 +78,9 @@ ui_mqttPort = lv_textarea_create(ui_Port);
 lv_obj_set_width( ui_mqttPort, lv_pct(100));
 lv_obj_set_height( ui_mqttPort, LV_SIZE_CONTENT);   /// 70
 lv_obj_set_align( ui_mqttPort, LV_ALIGN_BOTTOM_MID );
+if ("0123456789"=="") lv_textarea_set_accepted_chars(ui_mqttPort, NULL);
+else lv_textarea_set_accepted_chars(ui_mqttPort, "0123456789");
+lv_textarea_set_max_length(ui_mqttPort,10);
 lv_textarea_set_placeholder_text(ui_mqttPort,"1883 or 8883");
 lv_textarea_set_one_line(ui_mqttPort,true);
 
@@ -95,6 +101,7 @@ ui_mqttUsername = lv_textarea_create(ui_Credentials);
 lv_obj_set_width( ui_mqttUsername, lv_pct(32));
 lv_obj_set_height( ui_mqttUsername, LV_SIZE_CONTENT);   /// 70
 lv_obj_set_align( ui_mqttUsername, LV_ALIGN_BOTTOM_LEFT );
+lv_textarea_set_max_length(ui_mqttUsername,10);
 lv_textarea_set_placeholder_text(ui_mqttUsername,"Username");
 lv_textarea_set_one_line(ui_mqttUsername,true);
 
@@ -104,6 +111,7 @@ ui_mqttPassword = lv_textarea_create(ui_Credentials);
 lv_obj_set_width( ui_mqttPassword, lv_pct(32));
 lv_obj_set_height( ui_mqttPassword, LV_SIZE_CONTENT);   /// 70
 lv_obj_set_align( ui_mqttPassword, LV_ALIGN_BOTTOM_MID );
+lv_textarea_set_max_length(ui_mqttPassword,10);
 lv_textarea_set_placeholder_text(ui_mqttPassword,"Password");
 lv_textarea_set_one_line(ui_mqttPassword,true);
 lv_textarea_set_password_mode(ui_mqttPassword, true);
@@ -114,6 +122,7 @@ ui_mqttEntityId = lv_textarea_create(ui_Credentials);
 lv_obj_set_width( ui_mqttEntityId, lv_pct(32));
 lv_obj_set_height( ui_mqttEntityId, LV_SIZE_CONTENT);   /// 70
 lv_obj_set_align( ui_mqttEntityId, LV_ALIGN_BOTTOM_RIGHT );
+lv_textarea_set_max_length(ui_mqttEntityId,10);
 lv_textarea_set_placeholder_text(ui_mqttEntityId,"ID");
 lv_textarea_set_one_line(ui_mqttEntityId,true);
 
