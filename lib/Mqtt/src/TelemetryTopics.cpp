@@ -10,9 +10,12 @@ void TelemetryTopics::sendTelemetry(SimNetwork &network) {
     Topic freeHeap("/security/telemetry/free-heap", pubSubClient);
     Topic freePsram("/security/telemetry/free-psram", pubSubClient);
 
+    auto temperature = (int)network.getModem().getTemperature();
+    if (temperature > 0) {
+        modemTemperature.publish(to_string(temperature));
+    }
     regStatus.publish(to_string(network.getModem().getRegistrationStatus()));
     sigQuality.publish(to_string(network.getModem().getSignalQuality()));
-    modemTemperature.publish(to_string(network.getModem().getTemperature()));
     chipTemperature.publish(to_string(temperatureRead()));
     freeHeap.publish(to_string(ESP.getFreeHeap()));
     freePsram.publish(to_string(ESP.getFreePsram()));
