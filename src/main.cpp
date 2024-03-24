@@ -32,6 +32,8 @@ typedef struct {
 long timeWithoutNetworkConnection;
 long lastAttemptNetworkConnection;
 
+long lastTelemetrySendTime;
+
 void loopMqtt(void *data) {
     auto parameters = (MQTTParameters *) data;
     auto connectionTimeout = stoi(parameters->preferences.getConnectionTimeout()) * 1000;
@@ -72,8 +74,11 @@ void loopMqtt(void *data) {
         }
 
         if (dispatcher.cloudIsConnected()) {
-            TelemetryTopics topics(dispatcher.getPubSubClient());
-            topics.sendTelemetry(*simNetwork);
+            if ((now - lastTelemetrySendTime) >= 120000) {
+                TelemetryTopics topics(dispatcher.getPubSubClient());
+                topics.sendTelemetry(*simNetwork);
+                lastAttemptNetworkConnection = now;
+            }
             dispatcher.loop();
         }
 
