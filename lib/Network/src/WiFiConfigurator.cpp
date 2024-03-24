@@ -6,7 +6,6 @@ void WiFiConfigurator::configure(NetworkType type) {
     WiFi.setSleep(false);
     if (type == NetworkType::WiFi) {
         WiFi.mode(WIFI_MODE_APSTA);
-        WiFi.setAutoReconnect(false);
         WiFi.setScanMethod(WIFI_FAST_SCAN);
     }
 
