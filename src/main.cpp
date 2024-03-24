@@ -175,14 +175,14 @@ void setup() {
           "loopDisplay",
           loopDisplay,
           TaskPriority::Low,
-          3500,
+          5000,
           (void *) &uiParameters
     });
     taskScheduler.addTask({
           "loopMqtt",
           loopMqtt,
           TaskPriority::Low,
-          4000,
+          5000,
           (void *) &mqttParameters
     });
     taskScheduler.addTask({
