@@ -131,9 +131,9 @@ void setup() {
     Topic rcvTopic("/security/receive", pubSubClient);
     Topic alarmTopic("/security/alarm", pubSubClient);
     TopicsContainer topicsContainer({
-                                            &cmdTopic,
-                                            &rcvTopic
-                                    });
+            &cmdTopic,
+            &rcvTopic
+    });
     Dispatcher dispatcher(preferences, topicsContainer, *network, pubSubClient);
     QueueTask queue;
     Security security(detect, control, preferences, cmdTopic, rcvTopic, alarmTopic);
