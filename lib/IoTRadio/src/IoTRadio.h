@@ -37,7 +37,6 @@ protected:
     std::vector<Sensor> currentSensors;
     ProjectPreferences &projectPreferences;
     static esp_now_recv_cb_t currentRcvCallback;
-    static PeerMessage lastMessage;
 
     std::vector<std::string> getSignals();
 
@@ -60,6 +59,7 @@ protected:
     Sensor *getSensorByPredicate(std::function<bool(const Sensor &s)> predicate);
 
 public:
+    static PeerMessage lastMessage;
 
     IoTRadio(ProjectPreferences &p, TaskScheduler &scheduler);
 

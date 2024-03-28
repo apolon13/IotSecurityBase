@@ -14,10 +14,9 @@ using namespace std;
 esp_now_recv_cb_t IoTRadio::currentRcvCallback = nullptr;
 PeerMessage IoTRadio::lastMessage = {true};
 
-void ping(void *parameters) {
-    auto lastMessage = (PeerMessage *) parameters;
+void ping(void *) {
     while (true) {
-        IoTRadio::sendMessageToPeer(*lastMessage);
+        IoTRadio::sendMessageToPeer(IoTRadio::lastMessage);
         vTaskDelay(1000);
     }
 }
@@ -207,8 +206,7 @@ void IoTRadio::addReceiver(const uint8_t macAddress[]) {
            "ping",
            ping,
            TaskPriority::Low,
-           3000,
-           (void *) &lastMessage
+           3000
     });
     taskScheduler->schedule();
 }
