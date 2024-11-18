@@ -55,10 +55,8 @@ ui_mqttIp = lv_textarea_create(ui_Ip);
 lv_obj_set_width( ui_mqttIp, lv_pct(100));
 lv_obj_set_height( ui_mqttIp, LV_SIZE_CONTENT);   /// 70
 lv_obj_set_align( ui_mqttIp, LV_ALIGN_BOTTOM_MID );
-if ("0123456789."=="") lv_textarea_set_accepted_chars(ui_mqttIp, NULL);
-else lv_textarea_set_accepted_chars(ui_mqttIp, "0123456789.");
-lv_textarea_set_max_length(ui_mqttIp,10);
-lv_textarea_set_placeholder_text(ui_mqttIp,"0.0.0.0");
+lv_textarea_set_max_length(ui_mqttIp,20);
+lv_textarea_set_placeholder_text(ui_mqttIp,"0.0.0.0 or url");
 lv_textarea_set_one_line(ui_mqttIp,true);
 
 
