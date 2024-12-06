@@ -23,9 +23,9 @@ public:
 
     void loadDataInMain(lv_event_t *e);
 
-    void handleConnections(bool cloudIsConnected, bool networkIsConnected);
+    void changeConnectionIcons(bool cloudIsConnected, bool networkIsConnected);
 
-    void goTo(bool useMutex);
+    void goTo(bool lockScreenState);
 };
 
 #endif

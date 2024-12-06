@@ -20,7 +20,7 @@ public:
 
     void lockSystem(lv_event_t *e);
 
-    void goTo(bool useMutex = false);
+    void goTo(bool lockScreenState = false);
 };
 
 #endif

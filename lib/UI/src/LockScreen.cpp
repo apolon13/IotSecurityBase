@@ -7,11 +7,11 @@ void LockScreen::lockSystem(lv_event_t *e) {
     triggerEvent((int) LockScreenEvent::EventOnLock);
 }
 
-void LockScreen::goTo(bool useMutex) {
+void LockScreen::goTo(bool lockScreenState) {
     auto cb = []() {
         lv_disp_load_scr(ui_lockScreen);
     };
-    if (useMutex) {
+    if (lockScreenState) {
         mutexWrap(cb);
     } else {
         cb();

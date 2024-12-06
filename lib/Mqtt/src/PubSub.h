@@ -15,7 +15,7 @@ typedef struct {
 
 class PubSub {
 private:
-    PubSubClient c;
+    PubSubClient &pubSubClient;
     std::map<int, Topic> &topics;
 public:
     enum Topics {
@@ -27,8 +27,7 @@ public:
         PSRAMTelemetry,
         WiFiTelemetry,
     };
-    explicit PubSub(std::map<int, Topic> &topics, Network &n);
-    PubSubClient client();
+    explicit PubSub(std::map<int, Topic> &topics, PubSubClient &cl);
     void connect(MqttCredentials cred);
     bool isConnected();
     void listen();

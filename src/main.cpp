@@ -9,6 +9,7 @@
 #include "FlashProjectPreferences.h"
 #include "PreferencesFactory.h"
 #include "PubSub.h"
+#include <Ticker.h>
 
 #define SETTINGS_FILENAME "/project.txt"
 
@@ -16,11 +17,11 @@ Screens *screens;
 
 typedef struct {
     UiControl &uiControl;
-} UiParameters;
+} UiProxy;
 
 typedef struct {
     QueueTask &queue;
-} QueueParameters;
+} QueueProxy;
 
 typedef struct {
     ProjectPreferences &preferences;
@@ -28,72 +29,87 @@ typedef struct {
     Security &security;
     PubSub &pubSub;
     Network &network;
-} MQTTParameters;
+} MQTTProxy;
 
-long timeWithoutNetworkConnection;
-long lastAttemptNetworkConnection;
-long lastTelemetrySendTime;
+void sendTelemetry(Telemetry *t) {
+    t->send();
+}
+
 
 void loopMqtt(void *data) {
-    auto parameters = (MQTTParameters *) data;
-    auto connectionTimeout = stoi(parameters->preferences.getConnectionTimeout()) * 1000;
-    auto maxConnectionAttemptsBeforeRestart = stoi(parameters->preferences.getConnectionAttemptsBeforeRestart());
-    Telemetry telemetry(parameters->pubSub);
-    while (true) {
-        long now = millis();
+    unsigned long timeWithoutNetworkConnection;
+    unsigned long lastAttemptNetworkConnection;
+    int networkConnectionAttempts = 0;
+    int cloudConnectionAttempts = 0;
+    auto proxy = (MQTTProxy *) data;
+    auto connectionTimeout = stoi(proxy->preferences.getConnectionTimeout()) * 1000;
+    auto maxConnectionAttemptsBeforeRestart = stoi(proxy->preferences.getConnectionAttemptsBeforeRestart());
 
-        if (!parameters->network.isConnected() && !timeWithoutNetworkConnection) {
+    while (true) {
+        unsigned long now = millis();
+        if (networkConnectionAttempts >= maxConnectionAttemptsBeforeRestart || cloudConnectionAttempts >= maxConnectionAttemptsBeforeRestart) {
+            auto currentModeIsWifi = proxy->preferences.networkModeIsWifi();
+            if (!currentModeIsWifi) {
+                proxy->preferences.setNetworkMode(ProjectPreferences::WifiNetworkMode);
+            }
+            if (currentModeIsWifi) {
+                proxy->preferences.setNetworkMode(ProjectPreferences::SimNetworkMode);
+            }
+            proxy->security.runCommand(SecurityCommand::Restart);
+        }
+
+        if (!proxy->network.isConnected() && !timeWithoutNetworkConnection) {
             timeWithoutNetworkConnection = millis();
         }
 
         if (timeWithoutNetworkConnection && (now - timeWithoutNetworkConnection) > connectionTimeout &&
             (now - lastAttemptNetworkConnection) > connectionTimeout) {
-            parameters->network.connect();
+            proxy->network.connect();
+            networkConnectionAttempts++;
             lastAttemptNetworkConnection = now;
         }
 
-        if (parameters->network.isConnected() && !parameters->pubSub.isConnected()) {
-            parameters->pubSub.connect(MqttCredentials{
-                    parameters->preferences.get(ProjectPreferences::MqttEntityId, ""),
-                    parameters->preferences.get(ProjectPreferences::MqttPassword, ""),
-                    parameters->preferences.get(ProjectPreferences::MqttUsername, ""),
-                    parameters->preferences.get(ProjectPreferences::MqttIp, ""),
-                    parameters->preferences.get(ProjectPreferences::MqttPort, "1883"),
+        if (proxy->network.isConnected() && !proxy->pubSub.isConnected()) {
+            cloudConnectionAttempts++;
+            proxy->pubSub.connect(MqttCredentials{
+                    proxy->preferences.get(ProjectPreferences::MqttEntityId, ""),
+                    proxy->preferences.get(ProjectPreferences::MqttPassword, ""),
+                    proxy->preferences.get(ProjectPreferences::MqttUsername, ""),
+                    proxy->preferences.get(ProjectPreferences::MqttIp, ""),
+                    proxy->preferences.get(ProjectPreferences::MqttPort, "1883"),
             });
         }
 
-        if (parameters->network.isConnected()) {
+        if (proxy->network.isConnected()) {
             timeWithoutNetworkConnection = 0;
+            networkConnectionAttempts = 0;
         }
 
-        if (parameters->pubSub.isConnected()) {
-            if ((now - lastTelemetrySendTime) >= 120000) {
-                telemetry.send();
-                lastTelemetrySendTime = now;
-            }
-            parameters->pubSub.listen();
+        if (proxy->pubSub.isConnected()) {
+            cloudConnectionAttempts = 0;
+            proxy->pubSub.listen();
         }
 
-        screens->main().handleConnections(
-                parameters->pubSub.isConnected(),
-                parameters->network.isConnected()
+        screens->main().changeConnectionIcons(
+                proxy->pubSub.isConnected(),
+                proxy->network.isConnected()
         );
         vTaskDelay(1000);
     }
 }
 
 void loopDisplay(void *data) {
-    auto parameters = (UiParameters *) data;
+    auto proxy = (UiProxy *) data;
     while (true) {
-        parameters->uiControl.render();
+        proxy->uiControl.render();
         vTaskDelay(5);
     }
 }
 
 void loopQueue(void *data) {
-    auto parameters = (QueueParameters *) data;
+    auto proxy = (QueueProxy *) data;
     while (true) {
-        parameters->queue.run();
+        proxy->queue.run();
         vTaskDelay(5);
     }
 }
@@ -104,12 +120,13 @@ void setup() {
     Serial1.begin(115200, SERIAL_8N1, GPIO_NUM_18, GPIO_NUM_17);
     Serial.begin(115200);
 
-    FileProjectPreferences preferences(SETTINGS_FILENAME);
-    NetworkFactory factory(preferences, Serial1);
+    PreferencesFactory preferencesFactory(SETTINGS_FILENAME);
+    auto preferences = preferencesFactory.createPreferences();
+    NetworkFactory factory(*preferences, Serial1);
     auto network = factory.createNetwork();
     TaskScheduler taskScheduler;
-    IoTRadioDetect detect(preferences, taskScheduler);
-    IotRadioControl control(preferences, taskScheduler);
+    IoTRadioDetect detect(*preferences, taskScheduler);
+    IotRadioControl control(*preferences, taskScheduler);
 
     std::map<int, Topic> topics{
             std::make_pair(PubSub::Command, Topic("/security/command")),
@@ -120,15 +137,20 @@ void setup() {
             std::make_pair(PubSub::PSRAMTelemetry, Topic("/security/telemetry/free-psram")),
             std::make_pair(PubSub::WiFiTelemetry, Topic("/security/telemetry/wifi-channel")),
     };
-    PubSub ps(topics, *network);
-    Security security(detect, control, preferences, ps);
+    PubSubClient psClient(network->getClient());
+    PubSub ps(topics, psClient);
+    Security security(detect, control, *preferences, ps);
     ps.onRecv(PubSub::Command,[&security](const std::string &payload) {
         security.handleControl(payload, true);
     });
 
+    Telemetry telemetry(ps);
+    Ticker periodicTicker;
+    periodicTicker.attach_ms(120000, sendTelemetry, &telemetry);
+
     QueueTask queue;
-    screens = new Screens(preferences, detect, queue, control);
-    UiControl uiControl(stoi(preferences.getSecurityTimeout()) * 1000);
+    screens = new Screens(*preferences, detect, queue, control);
+    UiControl uiControl(stoi(preferences->getSecurityTimeout()) * 1000);
     uiControl.init();
     auto securityListenCb = [&security](int eventId) {
         security.listen();
@@ -172,35 +194,33 @@ void setup() {
         screens->lock().goTo(false);
     });
 
-    MQTTParameters mqttParameters = {preferences, uiControl, security, ps, *network};
-    UiParameters uiParameters = {uiControl};
-    QueueParameters queueParameters = {queue};
+    MQTTProxy MQTTProxy = {*preferences, uiControl, security, ps, *network};
+    UiProxy UiProxy = {uiControl};
+    QueueProxy QueueProxy = {queue};
     taskScheduler.addTask({
-                                  "loopDisplay",
-                                  loopDisplay,
-                                  TaskPriority::Low,
-                                  5000,
-                                  (void *) &uiParameters
-                          });
+      "loopDisplay",
+      loopDisplay,
+      TaskPriority::Low,
+      5000,
+      (void *) &UiProxy
+    });
     taskScheduler.addTask({
-                                  "loopMqtt",
-                                  loopMqtt,
-                                  TaskPriority::Low,
-                                  5000,
-                                  (void *) &mqttParameters
-                          });
+      "loopMqtt",
+      loopMqtt,
+      TaskPriority::Low,
+      5000,
+      (void *) &MQTTProxy
+    });
     taskScheduler.addTask({
-                                  "loopQueue",
-                                  loopQueue,
-                                  TaskPriority::Low,
-                                  3000,
-                                  (void *) &queueParameters
-                          });
+      "loopQueue",
+      loopQueue,
+      TaskPriority::Low,
+      3000,
+      (void *) &QueueProxy
+    });
 
     taskScheduler.schedule();
     while (true);
 }
 
-void loop() {
-
-}
+void loop() {}

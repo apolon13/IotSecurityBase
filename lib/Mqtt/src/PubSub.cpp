@@ -1,9 +1,8 @@
 #include "PubSub.h"
 
 
-PubSub::PubSub(std::map<int, Topic> &t, Network &n) : topics(t) {
-    c = PubSubClient(n.getClient());
-    c.setCallback([this](char *topic, uint8_t *payload, unsigned int length) {
+PubSub::PubSub(std::map<int, Topic> &t, PubSubClient &cl) : topics(t), pubSubClient(cl) {
+    pubSubClient.setCallback([this](char *topic, uint8_t *payload, unsigned int length) {
         std::string data;
         for (int i = 0; i < length; i++) {
             data.push_back((char) payload[i]);
@@ -16,16 +15,12 @@ PubSub::PubSub(std::map<int, Topic> &t, Network &n) : topics(t) {
     });
 
     for (auto [k, v]: topics) {
-        c.subscribe(v.name().c_str());
+        pubSubClient.subscribe(v.name().c_str());
     }
 }
 
-PubSubClient PubSub::client() {
-    return c;
-}
-
 void PubSub::publish(Topics topic, std::string data) {
-   c.publish(topics.find(topic)->second.name().c_str(), data.c_str());
+   pubSubClient.publish(topics.find(topic)->second.name().c_str(), data.c_str());
 }
 
 void PubSub::onRecv(Topics topic, const std::function<void(const std::string &)> &onRecv) {
@@ -34,17 +29,17 @@ void PubSub::onRecv(Topics topic, const std::function<void(const std::string &)>
 
 void PubSub::connect(MqttCredentials cred) {
     if (!cred.server.empty() && !cred.port.empty()) {
-        c.disconnect();
-        c.setServer(cred.server.c_str(), stoi(cred.port));
-        c.connect(cred.id.c_str(), cred.user.c_str(), cred.pass.c_str());
+        pubSubClient.disconnect();
+        pubSubClient.setServer(cred.server.c_str(), stoi(cred.port));
+        pubSubClient.connect(cred.id.c_str(), cred.user.c_str(), cred.pass.c_str());
     }
 }
 
 bool PubSub::isConnected() {
-    return c.connected();
+    return pubSubClient.connected();
 }
 
 void PubSub::listen() {
-    c.loop();
+    pubSubClient.loop();
 }
 

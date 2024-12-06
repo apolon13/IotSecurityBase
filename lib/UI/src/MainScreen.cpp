@@ -61,7 +61,7 @@ void MainScreen::loadDataInMain(lv_event_t *e) {
     }
 }
 
-void MainScreen::handleConnections(bool cloudIsConnected, bool networkIsConnected) {
+void MainScreen::changeConnectionIcons(bool cloudIsConnected, bool networkIsConnected) {
     if (!cloudIsConnected && UiMutex::take()) {
         failedMqttConnection();
         UiMutex::give();
@@ -79,12 +79,12 @@ void MainScreen::handleConnections(bool cloudIsConnected, bool networkIsConnecte
     }
 }
 
-void MainScreen::goTo(bool useMutex) {
+void MainScreen::goTo(bool lockScreenState) {
     auto cb = []() {
         lv_disp_load_scr(ui_home);
     };
 
-    if (useMutex) {
+    if (lockScreenState) {
         mutexWrap(cb);
     } else {
         cb();
