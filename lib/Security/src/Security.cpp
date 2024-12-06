@@ -12,19 +12,19 @@ uint8_t receiverAddress[] = {0x08, 0xD1, 0xF9, 0xEB, 0x02, 0x58};
 using namespace std;
 
 void Security::guard() {
-    IoTRadio::sendMessageToPeer({true, false});
+    IoTRadio::sendMessageToPeer({true, false, true});
 }
 
 void Security::disarm() {
-    IoTRadio::sendMessageToPeer({true, false});
+    IoTRadio::sendMessageToPeer({true, false, true});
 }
 
 void Security::alarm() {
-    IoTRadio::sendMessageToPeer({true, !muteMode});
+    IoTRadio::sendMessageToPeer({true, !muteMode, false});
 }
 
 void Security::mute() {
-    IoTRadio::sendMessageToPeer({true, false});
+    IoTRadio::sendMessageToPeer({true, false, false});
 }
 
 void Security::listenRadioCommands() {

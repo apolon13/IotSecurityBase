@@ -30,6 +30,7 @@ struct Sensor {
 typedef struct {
     bool activateScan;
     bool alarm;
+    bool ping;
 } PeerMessage;
 
 class IoTRadio {
