@@ -6,13 +6,17 @@
 #include "Network.h"
 #include "ProjectPreferences.h"
 
+typedef struct {
+    std::string apn;
+} SimCredentials;
+
 class SimNetwork : public Network {
 protected:
-    ProjectPreferences &projectPreferences;
+    SimCredentials credentials;
     TinyGsmSim7670 *modem;
     TinyGsmSim7670::GsmClientSim7670 client;
 public:
-    SimNetwork(ProjectPreferences &preferences, Stream &stream);
+    SimNetwork(SimCredentials credentials, Stream &stream);
 
     bool isConnected() override;
 

@@ -84,7 +84,7 @@ void Security::handleControl(const string &cmd, bool needTriggerEvent) {
 
     if (previousCmd != cmd) {
         previousCmd = cmd;
-        receiveCmdTopic.publish(cmd);
+        pubSub.publish(PubSub::Receive, cmd);
     }
 
     if (cmd == RESTART) {
@@ -99,37 +99,27 @@ void Security::handleDetect(const string &signal) {
         if ((now - lastAlarmEventTime) > 5000) {
             string msg = "Сработал датчик - ";
             msg.append(detectSensor->name);
-            alarmTopic.publish(msg);
-            receiveCmdTopic.publish(ALARM);
+            pubSub.publish(PubSub::Alarm, msg);
+            pubSub.publish(PubSub::Receive, ALARM);
             lastAlarmEventTime = now;
         }
         alarm();
     }
 }
 
-Security::Security(IoTRadioDetect &d, IotRadioControl &c, ProjectPreferences &p, Topic &cmd, Topic &rcv, Topic &al)
+Security::Security(IoTRadioDetect &d, IotRadioControl &c, ProjectPreferences &p, PubSub &ps)
         : ioTRadioDetect(d),
           iotRadioControl(c),
           projectPreferences(p),
-          securityCmdTopic(cmd),
-          receiveCmdTopic(rcv),
-          alarmTopic(al) {
+          pubSub(ps) {
     selfSecurity = this;
     projectPreferences.lockSystem();
     IoTRadio::addReceiver(receiverAddress);
     listen();
 }
 
-void Security::listenMqttCommands() {
-    securityCmdTopic.refreshHandlers();
-    securityCmdTopic.addHandler([this](const string &payload) {
-        handleControl(payload, true);
-    });
-}
-
 void Security::listen() {
     listenRadioCommands();
-    listenMqttCommands();
 }
 
 void Security::lockSystem(bool silent) {
@@ -138,50 +128,6 @@ void Security::lockSystem(bool silent) {
 
 void Security::unlockSystem(bool silent) {
     handleControl(DISARM, !silent);
-}
-
-void Security::listenSmsCommands(TinyGsmSim7670 &modem) {
-    string pin = projectPreferences.get(ProjectPreferences::PreferencesKey::SystemPin, "");
-    string guard = GUARD  + (" " + pin);
-    string disarm = DISARM + (" " + pin);
-    string alarm = ALARM + (" " + pin);
-    string restart = RESTART + (" " + pin);
-
-    auto response = modem.readSmsByIndex(
-        lastSmsIndex,
-        guard.c_str(),
-        disarm.c_str(),
-        restart.c_str(),
-        alarm.c_str()
-    );
-
-    if (response == 0) {
-        lastSmsIndex = lastSmsIndex > 1 ? lastSmsIndex - 1 : 1;
-    }
-
-    if (response == -1) {
-        lastSmsIndex++;
-    }
-
-    if (response > 0) {
-        auto phone = projectPreferences.get(ProjectPreferences::Phone, "");
-        modem.sendSMS(phone.c_str(), "ok");
-    }
-
-    switch (response) {
-        case 1:
-            handleControl(GUARD);
-            break;
-        case 2:
-            handleControl(DISARM);
-            break;
-        case 3:
-            handleControl(RESTART);
-            break;
-        case 4:
-            handleControl(ALARM);
-            break;
-    }
 }
 
 void Security::restart() {

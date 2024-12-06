@@ -1,9 +1,7 @@
 #include "SimNetwork.h"
 #include "WiFi.h"
-//#include "StreamDebugger.h"
-//StreamDebugger debug(Serial1, Serial);
 
-SimNetwork::SimNetwork(ProjectPreferences &preferences, Stream &stream) : projectPreferences(preferences) {
+SimNetwork::SimNetwork(SimCredentials c, Stream &stream) : credentials(c) {
     modem = new TinyGsmSim7670(stream);
     client.init(modem);
 }
@@ -13,10 +11,9 @@ bool SimNetwork::isConnected() {
 }
 
 void SimNetwork::connect() {
-    auto apn = projectPreferences.get(ProjectPreferences::APN, "");
     modem->setNetworkMode(38); // LTE only
     modem->setSmsTextMode();
-    modem->gprsConnect(apn.c_str(), "", "");
+    modem->gprsConnect(credentials.apn.c_str(), "", "");
 }
 
 Client &SimNetwork::getClient() {

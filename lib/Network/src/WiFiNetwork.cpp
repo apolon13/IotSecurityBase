@@ -1,6 +1,6 @@
 #include "WiFiNetwork.h"
 
-WiFiNetwork::WiFiNetwork(ProjectPreferences &preferences) : projectPreferences(preferences) {
+WiFiNetwork::WiFiNetwork(WiFiCredentials c) : credentials(c) {
 
 }
 
@@ -9,9 +9,7 @@ bool WiFiNetwork::isConnected() {
 }
 
 void WiFiNetwork::connect() {
-    auto ssid = projectPreferences.get(ProjectPreferences::WifiSsid, "");
-    auto pass = projectPreferences.get(ProjectPreferences::WifiPassword, "");
-    WiFi.begin(ssid.c_str(), pass.c_str());
+    WiFi.begin(credentials.ssid.c_str(), credentials.pass.c_str());
 }
 
 Client &WiFiNetwork::getClient() {

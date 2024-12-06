@@ -1,24 +1,31 @@
 #include "ProjectPreferences.h"
 #include "ProjectPreferencesMutex.h"
-
-#include <utility>
+#include <map>
 
 using namespace std;
 
-unordered_map<int, string> ProjectPreferences::cache = {};
+std::map<int, string> ProjectPreferences::cache = {};
 
 void ProjectPreferences::set(ProjectPreferences::PreferencesKey property, const string &value) {
-    writePreferencesProperty(convertProperty(property), value);
-    cache.insert_or_assign(property, value);
+    if (ProjectPreferencesMutex::take()) {
+        writePreferencesProperty(convertProperty(property), value);
+        cache.insert_or_assign(property, value);
+        ProjectPreferencesMutex::give();
+    }
 }
 
 string ProjectPreferences::get(ProjectPreferences::PreferencesKey property, string defaultValue) {
-    try {
-        return cache.at(property);
-    } catch (out_of_range &e) {
-        auto value = readPreferencesProperty(convertProperty(property), std::move(defaultValue)).value;
-        cache.insert_or_assign(property, value);
-        return value;
+    if (ProjectPreferencesMutex::take()) {
+        try {
+            auto val = cache.at(property);
+            ProjectPreferencesMutex::give();
+            return val;
+        } catch (out_of_range &e) {
+            auto value = readPreferencesProperty(convertProperty(property), std::move(defaultValue)).value;
+            cache.insert(std::make_pair(property, value));
+            ProjectPreferencesMutex::give();
+            return value;
+        }
     }
 }
 

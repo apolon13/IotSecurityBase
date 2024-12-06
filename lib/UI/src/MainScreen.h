@@ -1,6 +1,5 @@
 #include "ProjectPreferences.h"
 #include "IoTRadioDetect.h"
-#include "Dispatcher.h"
 #include "ui.h"
 #include "Screen.h"
 

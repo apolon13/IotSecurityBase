@@ -1,17 +1,27 @@
 #include "NetworkFactory.h"
 
 std::unique_ptr<Network> NetworkFactory::createNetwork() {
+    std::unique_ptr<Network> network;
+    WiFi.persistent(false);
+    WiFi.setSleep(false);
     if (projectPreferences.networkModeIsSim()) {
-        return createSimNetwork();
+        network = createSimNetwork();
     } else {
-        return createWifiNetwork();
+        network = createWifiNetwork();
     }
+    return network;
 }
 
 std::unique_ptr<SimNetwork> NetworkFactory::createSimNetwork() {
-    return std::make_unique<SimNetwork>(projectPreferences, stream);
+    WiFi.mode(WIFI_MODE_STA);
+    return std::make_unique<SimNetwork>(SimCredentials{projectPreferences.get(ProjectPreferences::APN, "")}, stream);
 }
 
 std::unique_ptr<WiFiNetwork> NetworkFactory::createWifiNetwork() {
-    return std::make_unique<WiFiNetwork>(projectPreferences);
+    WiFi.mode(WIFI_MODE_APSTA);
+    WiFi.setScanMethod(WIFI_FAST_SCAN);
+    return std::make_unique<WiFiNetwork>(WiFiCredentials{
+            projectPreferences.get(ProjectPreferences::WifiSsid, ""),
+            projectPreferences.get(ProjectPreferences::WifiPassword, "")
+    });
 }
