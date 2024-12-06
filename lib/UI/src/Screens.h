@@ -2,7 +2,6 @@
 #include "UiMutex.h"
 #include "IoTRadioDetect.h"
 #include "TaskScheduler.h"
-#include "Dispatcher.h"
 #include "QueueTask.h"
 #include "IotRadioControl.h"
 #include "MainScreen.h"
@@ -17,7 +16,7 @@
 #ifndef DISPLAY_UIEVENTHANDLER_H
 #define DISPLAY_UIEVENTHANDLER_H
 
-class ScreenFactory {
+class Screens {
 private:
     MainScreen *mainScreen;
     DetectSensorsScreen *detectSensorsScreen;
@@ -28,23 +27,23 @@ private:
     EditDetectSensorScreen *editDetectSensorScreen;
     LockScreen *lockScreen;
 public:
-    ScreenFactory(ProjectPreferences &p, IoTRadioDetect &i, QueueTask &q, IotRadioControl &ct);
+    Screens(ProjectPreferences &p, IoTRadioDetect &i, QueueTask &q, IotRadioControl &ct);
 
-    MainScreen &getMainScreen();
+    MainScreen &main();
 
-    DetectSensorsScreen &getDetectSensorsScreen();
+    DetectSensorsScreen &detectSensors();
 
-    ControlSensorsScreen &getControlSensorsScreen();
+    ControlSensorsScreen &controlSensors();
 
-    MqttConfigScreen &getMqttConfigScreen();
+    MqttConfigScreen &mqttConfig();
 
-    WifiSettingsScreen &getWifiSettingsScreen();
+    WifiSettingsScreen &wifiSettings();
 
-    GeneralSettingsScreen &getGeneralSettingsScreen();
+    GeneralSettingsScreen &generalSettings();
 
-    EditDetectSensorScreen &getEditDetectSensorScreen();
+    EditDetectSensorScreen &editDetectSensor();
 
-    LockScreen &getLockScreen();
+    LockScreen &lock();
 };
 
 #endif

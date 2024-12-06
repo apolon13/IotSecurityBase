@@ -1,6 +1,6 @@
-#include "ScreenFactory.h"
+#include "Screens.h"
 
-ScreenFactory::ScreenFactory(ProjectPreferences &p, IoTRadioDetect &i, QueueTask &q, IotRadioControl &ct) {
+Screens::Screens(ProjectPreferences &p, IoTRadioDetect &i, QueueTask &q, IotRadioControl &ct) {
     mainScreen = new MainScreen(p, i);
     detectSensorsScreen = new DetectSensorsScreen(i, ct, q, p);
     controlSensorsScreen = new ControlSensorsScreen(i, ct, q);
@@ -11,34 +11,34 @@ ScreenFactory::ScreenFactory(ProjectPreferences &p, IoTRadioDetect &i, QueueTask
     lockScreen = new LockScreen(p);
 }
 
-MainScreen &ScreenFactory::getMainScreen() {
+MainScreen &Screens::main() {
     return *mainScreen;
 }
 
-DetectSensorsScreen &ScreenFactory::getDetectSensorsScreen() {
+DetectSensorsScreen &Screens::detectSensors() {
     return *detectSensorsScreen;
 }
 
-ControlSensorsScreen &ScreenFactory::getControlSensorsScreen() {
+ControlSensorsScreen &Screens::controlSensors() {
     return *controlSensorsScreen;
 }
 
-MqttConfigScreen &ScreenFactory::getMqttConfigScreen() {
+MqttConfigScreen &Screens::mqttConfig() {
     return *mqttConfigScreen;
 }
 
-WifiSettingsScreen &ScreenFactory::getWifiSettingsScreen() {
+WifiSettingsScreen &Screens::wifiSettings() {
     return *wifiSettingsScreen;
 }
 
-GeneralSettingsScreen &ScreenFactory::getGeneralSettingsScreen() {
+GeneralSettingsScreen &Screens::generalSettings() {
     return *generalSettingsScreen;
 }
 
-EditDetectSensorScreen &ScreenFactory::getEditDetectSensorScreen() {
+EditDetectSensorScreen &Screens::editDetectSensor() {
     return *editDetectSensorScreen;
 }
 
-LockScreen &ScreenFactory::getLockScreen() {
+LockScreen &Screens::lock() {
     return *lockScreen;
 }

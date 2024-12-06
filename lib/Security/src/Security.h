@@ -5,6 +5,7 @@
 #include "Topic.h"
 #include "EventableObject.h"
 #include "TinyGsmClient7670.h"
+#include "PubSub.h"
 
 #ifndef DISPLAY_SECURITY_H
 #define DISPLAY_SECURITY_H
@@ -31,21 +32,14 @@ protected:
     IoTRadioDetect &ioTRadioDetect;
     IotRadioControl &iotRadioControl;
     ProjectPreferences &projectPreferences;
-    Topic &securityCmdTopic;
-    Topic &receiveCmdTopic;
-    Topic &alarmTopic;
+    PubSub pubSub;
     long lastAlarmEventTime = 0;
     std::string previousCmd;
-    int lastSmsIndex = 1;
     bool muteMode = false;
 
     void listenRadioCommands();
 
-    void listenMqttCommands();
-
     void handleDetect(const std::string &signal);
-
-    void handleControl(const std::string &cmd, bool needTriggerEvent = true);
 
     void guard();
 
@@ -58,17 +52,18 @@ protected:
     void restart();
 
 public:
-    explicit Security(IoTRadioDetect &d, IotRadioControl &c, ProjectPreferences &p, Topic &cmd, Topic &rcv, Topic &al);
+    explicit Security(IoTRadioDetect &d, IotRadioControl &c, ProjectPreferences &p, PubSub &ps);
 
     void listen();
-
-    void listenSmsCommands(TinyGsmSim7670 &modem);
 
     void lockSystem(bool silent);
 
     void unlockSystem(bool silent);
 
     void runCommand(SecurityCommand command);
+
+    void handleControl(const std::string &cmd, bool needTriggerEvent = true);
+
 };
 
 #endif

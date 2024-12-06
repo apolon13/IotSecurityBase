@@ -1,3 +1,4 @@
+#include <map>
 #include "SD.h"
 #include "Logger.h"
 
@@ -13,52 +14,57 @@ struct Property {
     bool exist;
 };
 
+class FailedInitialization : public std::exception {
+public:
+    explicit FailedInitialization() = default;
+};
+
 class ProjectPreferences {
 protected:
-    static std::unordered_map<int, std::string> cache;
+    static std::map<int, std::string> cache;
 
     std::string convertProperty(int key) {
         switch (key) {
             case MqttIp:
-                return "MqttIp";
+                return "MI";
             case MqttPort:
-                return "MqttPort";
+                return "MPRT";
             case MqttUsername:
-                return "MqttUsername";
+                return "MU";
             case MqttPassword:
-                return "MqttPassword";
+                return "MPASS";
             case MqttEntityId:
-                return "MqttEntityId";
+                return "MEI";
             case WifiPassword:
-                return "WifiPassword";
+                return "WP";
             case WifiSsid:
-                return "WifiSsid";
+                return "WS";
             case IotSensor:
-                return "IotSensor";
+                return "IS";
             case IotControl:
-                return "IotControl";
+                return "IC";
             case SystemPin:
-                return "SystemPin";
+                return "SP";
             case SystemState:
-                return "SystemState";
+                return "SS";
             case EditableDetectSensor:
-                return "EditableDetectSensor";
+                return "EDS";
             case LastError:
-                return "LastError";
+                return "LE";
             case SecurityTimeout:
-                return "SecurityTimeout";
+                return "ST";
             case ConnectionTimeout:
-                return "ConnectionTimeout";
+                return "CT";
             case ConnectionAttemptsBeforeRestart:
-                return "ConnectionAttemptsBeforeRestart";
+                return "CABR";
             case APN:
                 return "APN";
             case WifiNetworkMode:
-                return "WifiNetworkMode";
+                return "WNM";
             case SimNetworkMode:
-                return "SimNetworkMode";
+                return "SNM";
             case Phone:
-                return "Phone";
+                return "P";
             default:
                 throw std::invalid_argument("Invalid property");
         }

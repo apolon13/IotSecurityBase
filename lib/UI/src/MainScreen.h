@@ -1,6 +1,5 @@
 #include "ProjectPreferences.h"
 #include "IoTRadioDetect.h"
-#include "Dispatcher.h"
 #include "ui.h"
 #include "Screen.h"
 
@@ -24,9 +23,9 @@ public:
 
     void loadDataInMain(lv_event_t *e);
 
-    void handleConnections(bool cloudIsConnected, bool networkIsConnected);
+    void changeConnectionIcons(bool cloudIsConnected, bool networkIsConnected);
 
-    void goTo(bool useMutex);
+    void goTo(bool lockScreenState);
 };
 
 #endif
