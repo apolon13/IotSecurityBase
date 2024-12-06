@@ -10,7 +10,10 @@ bool WiFiNetwork::isConnected() {
 
 void WiFiNetwork::connect(void * data) {
     auto creds = (WiFiCredentials *) data;
-    WiFi.begin(creds->ssid.c_str(), creds->pass.c_str());
+    if (!isConnected() || *creds != currentCreds) {
+        currentCreds = *creds;
+        WiFi.begin(creds->ssid.c_str(), creds->pass.c_str());
+    }
 }
 
 Client &WiFiNetwork::getClient() {

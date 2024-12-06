@@ -12,9 +12,12 @@ bool SimNetwork::isConnected() {
 
 void SimNetwork::connect(void * data) {
     auto creds = (SimCredentials *) data;
-    modem->setNetworkMode(38); // LTE only
-    modem->setSmsTextMode();
-    modem->gprsConnect(creds->apn.c_str(), "", "");
+    if (!isConnected() || *creds != currentCreds) {
+        currentCreds = *creds;
+        modem->setNetworkMode(38); // LTE only
+        modem->setSmsTextMode();
+        modem->gprsConnect(creds->apn.c_str(), "", "");
+    }
 }
 
 Client &SimNetwork::getClient() {
