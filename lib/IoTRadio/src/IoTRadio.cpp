@@ -16,6 +16,7 @@ PeerMessage IoTRadio::lastMessage = {true};
 
 void ping(void *) {
     while (true) {
+        IoTRadio::lastMessage.ping = false;
         IoTRadio::sendMessageToPeer(IoTRadio::lastMessage);
         vTaskDelay(1000);
     }
@@ -90,12 +91,12 @@ IoTRadio::IoTRadio(ProjectPreferences &p, TaskScheduler &sc) : projectPreference
 }
 
 void IoTRadio::startScan() {
-    PeerMessage msg = {true, false};
+    PeerMessage msg = {true, false, false};
     esp_now_send(Peer.peer_addr, (uint8_t *) &msg, sizeof(msg));
 }
 
 void IoTRadio::stopScan() {
-    PeerMessage msg = {false, false};
+    PeerMessage msg = {false, false, false};
     esp_now_send(Peer.peer_addr, (uint8_t *) &msg, sizeof(msg));
 }
 

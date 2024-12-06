@@ -35,7 +35,6 @@ void sendTelemetry(Telemetry *t) {
     t->send();
 }
 
-
 void loopMqtt(void *data) {
     unsigned long timeWithoutNetworkConnection;
     unsigned long lastAttemptNetworkConnection;
