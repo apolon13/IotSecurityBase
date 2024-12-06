@@ -61,15 +61,26 @@ void loopMqtt(void *data) {
             timeWithoutNetworkConnection = millis();
         }
 
+        switch (proxy->network.getType()) {
+            case NetworkType::Sim: {
+                SimCredentials simCreds {
+                        proxy->store.get(Store::APN, ""),
+                };
+                proxy->network.connect((void *)&simCreds);
+                break;
+            }
+            case NetworkType::WiFi: {
+                WiFiCredentials wifiCreds {
+                        proxy->store.get(Store::WifiSsid, ""),
+                        proxy->store.get(Store::WifiPassword, ""),
+                };
+                proxy->network.connect((void *)&wifiCreds);
+                break;
+            }
+        }
+
         if (timeWithoutNetworkConnection && (now - timeWithoutNetworkConnection) > connectionTimeout &&
             (now - lastAttemptNetworkConnection) > connectionTimeout) {
-            if (proxy->network.getType() == NetworkType::WiFi) {
-                WiFiCredentials creds {
-                  proxy->store.get(Store::WifiSsid, ""),
-                  proxy->store.get(Store::WifiPassword, ""),
-                };
-                proxy->network.connect((void *)&creds);
-            }
             networkConnectionAttempts++;
             lastAttemptNetworkConnection = now;
         }
