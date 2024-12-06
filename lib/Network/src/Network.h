@@ -13,7 +13,7 @@ class Network {
 public:
     virtual bool isConnected() = 0;
 
-    virtual void connect() = 0;
+    virtual void connect(void *) = 0;
 
     virtual Client &getClient() = 0;
 

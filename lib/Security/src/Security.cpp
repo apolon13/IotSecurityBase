@@ -48,7 +48,7 @@ void Security::handleControl(const string &cmd, bool needTriggerEvent) {
     if (cmd == GUARD) {
         muteMode = false;
         guard();
-        projectPreferences.lockSystem();
+        store.lockSystem();
         eventId = SecurityEvent::EventOnGuard;
     }
 
@@ -56,8 +56,8 @@ void Security::handleControl(const string &cmd, bool needTriggerEvent) {
         muteMode = false;
         disarm();
         eventId = SecurityEvent::EventOnDisarm;
-        if (projectPreferences.systemIsLocked()) {
-            projectPreferences.unlockSystem();
+        if (store.systemIsLocked()) {
+            store.unlockSystem();
         }
     }
 
@@ -95,7 +95,7 @@ void Security::handleControl(const string &cmd, bool needTriggerEvent) {
 void Security::handleDetect(const string &signal) {
     long now = millis();
     auto detectSensor = selfSecurity->ioTRadioDetect.getSensorBySignal(signal);
-    if (projectPreferences.systemIsLocked() && detectSensor->isActive) {
+    if (store.systemIsLocked() && detectSensor->isActive) {
         if ((now - lastAlarmEventTime) > 5000) {
             string msg = "Сработал датчик - ";
             msg.append(detectSensor->name);
@@ -107,13 +107,13 @@ void Security::handleDetect(const string &signal) {
     }
 }
 
-Security::Security(IoTRadioDetect &d, IotRadioControl &c, ProjectPreferences &p, PubSub &ps)
+Security::Security(IoTRadioDetect &d, IotRadioControl &c, Store &s, PubSub &ps)
         : ioTRadioDetect(d),
           iotRadioControl(c),
-          projectPreferences(p),
+          store(s),
           pubSub(ps) {
     selfSecurity = this;
-    projectPreferences.lockSystem();
+    store.lockSystem();
     IoTRadio::addReceiver(receiverAddress);
     listen();
 }

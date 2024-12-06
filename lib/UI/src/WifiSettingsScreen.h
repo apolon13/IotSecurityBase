@@ -1,4 +1,4 @@
-#include "ProjectPreferences.h"
+#include "Store.h"
 #include "ui.h"
 #include "Screen.h"
 
@@ -7,9 +7,9 @@
 
 class WifiSettingsScreen : public Screen {
 private:
-    ProjectPreferences &projectPreferences;
+    Store &store;
 public:
-    WifiSettingsScreen(ProjectPreferences &p) : projectPreferences(p) {};
+    WifiSettingsScreen(Store &p) : store(p) {};
 
     void loadFiWiSettings(lv_event_t *e);
 

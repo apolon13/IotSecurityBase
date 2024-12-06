@@ -1,5 +1,5 @@
 #include "IoTRadioDetect.h"
-#include "ProjectPreferences.h"
+#include "Store.h"
 #include "ui.h"
 #include "Screen.h"
 
@@ -9,9 +9,9 @@
 class EditDetectSensorScreen : public Screen {
 private:
     IoTRadioDetect &ioTRadioDetect;
-    ProjectPreferences &projectPreferences;
+    Store &store;
 public:
-    EditDetectSensorScreen(IoTRadioDetect &i, ProjectPreferences &p) : ioTRadioDetect(i), projectPreferences(p) {};
+    EditDetectSensorScreen(IoTRadioDetect &i, Store &p) : ioTRadioDetect(i), store(p) {};
 
     void loadSensor(lv_event_t *e);
 

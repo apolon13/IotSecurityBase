@@ -1,5 +1,5 @@
 #include "Network.h"
-#include "ProjectPreferences.h"
+#include "Store.h"
 #include "SimNetwork.h"
 #include "WiFiNetwork.h"
 
@@ -7,13 +7,10 @@
 #define DISPLAY_NETWORKFACTORY_H
 
 class NetworkFactory {
-protected:
-    ProjectPreferences &projectPreferences;
-    Stream &stream;
 public:
-    NetworkFactory(ProjectPreferences &p, Stream &s) : projectPreferences(p), stream(s) {};
+    NetworkFactory() = default;
 
-    std::unique_ptr<Network> createNetwork();
+    std::unique_ptr<Network> create(Store &s);
 
     std::unique_ptr<SimNetwork> createSimNetwork();
 

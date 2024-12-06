@@ -2,8 +2,8 @@
 #include "SD.h"
 #include "Logger.h"
 
-#ifndef DISPLAY_PROJECTPREFERENCES_H
-#define DISPLAY_PROJECTPREFERENCES_H
+#ifndef DISPLAY_STORE_H
+#define DISPLAY_STORE_H
 
 #define ON "1"
 #define OFF "0"
@@ -19,7 +19,7 @@ public:
     explicit FailedInitialization() = default;
 };
 
-class ProjectPreferences {
+class Store {
 protected:
     static std::map<int, std::string> cache;
 
@@ -70,12 +70,12 @@ protected:
         }
     }
 
-    virtual Property readPreferencesProperty(const std::string &name, std::string defaultValue) = 0;
+    virtual Property read(const std::string &name, std::string defaultValue) = 0;
 
-    virtual void writePreferencesProperty(const std::string &name, const std::string &value) = 0;
+    virtual void write(const std::string &name, const std::string &value) = 0;
 
 public:
-    enum PreferencesKey {
+    enum Key {
         MqttIp,
         MqttPort,
         MqttUsername,
@@ -98,9 +98,9 @@ public:
         Phone
     };
 
-    std::string get(PreferencesKey key, std::string defaultValue);
+    std::string get(Key key, std::string defaultValue);
 
-    void set(PreferencesKey key, const std::string &value);
+    void set(Key key, const std::string &value);
 
     void lockSystem();
 
@@ -118,7 +118,7 @@ public:
 
     bool networkModeIsSim();
 
-    void setNetworkMode(PreferencesKey mode);
+    void setNetworkMode(Key mode);
 };
 
 #endif

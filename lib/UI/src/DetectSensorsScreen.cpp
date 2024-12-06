@@ -47,7 +47,7 @@ void DetectSensorsScreen::goToEditSensor(lv_event_t *e) {
     lv_obj_t *component = lv_obj_get_parent(panel);
     lv_obj_t *label = ui_comp_get_child(component, UI_COMP_SENSORITEM_SENSORITEMPANEL_SENSORID);
     string text = lv_label_get_text(label);
-    projectPreferences.set(ProjectPreferences::EditableDetectSensor, text);
+    store.set(Store::EditableDetectSensor, text);
     lv_disp_load_scr(ui_edittSensorScreen);
 }
 
@@ -71,11 +71,11 @@ void DetectSensorsScreen::handleReceiveSensor(const uint8_t *incomingData) {
     }
 }
 
-DetectSensorsScreen::DetectSensorsScreen(IoTRadioDetect &d, IotRadioControl &c, QueueTask &q, ProjectPreferences &p)
+DetectSensorsScreen::DetectSensorsScreen(IoTRadioDetect &d, IotRadioControl &c, QueueTask &q, Store &p)
         : ioTRadioDetect(d),
           queueTask(q),
           iotRadioControl(c),
-          projectPreferences(p) {
+          store(p) {
     selfDetectSensorsScreen = this;
 }
 

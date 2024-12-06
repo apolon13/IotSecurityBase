@@ -1,7 +1,7 @@
 #include "SimNetwork.h"
 #include "WiFi.h"
 
-SimNetwork::SimNetwork(SimCredentials c, Stream &stream) : credentials(c) {
+SimNetwork::SimNetwork(Stream &stream) {
     modem = new TinyGsmSim7670(stream);
     client.init(modem);
 }
@@ -10,10 +10,11 @@ bool SimNetwork::isConnected() {
     return modem->isNetworkConnected();
 }
 
-void SimNetwork::connect() {
+void SimNetwork::connect(void * data) {
+    auto creds = (SimCredentials *) data;
     modem->setNetworkMode(38); // LTE only
     modem->setSmsTextMode();
-    modem->gprsConnect(credentials.apn.c_str(), "", "");
+    modem->gprsConnect(creds->apn.c_str(), "", "");
 }
 
 Client &SimNetwork::getClient() {

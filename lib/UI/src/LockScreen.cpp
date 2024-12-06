@@ -19,12 +19,12 @@ void LockScreen::goTo(bool lockScreenState) {
 }
 
 void LockScreen::unlockSystem(lv_event_t *e) {
-    string currentPin = projectPreferences.get(ProjectPreferences::SystemPin, "");
+    string currentPin = store.get(Store::SystemPin, "");
     string userPin = lv_textarea_get_text(ui_pincode);
     bool isOk = false;
 
     if (currentPin.empty() && !userPin.empty()) {
-        projectPreferences.set(ProjectPreferences::SystemPin, userPin);
+        store.set(Store::SystemPin, userPin);
         isOk = true;
     } else if (currentPin == userPin) {
         isOk = true;

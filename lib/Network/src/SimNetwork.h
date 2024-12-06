@@ -4,7 +4,7 @@
 #include "TinyGsmClient7670.h"
 #include "StreamDebugger.h"
 #include "Network.h"
-#include "ProjectPreferences.h"
+#include "Store.h"
 
 typedef struct {
     std::string apn;
@@ -12,15 +12,14 @@ typedef struct {
 
 class SimNetwork : public Network {
 protected:
-    SimCredentials credentials;
     TinyGsmSim7670 *modem;
     TinyGsmSim7670::GsmClientSim7670 client;
 public:
-    SimNetwork(SimCredentials credentials, Stream &stream);
+    explicit SimNetwork(Stream &stream);
 
     bool isConnected() override;
 
-    void connect() override;
+    void connect(void *) override;
 
     Client &getClient() override;
 

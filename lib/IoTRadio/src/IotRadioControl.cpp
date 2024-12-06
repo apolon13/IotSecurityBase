@@ -2,8 +2,8 @@
 
 using namespace std;
 
-ProjectPreferences::PreferencesKey IotRadioControl::getPreferencesConfigKey() {
-    return ProjectPreferences::IotControl;
+Store::Key IotRadioControl::storeKey() {
+    return Store::IotControl;
 }
 
 string IotRadioControl::extractGroup(const string &signal) {

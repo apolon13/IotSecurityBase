@@ -1,6 +1,6 @@
 #include "WiFiNetwork.h"
 
-WiFiNetwork::WiFiNetwork(WiFiCredentials c) : credentials(c) {
+WiFiNetwork::WiFiNetwork() {
 
 }
 
@@ -8,12 +8,13 @@ bool WiFiNetwork::isConnected() {
     return WiFi.isConnected();
 }
 
-void WiFiNetwork::connect() {
-    WiFi.begin(credentials.ssid.c_str(), credentials.pass.c_str());
+void WiFiNetwork::connect(void * data) {
+    auto creds = (WiFiCredentials *) data;
+    WiFi.begin(creds->ssid.c_str(), creds->pass.c_str());
 }
 
 Client &WiFiNetwork::getClient() {
-    return wifiClient;
+    return client;
 }
 
 NetworkType WiFiNetwork::getType() {

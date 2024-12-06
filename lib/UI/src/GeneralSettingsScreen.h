@@ -1,4 +1,4 @@
-#include "ProjectPreferences.h"
+#include "Store.h"
 #include "ui.h"
 #include "Screen.h"
 
@@ -11,9 +11,9 @@ enum class GeneralSettingsScreenEvent {
 
 class GeneralSettingsScreen : public Screen {
 private:
-    ProjectPreferences &projectPreferences;
+    Store &store;
 public:
-    explicit GeneralSettingsScreen(ProjectPreferences &p) : projectPreferences(p) {};
+    explicit GeneralSettingsScreen(Store &p) : store(p) {};
 
     void loadGeneralSettings(lv_event_t *e);
 

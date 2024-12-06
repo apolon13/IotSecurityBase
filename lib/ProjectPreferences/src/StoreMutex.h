@@ -1,8 +1,8 @@
 #include "Arduino.h"
 
-#ifndef DISPLAY_PROJECTPREFERENCESMUTEX_H
-#define DISPLAY_PROJECTPREFERENCESMUTEX_H
-class ProjectPreferencesMutex {
+#ifndef DISPLAY_STOREMUTEX_H
+#define DISPLAY_STOREMUTEX_H
+class StoreMutex {
 protected:
     static SemaphoreHandle_t mutex;
 public:

@@ -1,4 +1,4 @@
-#include "ProjectPreferences.h"
+#include "Store.h"
 #include "ui.h"
 #include "Screen.h"
 
@@ -12,9 +12,9 @@ enum class LockScreenEvent {
 
 class LockScreen : public Screen {
 private:
-    ProjectPreferences &projectPreferences;
+    Store &store;
 public:
-    explicit LockScreen(ProjectPreferences &p) : projectPreferences(p) {};
+    explicit LockScreen(Store &p) : store(p) {};
 
     void unlockSystem(lv_event_t *e);
 

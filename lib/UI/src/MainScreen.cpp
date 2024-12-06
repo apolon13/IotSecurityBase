@@ -26,11 +26,11 @@ void MainScreen::failedMqttConnection() {
 }
 
 void MainScreen::loadDataInMain(lv_event_t *e) {
-    string mqttIp = projectPreferences.get(ProjectPreferences::MqttIp, "ip empty");
-    string mqttPort = projectPreferences.get(ProjectPreferences::MqttPort, "port empty");
-    string mqttUsername = projectPreferences.get(ProjectPreferences::MqttUsername, "username empty");
-    string mqttEntityId = projectPreferences.get(ProjectPreferences::MqttEntityId, "id empty");
-    string wifiSsid = projectPreferences.get(ProjectPreferences::WifiSsid, "");
+    string mqttIp = store.get(Store::MqttIp, "ip empty");
+    string mqttPort = store.get(Store::MqttPort, "port empty");
+    string mqttUsername = store.get(Store::MqttUsername, "username empty");
+    string mqttEntityId = store.get(Store::MqttEntityId, "id empty");
+    string wifiSsid = store.get(Store::WifiSsid, "");
     int countAll = 0;
     int countActive = 0;
     for (auto sensor: ioTRadioDetect.getCurrentSensors()) {
@@ -49,13 +49,13 @@ void MainScreen::loadDataInMain(lv_event_t *e) {
     lv_label_set_text(ui_mqttCredentialsLabel, credentials.c_str());
     lv_label_set_text(ui_sensorsQty, sensorsCount.c_str());
 
-    if (projectPreferences.networkModeIsWifi()) {
+    if (store.networkModeIsWifi()) {
         lv_obj_clear_flag(ui_wifiHome, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(ui_simHome, LV_OBJ_FLAG_HIDDEN);
         lv_label_set_text(ui_wifiSsidLabel, wifiSsid.c_str());
     }
 
-    if (projectPreferences.networkModeIsSim()) {
+    if (store.networkModeIsSim()) {
         lv_obj_clear_flag(ui_simHome, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(ui_wifiHome, LV_OBJ_FLAG_HIDDEN);
     }
