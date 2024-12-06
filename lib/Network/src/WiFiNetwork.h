@@ -1,6 +1,6 @@
 #include "Network.h"
 #include "WiFi.h"
-#include "ProjectPreferences.h"
+#include "Store.h"
 
 #ifndef DISPLAY_WIFINETWORK_H
 #define DISPLAY_WIFINETWORK_H
@@ -12,14 +12,13 @@ typedef struct {
 
 class WiFiNetwork: public Network {
 protected:
-    WiFiCredentials credentials;
-    WiFiClient wifiClient;
+    WiFiClient client;
 public:
-    explicit WiFiNetwork(WiFiCredentials credentials);
+    explicit WiFiNetwork();
 
     bool isConnected() override;
 
-    void connect() override;
+    void connect(void *) override;
 
     Client &getClient() override;
 

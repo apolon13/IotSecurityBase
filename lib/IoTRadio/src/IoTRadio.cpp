@@ -23,7 +23,7 @@ void ping(void *) {
 }
 
 string IoTRadio::getSensorsConfig() {
-    return projectPreferences.get(getPreferencesConfigKey(), "");
+    return store.get(storeKey(), "");
 }
 
 string IoTRadio::buildConfigStringBySensor(Sensor *s) {
@@ -86,7 +86,7 @@ Sensor IoTRadio::buildSensorByConfigString(string configString) {
     return sensor;
 }
 
-IoTRadio::IoTRadio(ProjectPreferences &p, TaskScheduler &sc) : projectPreferences(p) {
+IoTRadio::IoTRadio(Store &s, TaskScheduler &sc) : store(s) {
     taskScheduler = &sc;
 }
 
@@ -121,7 +121,7 @@ void IoTRadio::forget(const string &signal) {
         if (iterator != currentSensors.end()) {
             currentSensors.erase(iterator);
         }
-        projectPreferences.set(getPreferencesConfigKey(), newConfig);
+        store.set(storeKey(), newConfig);
     }
 }
 
@@ -157,7 +157,7 @@ void IoTRadio::save(Sensor *sensor) {
             return s.signal == sensor->signal;
         }, *sensor);
     }
-    projectPreferences.set(getPreferencesConfigKey(), newConfig);
+    store.set(storeKey(), newConfig);
 }
 
 

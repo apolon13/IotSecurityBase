@@ -1,5 +1,5 @@
 #include <sstream>
-#include "ProjectPreferences.h"
+#include "Store.h"
 #include <esp_now.h>
 #include <esp_wifi_types.h>
 #include <vector>
@@ -36,12 +36,12 @@ typedef struct {
 class IoTRadio {
 protected:
     std::vector<Sensor> currentSensors;
-    ProjectPreferences &projectPreferences;
+    Store &store;
     static esp_now_recv_cb_t currentRcvCallback;
 
     std::vector<std::string> getSignals();
 
-    virtual ProjectPreferences::PreferencesKey getPreferencesConfigKey() = 0;
+    virtual Store::Key storeKey() = 0;
 
     void loadCurrentSensors();
 
@@ -62,7 +62,7 @@ protected:
 public:
     static PeerMessage lastMessage;
 
-    IoTRadio(ProjectPreferences &p, TaskScheduler &scheduler);
+    IoTRadio(Store &p, TaskScheduler &scheduler);
 
     void forget(const std::string &signal);
 

@@ -1,13 +1,13 @@
-#include "FileProjectPreferences.h"
-#include "ProjectPreferencesMutex.h"
+#include "FileStore.h"
+#include "StoreMutex.h"
 
 #define DELIMITER '='
 #define TERMINATOR '\n'
 
 using namespace std;
 
-FileProjectPreferences::FileProjectPreferences(std::string fn): filename(std::move(fn)) {
-    if (ProjectPreferencesMutex::take()) {
+FileStore::FileStore(std::string fn): filename(std::move(fn)) {
+    if (StoreMutex::take()) {
         if (!sdFat.begin()) {
             throw FailedInitialization();
         }
@@ -15,12 +15,12 @@ FileProjectPreferences::FileProjectPreferences(std::string fn): filename(std::mo
             auto file = sdFat.open(filename.c_str(), O_CREAT);
             file.close();
         }
-        ProjectPreferencesMutex::give();
+        StoreMutex::give();
     }
 }
 
-void FileProjectPreferences::writePreferencesProperty(const string &name, const string &value) {
-    Property currentValue = readPreferencesProperty(name, "");
+void FileStore::write(const string &name, const string &value) {
+    Property currentValue = read(name, "");
     string newValue = name + DELIMITER + value + TERMINATOR;
     auto dataProvider = sdFat.open(filename.c_str(), (O_RDWR | O_CREAT | O_AT_END));
     if (currentValue.exist) {
@@ -32,7 +32,7 @@ void FileProjectPreferences::writePreferencesProperty(const string &name, const 
     dataProvider.close();
 }
 
-Property FileProjectPreferences::readPreferencesProperty(const string &name, std::string defaultValue) {
+Property FileStore::read(const string &name, std::string defaultValue) {
     auto dataProvider = sdFat.open(filename.c_str());
     Property p = {std::move(defaultValue), 0, false};
     dataProvider.seek(0);
@@ -49,6 +49,6 @@ Property FileProjectPreferences::readPreferencesProperty(const string &name, std
         }
     }
     dataProvider.close();
-    ProjectPreferencesMutex::give();
+    StoreMutex::give();
     return p;
 }

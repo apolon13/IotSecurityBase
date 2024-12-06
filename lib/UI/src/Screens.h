@@ -27,7 +27,7 @@ private:
     EditDetectSensorScreen *editDetectSensorScreen;
     LockScreen *lockScreen;
 public:
-    Screens(ProjectPreferences &p, IoTRadioDetect &i, QueueTask &q, IotRadioControl &ct);
+    Screens(Store &p, IoTRadioDetect &i, QueueTask &q, IotRadioControl &ct);
 
     MainScreen &main();
 

@@ -1,15 +1,15 @@
 #include "IoTRadio.h"
-#include "ProjectPreferences.h"
+#include "Store.h"
 
 #ifndef DISPLAY_IOTRADIOCONTROL_H
 #define DISPLAY_IOTRADIOCONTROL_H
 
 class IotRadioControl : public IoTRadio {
 protected:
-    ProjectPreferences::PreferencesKey getPreferencesConfigKey() override;
+    Store::Key storeKey() override;
 
 public:
-    IotRadioControl(ProjectPreferences &p, TaskScheduler &sc) : IoTRadio(p, sc) {
+    IotRadioControl(Store &s, TaskScheduler &sc) : IoTRadio(s, sc) {
         loadCurrentSensors();
     };
 

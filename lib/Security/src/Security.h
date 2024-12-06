@@ -1,7 +1,7 @@
 #include "IoTRadioDetect.h"
 #include "IotRadioControl.h"
 #include "TaskScheduler.h"
-#include "ProjectPreferences.h"
+#include "Store.h"
 #include "Topic.h"
 #include "EventableObject.h"
 #include "TinyGsmClient7670.h"
@@ -31,7 +31,7 @@ class Security : public EventableObject {
 protected:
     IoTRadioDetect &ioTRadioDetect;
     IotRadioControl &iotRadioControl;
-    ProjectPreferences &projectPreferences;
+    Store &store;
     PubSub pubSub;
     long lastAlarmEventTime = 0;
     std::string previousCmd;
@@ -52,7 +52,7 @@ protected:
     void restart();
 
 public:
-    explicit Security(IoTRadioDetect &d, IotRadioControl &c, ProjectPreferences &p, PubSub &ps);
+    explicit Security(IoTRadioDetect &d, IotRadioControl &c, Store &s, PubSub &ps);
 
     void listen();
 

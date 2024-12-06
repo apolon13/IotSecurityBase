@@ -5,10 +5,10 @@
 
 class IoTRadioDetect : public IoTRadio {
 protected:
-    ProjectPreferences::PreferencesKey getPreferencesConfigKey() override;
+    Store::Key storeKey() override;
 
 public:
-    IoTRadioDetect(ProjectPreferences &p, TaskScheduler &sc) : IoTRadio(p, sc) {
+    IoTRadioDetect(Store &s, TaskScheduler &sc) : IoTRadio(s, sc) {
         loadCurrentSensors();
     };
 };

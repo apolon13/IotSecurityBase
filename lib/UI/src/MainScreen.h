@@ -1,4 +1,4 @@
-#include "ProjectPreferences.h"
+#include "Store.h"
 #include "IoTRadioDetect.h"
 #include "ui.h"
 #include "Screen.h"
@@ -8,10 +8,10 @@
 
 class MainScreen : public Screen {
 private:
-    ProjectPreferences &projectPreferences;
+    Store &store;
     IoTRadioDetect &ioTRadioDetect;
 public:
-    MainScreen(ProjectPreferences &p, IoTRadioDetect &i) : projectPreferences(p), ioTRadioDetect(i) {};
+    MainScreen(Store &p, IoTRadioDetect &i) : store(p), ioTRadioDetect(i) {};
 
     void showSuccessNetworkIcon();
 

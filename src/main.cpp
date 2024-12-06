@@ -2,12 +2,12 @@
 #include "QueueTask.h"
 #include "IotRadioControl.h"
 #include "Security.h"
-#include "FileProjectPreferences.h"
+#include "FileStore.h"
 #include "Screens.h"
 #include "NetworkFactory.h"
 #include "Telemetry.h"
-#include "FlashProjectPreferences.h"
-#include "PreferencesFactory.h"
+#include "FlashStore.h"
+#include "StoreFactory.h"
 #include "PubSub.h"
 #include <Ticker.h>
 
@@ -24,7 +24,7 @@ typedef struct {
 } QueueProxy;
 
 typedef struct {
-    ProjectPreferences &preferences;
+    Store &store;
     UiControl &uiControl;
     Security &security;
     PubSub &pubSub;
@@ -41,18 +41,18 @@ void loopMqtt(void *data) {
     int networkConnectionAttempts = 0;
     int cloudConnectionAttempts = 0;
     auto proxy = (MQTTProxy *) data;
-    auto connectionTimeout = stoi(proxy->preferences.getConnectionTimeout()) * 1000;
-    auto maxConnectionAttemptsBeforeRestart = stoi(proxy->preferences.getConnectionAttemptsBeforeRestart());
+    auto connectionTimeout = stoi(proxy->store.getConnectionTimeout()) * 1000;
+    auto maxConnectionAttemptsBeforeRestart = stoi(proxy->store.getConnectionAttemptsBeforeRestart());
 
     while (true) {
         unsigned long now = millis();
         if (networkConnectionAttempts >= maxConnectionAttemptsBeforeRestart || cloudConnectionAttempts >= maxConnectionAttemptsBeforeRestart) {
-            auto currentModeIsWifi = proxy->preferences.networkModeIsWifi();
+            auto currentModeIsWifi = proxy->store.networkModeIsWifi();
             if (!currentModeIsWifi) {
-                proxy->preferences.setNetworkMode(ProjectPreferences::WifiNetworkMode);
+                proxy->store.setNetworkMode(Store::WifiNetworkMode);
             }
             if (currentModeIsWifi) {
-                proxy->preferences.setNetworkMode(ProjectPreferences::SimNetworkMode);
+                proxy->store.setNetworkMode(Store::SimNetworkMode);
             }
             proxy->security.runCommand(SecurityCommand::Restart);
         }
@@ -63,7 +63,13 @@ void loopMqtt(void *data) {
 
         if (timeWithoutNetworkConnection && (now - timeWithoutNetworkConnection) > connectionTimeout &&
             (now - lastAttemptNetworkConnection) > connectionTimeout) {
-            proxy->network.connect();
+            if (proxy->network.getType() == NetworkType::WiFi) {
+                WiFiCredentials creds {
+                  proxy->store.get(Store::WifiSsid, ""),
+                  proxy->store.get(Store::WifiPassword, ""),
+                };
+                proxy->network.connect((void *)&creds);
+            }
             networkConnectionAttempts++;
             lastAttemptNetworkConnection = now;
         }
@@ -71,11 +77,11 @@ void loopMqtt(void *data) {
         if (proxy->network.isConnected() && !proxy->pubSub.isConnected()) {
             cloudConnectionAttempts++;
             proxy->pubSub.connect(MqttCredentials{
-                    proxy->preferences.get(ProjectPreferences::MqttEntityId, ""),
-                    proxy->preferences.get(ProjectPreferences::MqttPassword, ""),
-                    proxy->preferences.get(ProjectPreferences::MqttUsername, ""),
-                    proxy->preferences.get(ProjectPreferences::MqttIp, ""),
-                    proxy->preferences.get(ProjectPreferences::MqttPort, "1883"),
+                    proxy->store.get(Store::MqttEntityId, ""),
+                    proxy->store.get(Store::MqttPassword, ""),
+                    proxy->store.get(Store::MqttUsername, ""),
+                    proxy->store.get(Store::MqttIp, ""),
+                    proxy->store.get(Store::MqttPort, "1883"),
             });
         }
 
@@ -116,16 +122,15 @@ void loopQueue(void *data) {
 void setup() {
     disableCore0WDT();
     disableCore1WDT();
-    Serial1.begin(115200, SERIAL_8N1, GPIO_NUM_18, GPIO_NUM_17);
     Serial.begin(115200);
 
-    PreferencesFactory preferencesFactory(SETTINGS_FILENAME);
-    auto preferences = preferencesFactory.createPreferences();
-    NetworkFactory factory(*preferences, Serial1);
-    auto network = factory.createNetwork();
+    StoreFactory storeFactory(SETTINGS_FILENAME);
+    auto store = storeFactory.create();
+    NetworkFactory networkFactory;
+    auto network = networkFactory.create(*store);
     TaskScheduler taskScheduler;
-    IoTRadioDetect detect(*preferences, taskScheduler);
-    IotRadioControl control(*preferences, taskScheduler);
+    IoTRadioDetect detect(*store, taskScheduler);
+    IotRadioControl control(*store, taskScheduler);
 
     std::map<int, Topic> topics{
             std::make_pair(PubSub::Command, Topic("/security/command")),
@@ -138,7 +143,7 @@ void setup() {
     };
     PubSubClient psClient(network->getClient());
     PubSub ps(topics, psClient);
-    Security security(detect, control, *preferences, ps);
+    Security security(detect, control, *store, ps);
     ps.onRecv(PubSub::Command,[&security](const std::string &payload) {
         security.handleControl(payload, true);
     });
@@ -148,8 +153,8 @@ void setup() {
     periodicTicker.attach_ms(120000, sendTelemetry, &telemetry);
 
     QueueTask queue;
-    screens = new Screens(*preferences, detect, queue, control);
-    UiControl uiControl(stoi(preferences->getSecurityTimeout()) * 1000);
+    screens = new Screens(*store, detect, queue, control);
+    UiControl uiControl(stoi(store->getSecurityTimeout()) * 1000);
     uiControl.init();
     auto securityListenCb = [&security](int eventId) {
         security.listen();
@@ -193,7 +198,7 @@ void setup() {
         screens->lock().goTo(false);
     });
 
-    MQTTProxy MQTTProxy = {*preferences, uiControl, security, ps, *network};
+    MQTTProxy MQTTProxy = {*store, uiControl, security, ps, *network};
     UiProxy UiProxy = {uiControl};
     QueueProxy QueueProxy = {queue};
     taskScheduler.addTask({

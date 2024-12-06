@@ -1,4 +1,4 @@
-#include "ProjectPreferences.h"
+#include "Store.h"
 #include "ui.h"
 #include "Screen.h"
 
@@ -7,9 +7,9 @@
 
 class MqttConfigScreen : public Screen {
 private:
-    ProjectPreferences &projectPreferences;
+    Store &store;
 public:
-    MqttConfigScreen(ProjectPreferences &p) : projectPreferences(p) {};
+    MqttConfigScreen(Store &p) : store(p) {};
 
     void loadMqttSettings(lv_event_t *e);
 

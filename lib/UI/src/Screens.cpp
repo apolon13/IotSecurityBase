@@ -1,6 +1,6 @@
 #include "Screens.h"
 
-Screens::Screens(ProjectPreferences &p, IoTRadioDetect &i, QueueTask &q, IotRadioControl &ct) {
+Screens::Screens(Store &p, IoTRadioDetect &i, QueueTask &q, IotRadioControl &ct) {
     mainScreen = new MainScreen(p, i);
     detectSensorsScreen = new DetectSensorsScreen(i, ct, q, p);
     controlSensorsScreen = new ControlSensorsScreen(i, ct, q);
